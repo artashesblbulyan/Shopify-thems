@@ -8,7 +8,7 @@
     <h1 class="ed-display ed-cart__title">Your <em>bag</em>.</h1>
     <p class="ed-cart__count">
       {%- if cart.item_count > 0 -%}
-        {{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items' }} · {{ cart.total_price | money }}
+        {{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items' }} / {{ cart.total_price | money }}
       {%- else -%}
         Empty for now
       {%- endif -%}
@@ -41,7 +41,7 @@
               </div>
               <div class="ed-cart__item-bottom">
                 <div class="ed-cart__qty">
-                  <a href="{{ item.url_to_remove }}" data-ed-cart-step="-1" data-line="{{ forloop.index }}" data-key="{{ item.key }}" data-qty="{{ item.quantity | minus: 1 }}" aria-label="Decrease">−</a>
+                  <a href="{{ item.url_to_change }}?quantity={{ item.quantity | minus: 1 }}" data-ed-cart-step="-1" data-line="{{ forloop.index }}" data-key="{{ item.key }}" data-qty="{{ item.quantity | minus: 1 }}" aria-label="Decrease">-</a>
                   <input
                     type="number"
                     name="updates[{{ item.key }}]"
@@ -68,7 +68,7 @@
           {%- for discount in cart.cart_level_discount_applications -%}
             <div class="ed-cart__summary-row ed-cart__summary-discount">
               <span>{{ discount.title }}</span>
-              <span>−{{ discount.total_allocated_amount | money }}</span>
+              <span>-{{ discount.total_allocated_amount | money }}</span>
             </div>
           {%- endfor -%}
         {%- endif -%}
@@ -82,17 +82,17 @@
 
         <button type="submit" name="update" class="ed-btn ed-btn--ghost ed-cart__update">Update bag</button>
         <button type="submit" name="checkout" class="ed-btn ed-btn--solid ed-cart__checkout">
-          Checkout · {{ cart.total_price | money }}
-          <span class="ed-btn__arrow" aria-hidden="true">→</span>
+          Checkout / {{ cart.total_price | money }}
+          <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
         </button>
-        <a class="ed-cart__continue" href="{{ routes.all_products_collection_url }}">← Continue shopping</a>
+        <a class="ed-cart__continue" href="{{ routes.all_products_collection_url }}">&lt;- Continue shopping</a>
       </aside>
     </form>
   {%- else -%}
     <div class="ed-cart__empty ed-reveal">
       <p>Your bag is empty.</p>
       <a class="ed-btn ed-btn--solid" href="{{ routes.all_products_collection_url }}">
-        Shop now <span class="ed-btn__arrow" aria-hidden="true">→</span>
+        Shop now <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
       </a>
     </div>
   {%- endif -%}
@@ -351,11 +351,11 @@
 
 {% schema %}
 {
-  "name": "Cart — Editorial",
+  "name": "Cart - Editorial",
   "tag": "section",
   "class": "section-ed-cart",
   "settings": [],
-  "presets": [ { "name": "Cart — Editorial" } ],
+  "presets": [ { "name": "Cart - Editorial" } ],
   "enabled_on": { "templates": ["cart"] }
 }
 {% endschema %}

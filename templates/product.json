@@ -5,46 +5,31 @@
       "settings": {
         "index_number": "01",
         "index_label": "Product",
-        "brand": "Luminaire"
+        "brand": ""
       }
     },
     "marquee": {
       "type": "marquee-editorial",
       "settings": {
-        "words": "Hand-finished, 2-year warranty, Free shipping $75+, 30-day returns",
+        "words": "Secure checkout, Carefully packed, Easy returns, Support included",
         "speed": 42
       }
     },
     "process": {
       "type": "process-steps",
       "blocks": {
-        "p1": { "type": "step", "settings": { "number": "01", "title": "Designed in studio", "body": "Every silhouette is sketched by hand and refined across dozens of iterations before tooling begins.", "tag": "In-house" } },
-        "p2": { "type": "step", "settings": { "number": "02", "title": "Cast & finished", "body": "We work with small-batch foundries — each piece is finished by a single craftsperson, start to end.", "tag": "Small batch" } },
-        "p3": { "type": "step", "settings": { "number": "03", "title": "Inspected & signed", "body": "Before shipping, every lamp is signed and numbered. Lifetime serviceable, fully repairable.", "tag": "Numbered" } }
+        "p1": { "type": "step", "settings": { "number": "01", "title": "Review the fit", "body": "Check the photos, finish, variants, and product notes before adding the piece to your cart.", "tag": "Details" } },
+        "p2": { "type": "step", "settings": { "number": "02", "title": "Checkout securely", "body": "Use a familiar payment method and review shipping before placing the order.", "tag": "Checkout" } },
+        "p3": { "type": "step", "settings": { "number": "03", "title": "Place and enjoy", "body": "Unbox carefully, place it in the room, and let the light do the quiet work.", "tag": "At home" } }
       },
       "block_order": ["p1", "p2", "p3"],
       "settings": {
         "index_number": "02",
-        "index_label": "Craft",
-        "heading": "<p>Slow craft, <em>built</em> to last.</p>",
-        "description": "Every fixture goes through three deliberate stages before it leaves our studio."
-      }
-    },
-    "testimonials": {
-      "type": "testimonials",
-      "blocks": {
-        "t1": { "type": "review", "settings": { "quote": "The most considered lamp I’ve ever owned. The light it casts genuinely changes how I use the room.", "name": "Alex M.", "role": "Architect, Berlin" } },
-        "t2": { "type": "review", "settings": { "quote": "It arrived perfectly packed, signed and numbered. Feels like an object you’d pass down, not replace.", "name": "Sofia R.", "role": "Interior designer, Milan" } },
-        "t3": { "type": "review", "settings": { "quote": "I have three from the night collection now. The light quality is unlike anything I’ve owned before.", "name": "Daniel K.", "role": "Photographer, NYC" } }
-      },
-      "block_order": ["t1", "t2", "t3"],
-      "settings": {
-        "index_number": "03",
-        "index_label": "Reviews",
-        "heading": "<p>Trusted by <em>thoughtful</em> homes.</p>",
-        "rating": "4.9 / 5 — 12K verified reviews"
+        "index_label": "Service",
+        "heading": "<p>Made simple<br>from cart to <em>room.</em></p>",
+        "description": "Everything on the page is organized to make choosing, buying, and using the product feel clear."
       }
     }
   },
-  "order": ["main", "marquee", "process", "testimonials"]
+  "order": ["main", "marquee", "process"]
 }

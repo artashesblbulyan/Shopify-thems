@@ -21,20 +21,20 @@
           "type": "social",
           "settings": {
             "title": "Follow",
-            "instagram": "https://instagram.com",
-            "pinterest": "https://pinterest.com"
+            "instagram": "",
+            "pinterest": ""
           }
         }
       },
       "block_order": ["shop", "help", "studio", "social"],
       "settings": {
-        "cta_heading": "<p><em>Bring it</em><br>home.</p>",
-        "cta_primary_label": "Shop now",
+        "cta_heading": "<p>Find your<br><em>next light.</em></p>",
+        "cta_primary_label": "Shop all",
         "cta_primary_link": "shopify://collections/all",
         "cta_secondary_label": "Contact",
         "cta_secondary_link": "shopify://pages/contact",
-        "logo_text": "Luminaire",
-        "tagline": "Sculptural lamps for spaces that matter. Hand-finished, considered, made to last."
+        "logo_text": "",
+        "tagline": "Design-led lighting for desks, shelves, bedside tables, and quiet corners."
       }
     }
   },

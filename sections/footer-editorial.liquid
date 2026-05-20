@@ -9,7 +9,7 @@
       {%- if section.settings.cta_primary_label != blank -%}
         <a class="ed-btn ed-btn--solid" href="{{ section.settings.cta_primary_link | default: '#' }}">
           {{ section.settings.cta_primary_label }}
-          <span class="ed-btn__arrow" aria-hidden="true">→</span>
+          <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
         </a>
       {%- endif -%}
       {%- if section.settings.cta_secondary_label != blank -%}
@@ -33,7 +33,7 @@
         accept-charset="UTF-8"
       >
         <input type="hidden" name="form_type" value="customer">
-        <input type="hidden" name="utf8" value="✓">
+        <input type="hidden" name="utf8" value="1">
         <input type="hidden" name="contact[tags]" value="newsletter">
         <input
           type="email"
@@ -42,7 +42,7 @@
           aria-label="Email"
           required
         >
-        <button type="submit">Join <span aria-hidden="true">→</span></button>
+        <button type="submit">Join <span aria-hidden="true">-&gt;</span></button>
       </form>
     </div>
 
@@ -80,7 +80,7 @@
   </div>
 
   <div class="ed-footer__meta">
-    <span>© {{ year }} {{ shop.name }} · All rights reserved</span>
+    <span>&copy; {{ year }} {{ shop.name }} / All rights reserved</span>
     <span class="ed-footer__meta-links">
       <a href="/policies/privacy-policy">Privacy</a>
       <a href="/policies/terms-of-service">Terms</a>
@@ -262,8 +262,8 @@
     { "type": "text", "id": "cta_secondary_label", "label": "Secondary CTA label", "default": "Contact" },
     { "type": "url", "id": "cta_secondary_link", "label": "Secondary CTA link" },
     { "type": "header", "content": "Brand" },
-    { "type": "text", "id": "logo_text", "label": "Logo text", "default": "Luminaire" },
-    { "type": "textarea", "id": "tagline", "label": "Tagline", "default": "Sculptural lamps for spaces that matter. Hand-finished, considered, made to last." }
+    { "type": "text", "id": "logo_text", "label": "Logo text" },
+    { "type": "textarea", "id": "tagline", "label": "Tagline", "default": "Design-led lighting for desks, shelves, bedside tables, and quiet corners." }
   ],
   "blocks": [
     {

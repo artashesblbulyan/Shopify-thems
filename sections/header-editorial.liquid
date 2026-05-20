@@ -66,7 +66,7 @@
       <a href="{{ routes.root_url }}" class="ed-mobile-menu__logo">
         {{ section.settings.logo_text | default: shop.name }}
       </a>
-      <button class="ed-mobile-menu__close" type="button" aria-label="Close menu" data-ed-menu-close>×</button>
+      <button class="ed-mobile-menu__close" type="button" aria-label="Close menu" data-ed-menu-close>&times;</button>
     </div>
     <nav class="ed-mobile-menu__nav" aria-label="Mobile">
       {%- assign linklist_handle = section.settings.menu | default: 'main-menu' -%}
@@ -74,7 +74,7 @@
         <a class="ed-mobile-menu__link" href="{{ link.url }}">
           <span class="ed-mobile-menu__num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
           <span>{{ link.title }}</span>
-          <span class="ed-mobile-menu__arrow">→</span>
+          <span class="ed-mobile-menu__arrow">-&gt;</span>
         </a>
       {%- endfor -%}
     </nav>
@@ -381,12 +381,12 @@
   "class": "section-ed-header",
   "settings": [
     { "type": "header", "content": "Branding" },
-    { "type": "text", "id": "logo_text", "label": "Logo text", "default": "Luminaire" },
+    { "type": "text", "id": "logo_text", "label": "Logo text" },
     { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
     { "type": "checkbox", "id": "show_search", "label": "Show search icon", "default": true },
     { "type": "header", "content": "Announcement" },
     { "type": "checkbox", "id": "show_announcement", "label": "Show announcement", "default": true },
-    { "type": "text", "id": "announcement_text", "label": "Announcement text", "default": "Free shipping over $75 · 30-day returns · New: Sculptural collection" }
+    { "type": "text", "id": "announcement_text", "label": "Announcement text", "default": "New arrivals online / Secure checkout / Easy returns" }
   ],
   "presets": [
     { "name": "Header — Editorial" }

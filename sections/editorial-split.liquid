@@ -8,18 +8,18 @@
     <div class="ed-eyebrow">{{ section.settings.index_number }} / {{ section.settings.index_label }}</div>
     <h2 class="ed-display ed-split__title">{{ section.settings.heading }}</h2>
     {%- if section.settings.quote != blank -%}
-      <p class="ed-split__quote">{{ section.settings.quote }}<span class="ed-split__quote-end">”</span></p>
+      <p class="ed-split__quote">{{ section.settings.quote }}</p>
     {%- endif -%}
     {%- if section.settings.cta_label != blank -%}
       <div class="ed-split__cta">
         <a class="ed-btn ed-btn--solid" href="{{ section.settings.cta_link | default: '#' }}">
           {{ section.settings.cta_label }}
-          <span class="ed-btn__arrow" aria-hidden="true">→</span>
+          <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
         </a>
       </div>
     {%- endif -%}
     <div class="ed-split__meta">
-      <span>{{ section.settings.meta_left | default: '— Founder' }}</span>
+      <span>{{ section.settings.meta_left | default: 'Studio edit' }}</span>
       <span>{{ section.settings.meta_right | default: 'Estd. 2024' }}</span>
     </div>
   </div>
@@ -87,7 +87,7 @@
     padding-left: 22px;
   }
   .ed-split__quote::before {
-    content: "“";
+    content: "";
     color: var(--ed-accent);
     font-size: 60px;
     line-height: 1;
@@ -225,11 +225,11 @@
       "type": "textarea",
       "id": "quote",
       "label": "Pull-quote",
-      "default": "A lamp is not just a source of light — it is a quiet object that shapes the mood of a room before anyone notices it has done so."
+      "default": "A good lamp should feel useful in the day and calm at night."
     },
     { "type": "text", "id": "cta_label", "label": "CTA label", "default": "Shop now" },
     { "type": "url", "id": "cta_link", "label": "CTA link" },
-    { "type": "text", "id": "meta_left", "label": "Meta left", "default": "— Founder" },
+    { "type": "text", "id": "meta_left", "label": "Meta left", "default": "Studio edit" },
     { "type": "text", "id": "meta_right", "label": "Meta right", "default": "Estd. 2024" },
     { "type": "header", "content": "Visual" },
     { "type": "image_picker", "id": "image", "label": "Image" },

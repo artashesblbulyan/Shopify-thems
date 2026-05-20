@@ -48,15 +48,17 @@
   </div>
 
   <div class="ed-product__details ed-reveal-stagger">
-    <div class="ed-product__vendor">{{ p.vendor | default: section.settings.brand }}</div>
+    <div class="ed-product__vendor">{{ p.vendor | default: section.settings.brand | default: shop.name }}</div>
     <h1 class="ed-display ed-product__title">{{ p.title }}</h1>
 
     <div class="ed-product__price-row">
       <div class="ed-product__price">{{ current_variant.price | money }}</div>
-      {%- if current_variant.compare_at_price > current_variant.price -%}
-        <div class="ed-product__price-compare">{{ current_variant.compare_at_price | money }}</div>
-        <span class="ed-product__sale">Sale</span>
-      {%- endif -%}
+      <div class="ed-product__price-compare">
+        {%- if current_variant.compare_at_price > current_variant.price -%}
+          {{ current_variant.compare_at_price | money }}
+        {%- endif -%}
+      </div>
+      <span class="ed-product__sale" {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>Sale</span>
     </div>
 
     {%- if p.description != blank -%}
@@ -70,8 +72,9 @@
       method="post"
       enctype="multipart/form-data"
       class="ed-product__form"
+      data-ed-product-form
     >
-      <input type="hidden" name="id" value="{{ current_variant.id }}">
+      <input type="hidden" name="id" value="{{ current_variant.id }}" data-ed-variant-id>
 
       {%- unless p.has_only_default_variant -%}
         <div class="ed-product__variants">
@@ -99,45 +102,45 @@
       <div class="ed-product__quantity">
         <label for="ed-qty-{{ section.id }}">Quantity</label>
         <div class="ed-product__qty-control">
-          <button type="button" data-ed-qty-step="-1" aria-label="Decrease">−</button>
+          <button type="button" data-ed-qty-step="-1" aria-label="Decrease">-</button>
           <input id="ed-qty-{{ section.id }}" type="number" name="quantity" value="1" min="1">
           <button type="button" data-ed-qty-step="1" aria-label="Increase">+</button>
         </div>
       </div>
 
-      <button type="submit" class="ed-btn ed-btn--solid ed-product__add" {% unless current_variant.available %}disabled{% endunless %}>
+      <button type="submit" class="ed-btn ed-btn--solid ed-product__add" data-ed-add-text {% unless current_variant.available %}disabled{% endunless %}>
         {%- if current_variant.available -%}
-          Add to cart — {{ current_variant.price | money }}
+          Add to cart - {{ current_variant.price | money }}
         {%- else -%}
           Sold out
         {%- endif -%}
-        <span class="ed-btn__arrow" aria-hidden="true">→</span>
+        <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
       </button>
     </form>
 
     <ul class="ed-product__values">
-      <li><span class="ed-product__value-num">01</span><span>Hand-finished</span></li>
-      <li><span class="ed-product__value-num">02</span><span>Free shipping $75+</span></li>
-      <li><span class="ed-product__value-num">03</span><span>2-year warranty</span></li>
-      <li><span class="ed-product__value-num">04</span><span>30-day returns</span></li>
+      <li><span class="ed-product__value-num">01</span><span>Carefully packed</span></li>
+      <li><span class="ed-product__value-num">02</span><span>Secure checkout</span></li>
+      <li><span class="ed-product__value-num">03</span><span>Easy returns</span></li>
+      <li><span class="ed-product__value-num">04</span><span>Support included</span></li>
     </ul>
 
     <details class="ed-product__accordion" open>
       <summary>Details</summary>
       <div>
-        <p>Cast in heat-resistant materials with a brushed finish. Compatible with standard E26/E27 bulbs (LED recommended, 40W max). Includes 2m fabric-braided cable and inline dimmer switch.</p>
+        <p>Review the product description, photos, and selected variant before checkout. If you need an exact measurement or compatibility detail, contact us before ordering.</p>
       </div>
     </details>
     <details class="ed-product__accordion">
       <summary>Shipping &amp; Returns</summary>
       <div>
-        <p>Orders ship within 1–2 business days. Free standard shipping on orders over $75. Return any unused item within 30 days for a full refund — we cover the return label.</p>
+        <p>Shipping, taxes, and available delivery options are calculated at checkout. For returns, use the policy links in the footer or contact support before sending an item back.</p>
       </div>
     </details>
     <details class="ed-product__accordion">
       <summary>Care</summary>
       <div>
-        <p>Wipe with a soft, dry cloth. Avoid direct sunlight for long periods. Replacement parts available — contact our studio.</p>
+        <p>Wipe gently with a soft, dry cloth. Avoid harsh cleaners, moisture, and long exposure to direct sunlight unless the product page says otherwise.</p>
       </div>
     </details>
   </div>
@@ -438,7 +441,7 @@
     transition: transform 0.25s var(--ed-ease);
   }
   .ed-product__accordion[open] summary::after {
-    content: "−";
+    content: "-";
   }
   .ed-product__accordion summary::-webkit-details-marker { display: none; }
   .ed-product__accordion[open] div {
@@ -463,6 +466,72 @@
 
 <script>
   (function () {
+    var productData = {
+      variants: {{ p.variants | json }},
+      currency: {{ cart.currency.iso_code | json }}
+    };
+
+    function money(cents) {
+      try {
+        return new Intl.NumberFormat(document.documentElement.lang || undefined, {
+          style: 'currency',
+          currency: productData.currency
+        }).format((cents || 0) / 100);
+      } catch (e) {
+        return ((cents || 0) / 100).toFixed(2);
+      }
+    }
+
+    function findSelectedVariant(form) {
+      var selected = [];
+      form.querySelectorAll('.ed-product__variant-group').forEach(function (group) {
+        var checked = group.querySelector('input[type="radio"]:checked');
+        selected.push(checked ? checked.value : '');
+      });
+      return productData.variants.find(function (variant) {
+        return variant.options.every(function (option, index) {
+          return option === selected[index];
+        });
+      });
+    }
+
+    function updateVariant(form) {
+      var variant = findSelectedVariant(form);
+      if (!variant) return;
+
+      var idInput = form.querySelector('[data-ed-variant-id]');
+      var productSection = form.closest('.ed-product');
+      var price = productSection && productSection.querySelector('.ed-product__price');
+      var compare = productSection && productSection.querySelector('.ed-product__price-compare');
+      var sale = productSection && productSection.querySelector('.ed-product__sale');
+      var add = form.querySelector('[data-ed-add-text]');
+
+      if (idInput) idInput.value = variant.id;
+      if (price) price.textContent = money(variant.price);
+      if (compare) {
+        compare.textContent = variant.compare_at_price && variant.compare_at_price > variant.price ? money(variant.compare_at_price) : '';
+      }
+      if (sale) {
+        sale.hidden = !(variant.compare_at_price && variant.compare_at_price > variant.price);
+      }
+      if (add) {
+        add.disabled = !variant.available;
+        add.childNodes[0].nodeValue = variant.available ? 'Add to cart - ' + money(variant.price) + ' ' : 'Sold out ';
+      }
+    }
+
+    document.addEventListener('change', function (e) {
+      var input = e.target.closest('.ed-product__variant input[type="radio"]');
+      if (!input) return;
+      var form = input.closest('[data-ed-product-form]');
+      if (!form) return;
+      form.querySelectorAll('.ed-product__variant').forEach(function (label) {
+        var checked = label.querySelector('input[type="radio"]:checked');
+        label.classList.toggle('is-selected', Boolean(checked));
+      });
+      updateVariant(form);
+    });
+
     // Thumb click -> swap main image
     document.addEventListener('click', function (e) {
       var btn = e.target.closest('[data-ed-thumb]');
@@ -497,16 +566,16 @@
 
 {% schema %}
 {
-  "name": "Product — Editorial",
+  "name": "Product - Editorial",
   "tag": "section",
   "class": "section-ed-product",
   "settings": [
     { "type": "text", "id": "index_number", "label": "Index number", "default": "01" },
     { "type": "text", "id": "index_label", "label": "Index label", "default": "Product" },
-    { "type": "text", "id": "brand", "label": "Brand text (when product has no vendor)", "default": "Luminaire" }
+    { "type": "text", "id": "brand", "label": "Brand text (when product has no vendor)" }
   ],
   "presets": [
-    { "name": "Product — Editorial" }
+    { "name": "Product - Editorial" }
   ],
   "enabled_on": {
     "templates": ["product"]

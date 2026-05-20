@@ -9,7 +9,7 @@
       <span class="ed-marquee__group" aria-hidden="{% if repeat == 2 %}true{% else %}false{% endif %}">
         {%- for word in words -%}
           <span class="ed-marquee__word">{{ word | strip }}</span>
-          <span class="ed-marquee__sep" aria-hidden="true">✦</span>
+          <span class="ed-marquee__sep" aria-hidden="true">/</span>
         {%- endfor -%}
       </span>
     {%- endfor -%}
@@ -85,7 +85,7 @@
 
 {% schema %}
 {
-  "name": "Marquee — Editorial",
+  "name": "Marquee - Editorial",
   "tag": "section",
   "class": "section-ed-marquee",
   "settings": [
@@ -93,7 +93,7 @@
       "type": "text",
       "id": "words",
       "label": "Words (comma-separated)",
-      "default": "Hand-finished, Sculptural, Ambient, Timeless, Considered"
+      "default": "New arrivals, Table lamps, Pendant lighting, Night lights, Warm glow"
     },
     {
       "type": "range",
@@ -102,6 +102,6 @@
       "min": 10, "max": 80, "step": 2, "unit": "s", "default": 38
     }
   ],
-  "presets": [ { "name": "Marquee — Editorial" } ]
+  "presets": [ { "name": "Marquee - Editorial" } ]
 }
 {% endschema %}

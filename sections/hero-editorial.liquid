@@ -43,7 +43,7 @@
       {%- if section.settings.primary_cta_label != blank -%}
         <a class="ed-btn ed-btn--solid" href="{{ section.settings.primary_cta_link | default: '#' }}">
           {{ section.settings.primary_cta_label }}
-          <span class="ed-btn__arrow" aria-hidden="true">→</span>
+          <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
         </a>
       {%- endif -%}
       {%- if section.settings.secondary_cta_label != blank -%}
@@ -322,7 +322,7 @@
 
 {% schema %}
 {
-  "name": "Hero — Editorial",
+  "name": "Hero - Editorial",
   "tag": "section",
   "class": "section-ed-hero",
   "settings": [
@@ -362,7 +362,7 @@
     }
   ],
   "presets": [
-    { "name": "Hero — Editorial" }
+    { "name": "Hero - Editorial" }
   ]
 }
 {% endschema %}

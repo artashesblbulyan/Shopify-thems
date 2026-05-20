@@ -2,7 +2,7 @@
   assign collection = collections[section.settings.collection]
   assign products = collection.products | slice: 0, 6
   assign size_pattern = 'tall,wide,sq,lg,lg,lg' | split: ','
-  assign tag_pattern  = 'New · Bestseller,Limited,New,Editor’s pick,Restocked,04 colors' | split: ','
+  assign tag_pattern  = 'New / Bestseller,Limited,New,Editor pick,Restocked,04 colors' | split: ','
 -%}
 
 <section class="ed-bento ed-section" id="ed-bento-{{ section.id }}">
@@ -11,7 +11,7 @@
     <h2 class="ed-display ed-bento__title">{{ section.settings.heading }}</h2>
     {%- if section.settings.view_all_label != blank -%}
       <a class="ed-bento__link" href="{{ section.settings.view_all_link | default: collection.url }}">
-        {{ section.settings.view_all_label }} <span aria-hidden="true">→</span>
+        {{ section.settings.view_all_label }} <span aria-hidden="true">-&gt;</span>
       </a>
     {%- endif -%}
   </header>
@@ -60,7 +60,7 @@
             </div>
             <div class="ed-bento__hover-cta">
               <span>View product</span>
-              <span class="ed-btn__arrow" aria-hidden="true">→</span>
+              <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
             </div>
           </div>
         </a>
@@ -300,7 +300,7 @@
 
 {% schema %}
 {
-  "name": "Bento — Featured",
+  "name": "Bento - Featured",
   "tag": "section",
   "class": "section-ed-bento",
   "settings": [
@@ -320,7 +320,7 @@
     { "type": "collection", "id": "collection", "label": "Collection" }
   ],
   "presets": [
-    { "name": "Bento — Featured" }
+    { "name": "Bento - Featured" }
   ]
 }
 {% endschema %}

@@ -36,10 +36,10 @@
       // Set ed-mode early to avoid flash
       (function () {
         try {
-          var mode = localStorage.getItem('ed-mode') || 'night';
+          var mode = localStorage.getItem('ed-mode') || 'day';
           document.documentElement.dataset.edMode = mode;
         } catch (e) {
-          document.documentElement.dataset.edMode = 'night';
+          document.documentElement.dataset.edMode = 'day';
         }
       })();
     </script>

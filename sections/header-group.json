@@ -5,11 +5,11 @@
     "header": {
       "type": "header-editorial",
       "settings": {
-        "logo_text": "Luminaire",
+        "logo_text": "",
         "menu": "main-menu",
         "show_search": true,
         "show_announcement": true,
-        "announcement_text": "Free shipping over $75 · 30-day returns · New: Sculptural collection"
+        "announcement_text": "New arrivals online / Secure checkout / Easy returns"
       }
     }
   },

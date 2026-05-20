@@ -4,33 +4,33 @@
       "type": "hero-editorial",
       "settings": {
         "index_number": "01",
-        "index_label": "The collection",
-        "eyebrow": "Spring '26",
-        "headline": "<p>Light,<br><em>refined.</em></p>",
-        "description": "Sculptural lamps for spaces that matter. Hand-finished in small batches, designed to anchor a room — not blend in.",
-        "primary_cta_label": "Shop the collection",
+        "index_label": "Lighting studio",
+        "eyebrow": "New arrivals",
+        "headline": "<p>Modern lighting<br><em>for softer rooms.</em></p>",
+        "description": "Warm, sculptural lamps selected for desks, shelves, bedside tables, and quiet corners.",
+        "primary_cta_label": "Shop lighting",
         "primary_cta_link": "shopify://collections/all",
-        "secondary_cta_label": "The story",
-        "secondary_cta_link": "shopify://pages/about",
-        "corner_value": "04 pieces",
-        "corner_label": "In stock now",
+        "secondary_cta_label": "View collections",
+        "secondary_cta_link": "/collections",
+        "corner_value": "New drops",
+        "corner_label": "Online now",
         "image": "shopify://shop_images/888.png",
-        "overlay_opacity": 60
+        "overlay_opacity": 0
       }
     },
     "marquee": {
       "type": "marquee-editorial",
       "settings": {
-        "words": "Hand-finished, Sculptural, Ambient, Timeless, Considered",
-        "speed": 38
+        "words": "New arrivals, Table lamps, Pendant lighting, Night lights, Warm glow, Easy returns",
+        "speed": 34
       }
     },
     "bento_pendant": {
       "type": "bento-grid",
       "settings": {
         "index_number": "02",
-        "index_label": "Featured",
-        "heading": "<p>Make your workspace <em>yours</em>.</p>",
+        "index_label": "Bestsellers",
+        "heading": "<p>Most wanted <em>pieces.</em></p>",
         "view_all_label": "View all",
         "view_all_link": "shopify://collections/pendant-lamp",
         "collection": "pendant-lamp"
@@ -40,15 +40,15 @@
       "type": "editorial-split",
       "settings": {
         "index_number": "03",
-        "index_label": "The story",
-        "heading": "<p>Your unique <em>decor.</em></p>",
-        "quote": "A lamp is not just a source of light — it is a quiet object that shapes the mood of a room before anyone notices it has done so.",
-        "cta_label": "Shop now",
-        "cta_link": "shopify://products/modern-textured-plastic-table-lamp-affordable-elegance",
-        "meta_left": "— Founder",
-        "meta_right": "Estd. 2024",
+        "index_label": "Mood",
+        "heading": "<p>Designed around<br><em>atmosphere.</em></p>",
+        "quote": "Choose the shape, scale, and glow that fits the room. A good lamp should feel useful in the day and calm at night.",
+        "cta_label": "Explore all",
+        "cta_link": "shopify://collections/all",
+        "meta_left": "Room-ready lighting",
+        "meta_right": "Curated online",
         "image": "shopify://shop_images/9.2.jpg",
-        "badge": "Featured product",
+        "badge": "Soft glow",
         "reverse": false
       }
     },
@@ -56,8 +56,8 @@
       "type": "bento-grid",
       "settings": {
         "index_number": "04",
-        "index_label": "Night collection",
-        "heading": "<p>For your <em>evenings.</em></p>",
+        "index_label": "Night lamps",
+        "heading": "<p>Glow for<br><em>evenings.</em></p>",
         "view_all_label": "View all",
         "view_all_link": "shopify://collections/night-lamp",
         "collection": "night-lamp"
@@ -67,60 +67,45 @@
       "type": "editorial-split",
       "settings": {
         "index_number": "05",
-        "index_label": "Mode",
-        "heading": "<p>Discover your<br>ideal <em>light.</em></p>",
-        "quote": "From morning ambience to evening glow, every fixture shifts with your space.",
+        "index_label": "Details",
+        "heading": "<p>Clean forms,<br><em>warm light.</em></p>",
+        "quote": "A focused catalog makes choosing simpler: table lamps, night lights, pendants, and useful pieces for everyday rooms.",
         "cta_label": "Shop bestsellers",
         "cta_link": "shopify://collections/all",
-        "meta_left": "— Curated",
-        "meta_right": "04 collections",
+        "meta_left": "Simple checkout",
+        "meta_right": "Support included",
         "image": "shopify://shop_images/10-1.jpg",
-        "badge": "After dark",
+        "badge": "New edit",
         "reverse": true
       }
     },
     "stats": {
       "type": "stats-strip",
       "blocks": {
-        "s1": { "type": "stat", "settings": { "count_target": 12000, "count_suffix": "+", "label": "Happy homes", "sublabel": "Shipping to 18 countries" } },
-        "s2": { "type": "stat", "settings": { "number": "04", "label": "Collections", "sublabel": "Refreshed every season" } },
-        "s3": { "type": "stat", "settings": { "number": "02 yr", "label": "Warranty", "sublabel": "Free repairs covered" } },
-        "s4": { "type": "stat", "settings": { "number": "★ 4.9", "label": "Customer rating", "sublabel": "12K verified reviews" } }
+        "s1": { "type": "stat", "settings": { "number": "01", "count_target": 0, "label": "Secure checkout", "sublabel": "Fast, familiar payment methods." } },
+        "s2": { "type": "stat", "settings": { "number": "02", "count_target": 0, "label": "Carefully packed", "sublabel": "Products ship protected and ready to place." } },
+        "s3": { "type": "stat", "settings": { "number": "03", "count_target": 0, "label": "Easy returns", "sublabel": "Clear return path if the fit is not right." } },
+        "s4": { "type": "stat", "settings": { "number": "04", "count_target": 0, "label": "Support included", "sublabel": "Questions before or after purchase are welcome." } }
       },
       "block_order": ["s1", "s2", "s3", "s4"],
       "settings": {
-        "eyebrow": "06 / Trust",
-        "heading": "<p>Made for <em>people</em> who care.</p>"
+        "eyebrow": "06 / Service",
+        "heading": "<p>A smoother way<br>to buy <em>lighting.</em></p>"
       }
     },
     "process": {
       "type": "process-steps",
       "blocks": {
-        "p1": { "type": "step", "settings": { "number": "01", "title": "Designed in studio", "body": "Every silhouette is sketched by hand and refined across dozens of iterations before tooling begins.", "tag": "In-house" } },
-        "p2": { "type": "step", "settings": { "number": "02", "title": "Cast & finished", "body": "We work with small-batch foundries — each piece is finished by a single craftsperson, start to end.", "tag": "Small batch" } },
-        "p3": { "type": "step", "settings": { "number": "03", "title": "Inspected & signed", "body": "Before shipping, every lamp is signed and numbered. Lifetime serviceable, fully repairable.", "tag": "Numbered" } }
+        "p1": { "type": "step", "settings": { "number": "01", "title": "Choose the room", "body": "Browse by collection and pick the scale, shape, and mood that matches your space.", "tag": "Discover" } },
+        "p2": { "type": "step", "settings": { "number": "02", "title": "Check the details", "body": "Review price, variants, dimensions, and shipping notes before adding to cart.", "tag": "Compare" } },
+        "p3": { "type": "step", "settings": { "number": "03", "title": "Set the mood", "body": "Unbox, place, and tune the glow for a warmer desk, shelf, bedside, or hallway.", "tag": "Enjoy" } }
       },
       "block_order": ["p1", "p2", "p3"],
       "settings": {
         "index_number": "07",
-        "index_label": "Craft",
-        "heading": "<p>Slow craft, <em>built</em> to last.</p>",
-        "description": "Every fixture goes through three deliberate stages before it leaves our studio. No shortcuts, no fillers."
-      }
-    },
-    "testimonials": {
-      "type": "testimonials",
-      "blocks": {
-        "t1": { "type": "review", "settings": { "quote": "The most considered lamp I’ve ever owned. The light it casts genuinely changes how I use the room.", "name": "Alex M.", "role": "Architect, Berlin" } },
-        "t2": { "type": "review", "settings": { "quote": "It arrived perfectly packed, signed and numbered. Feels like an object you’d pass down, not replace.", "name": "Sofia R.", "role": "Interior designer, Milan" } },
-        "t3": { "type": "review", "settings": { "quote": "I have three from the night collection now. The light quality is unlike anything I’ve owned before.", "name": "Daniel K.", "role": "Photographer, NYC" } }
-      },
-      "block_order": ["t1", "t2", "t3"],
-      "settings": {
-        "index_number": "08",
-        "index_label": "Reviews",
-        "heading": "<p>Trusted by <em>thoughtful</em> homes.</p>",
-        "rating": "4.9 / 5 — 12K verified reviews"
+        "index_label": "How it works",
+        "heading": "<p>From browsing<br>to <em>glow.</em></p>",
+        "description": "A clear, product-first shopping flow built for confident decisions."
       }
     }
   },
@@ -132,7 +117,6 @@
     "bento_night",
     "split_light",
     "stats",
-    "process",
-    "testimonials"
+    "process"
   ]
 }

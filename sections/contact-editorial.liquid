@@ -1,3 +1,8 @@
+{%- liquid
+  assign general_email = section.settings.email | default: shop.email
+  assign press_email = section.settings.press_email | default: general_email
+-%}
+
 <section class="ed-contact ed-section">
   <header class="ed-contact__head ed-reveal-stagger">
     <div class="ed-eyebrow">{{ section.settings.eyebrow }}</div>
@@ -11,11 +16,11 @@
     <div class="ed-contact__info ed-reveal">
       <div class="ed-contact__info-block">
         <div class="ed-eyebrow">Studio</div>
-        <p>{{ section.settings.address | default: '12 Lighthouse Lane' | newline_to_br }}</p>
+        <p>{{ section.settings.address | default: 'Online studio' | newline_to_br }}</p>
       </div>
       <div class="ed-contact__info-block">
         <div class="ed-eyebrow">Email</div>
-        <p><a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a></p>
+        <p><a href="mailto:{{ general_email }}">{{ general_email }}</a></p>
       </div>
       <div class="ed-contact__info-block">
         <div class="ed-eyebrow">Hours</div>
@@ -23,7 +28,7 @@
       </div>
       <div class="ed-contact__info-block">
         <div class="ed-eyebrow">Press &amp; wholesale</div>
-        <p><a href="mailto:{{ section.settings.press_email }}">{{ section.settings.press_email }}</a></p>
+        <p><a href="mailto:{{ press_email }}">{{ press_email }}</a></p>
       </div>
     </div>
 
@@ -220,10 +225,10 @@
       "default": "Whether you are curious about a piece, need a custom finish, or want to stock our work - drop us a line."
     },
     { "type": "header", "content": "Studio info" },
-    { "type": "textarea", "id": "address", "label": "Address", "default": "12 Lighthouse Lane\nVisit by appointment" },
-    { "type": "text", "id": "email", "label": "General email", "default": "hello@luminaire.studio" },
+    { "type": "textarea", "id": "address", "label": "Address", "default": "Online studio\nSupport by email" },
+    { "type": "text", "id": "email", "label": "General email" },
     { "type": "textarea", "id": "hours", "label": "Hours", "default": "Mon-Fri / 10-18\nSat / By appointment" },
-    { "type": "text", "id": "press_email", "label": "Press / wholesale email", "default": "press@luminaire.studio" }
+    { "type": "text", "id": "press_email", "label": "Press / wholesale email" }
   ],
   "presets": [ { "name": "Contact - Editorial" } ],
   "enabled_on": { "templates": ["page"] }

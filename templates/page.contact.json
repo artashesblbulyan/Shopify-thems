@@ -6,10 +6,10 @@
         "eyebrow": "Contact",
         "heading": "<p>Say <em>hello</em>.</p>",
         "description": "Whether you are curious about a piece, need a custom finish, or want to stock our work - drop us a line.",
-        "address": "12 Lighthouse Lane\nVisit by appointment",
-        "email": "hello@luminaire.studio",
+        "address": "Online studio\nSupport by email",
+        "email": "",
         "hours": "Mon-Fri / 10-18\nSat / By appointment",
-        "press_email": "press@luminaire.studio"
+        "press_email": ""
       }
     }
   },
