@@ -38,13 +38,11 @@
               }}
             {%- endif -%}
             {%- if hover_image != blank -%}
-              {{ hover_image | image_url: width: 1000 | image_tag:
-                loading: 'lazy',
-                widths: '400, 600, 900, 1000',
-                sizes: '(max-width: 900px) 50vw, 33vw',
-                alt: hover_image.alt | default: product.title,
-                class: 'ed-bento__photo ed-bento__photo--hover'
-              }}
+              <span
+                class="ed-bento__hover-image"
+                style="--ed-hover-image: url('{{ hover_image | image_url: width: 1000 }}');"
+                aria-hidden="true"
+              ></span>
             {%- endif -%}
           </div>
           <div class="ed-bento__meta">
@@ -179,29 +177,37 @@
     opacity: 1;
     visibility: visible;
     transform: scale(1);
-    z-index: 1;
+    z-index: 0;
   }
-  .ed-bento__photo--hover {
-    opacity: 0 !important;
+  .ed-bento__hover-image {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: block;
+    background-image: var(--ed-hover-image);
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
     visibility: hidden;
     transform: scale(1.035);
-    z-index: 0;
+    filter: brightness(0.85) saturate(0.95);
+    transition: opacity 0.42s var(--ed-ease), visibility 0.42s var(--ed-ease), transform 0.7s var(--ed-ease), filter 0.4s var(--ed-ease);
+    pointer-events: none;
   }
   .ed-bento__card:not(.ed-has-hover-image):hover .ed-bento__photo {
     transform: scale(1.07);
     filter: brightness(1) saturate(1.05);
   }
   .ed-bento__card.ed-has-hover-image:hover .ed-bento__photo--primary {
-    opacity: 0 !important;
-    visibility: hidden;
+    opacity: 1 !important;
+    visibility: visible;
     transform: scale(1.02);
     z-index: 0;
   }
-  .ed-bento__card.ed-has-hover-image:hover .ed-bento__photo--hover {
-    opacity: 1 !important;
+  .ed-bento__card.ed-has-hover-image:hover .ed-bento__hover-image {
+    opacity: 1;
     visibility: visible;
     transform: scale(1.08);
-    z-index: 1;
     filter: brightness(1) saturate(1.05);
   }
   html[data-ed-mode="day"] .ed-bento__img {
@@ -210,6 +216,9 @@
       linear-gradient(160deg, #b8aea0, #d4cfc4);
   }
   html[data-ed-mode="day"] .ed-bento__photo {
+    filter: brightness(1) saturate(1);
+  }
+  html[data-ed-mode="day"] .ed-bento__hover-image {
     filter: brightness(1) saturate(1);
   }
 

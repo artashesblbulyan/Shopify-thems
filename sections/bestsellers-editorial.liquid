@@ -49,13 +49,11 @@
               }}
             {%- endif -%}
             {%- if hover_image != blank -%}
-              {{ hover_image | image_url: width: 900 | image_tag:
-                loading: 'lazy',
-                widths: '360, 540, 720, 900',
-                sizes: '(max-width: 720px) 50vw, 25vw',
-                alt: hover_image.alt | default: product.title,
-                class: 'ed-bestsellers__photo ed-bestsellers__photo--hover'
-              }}
+              <span
+                class="ed-bestsellers__hover-image"
+                style="--ed-hover-image: url('{{ hover_image | image_url: width: 900 }}');"
+                aria-hidden="true"
+              ></span>
             {%- endif -%}
             <span class="ed-bestsellers__idx">{{ idx }}</span>
             {%- if product.compare_at_price > product.price -%}
@@ -184,14 +182,22 @@
     opacity: 1;
     visibility: visible;
     transform: scale(1);
-    z-index: 1;
+    z-index: 0;
   }
 
-  .ed-bestsellers__photo--hover {
-    opacity: 0 !important;
+  .ed-bestsellers__hover-image {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: block;
+    background-image: var(--ed-hover-image);
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
     visibility: hidden;
     transform: scale(1.035);
-    z-index: 0;
+    transition: opacity 0.42s var(--ed-ease), visibility 0.42s var(--ed-ease), transform 0.72s var(--ed-ease);
+    pointer-events: none;
   }
 
   .ed-bestsellers__card:not(.ed-has-hover-image):hover .ed-bestsellers__photo {
@@ -199,17 +205,16 @@
   }
 
   .ed-bestsellers__card.ed-has-hover-image:hover .ed-bestsellers__photo--primary {
-    opacity: 0 !important;
-    visibility: hidden;
-    transform: scale(1.015);
+    opacity: 1 !important;
+    visibility: visible;
+    transform: scale(1.02);
     z-index: 0;
   }
 
-  .ed-bestsellers__card.ed-has-hover-image:hover .ed-bestsellers__photo--hover {
-    opacity: 1 !important;
+  .ed-bestsellers__card.ed-has-hover-image:hover .ed-bestsellers__hover-image {
+    opacity: 1;
     visibility: visible;
     transform: scale(1.055);
-    z-index: 1;
   }
 
   .ed-bestsellers__idx,
