@@ -1,0 +1,301 @@
+{%- liquid
+  assign year = 'now' | date: '%Y'
+-%}
+
+<footer class="ed-footer ed-section">
+  <div class="ed-footer__cta ed-reveal-stagger">
+    <h2 class="ed-display ed-footer__cta-title">{{ section.settings.cta_heading }}</h2>
+    <div class="ed-footer__cta-actions">
+      {%- if section.settings.cta_primary_label != blank -%}
+        <a class="ed-btn ed-btn--solid" href="{{ section.settings.cta_primary_link | default: '#' }}">
+          {{ section.settings.cta_primary_label }}
+          <span class="ed-btn__arrow" aria-hidden="true">→</span>
+        </a>
+      {%- endif -%}
+      {%- if section.settings.cta_secondary_label != blank -%}
+        <a class="ed-btn ed-btn--ghost" href="{{ section.settings.cta_secondary_link | default: '#' }}">
+          {{ section.settings.cta_secondary_label }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="ed-footer__grid ed-reveal-stagger">
+    <div class="ed-footer__col ed-footer__brand">
+      <a class="ed-footer__logo" href="{{ routes.root_url }}">
+        {{ section.settings.logo_text | default: shop.name }}
+      </a>
+      <p class="ed-footer__tagline">{{ section.settings.tagline }}</p>
+      <form
+        class="ed-footer__subscribe"
+        method="post"
+        action="/contact#newsletter"
+        accept-charset="UTF-8"
+      >
+        <input type="hidden" name="form_type" value="customer">
+        <input type="hidden" name="utf8" value="✓">
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <input
+          type="email"
+          name="contact[email]"
+          placeholder="your@email.com"
+          aria-label="Email"
+          required
+        >
+        <button type="submit">Join <span aria-hidden="true">→</span></button>
+      </form>
+    </div>
+
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'menu_column' -%}
+          <div class="ed-footer__col" {{ block.shopify_attributes }}>
+            <h4 class="ed-footer__col-title">{{ block.settings.title }}</h4>
+            <ul class="ed-footer__col-list">
+              {%- for link in linklists[block.settings.menu].links -%}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- when 'social' -%}
+          <div class="ed-footer__col" {{ block.shopify_attributes }}>
+            <h4 class="ed-footer__col-title">{{ block.settings.title }}</h4>
+            <ul class="ed-footer__col-list">
+              {%- if block.settings.instagram != blank -%}
+                <li><a href="{{ block.settings.instagram }}" target="_blank" rel="noopener">Instagram</a></li>
+              {%- endif -%}
+              {%- if block.settings.pinterest != blank -%}
+                <li><a href="{{ block.settings.pinterest }}" target="_blank" rel="noopener">Pinterest</a></li>
+              {%- endif -%}
+              {%- if block.settings.tiktok != blank -%}
+                <li><a href="{{ block.settings.tiktok }}" target="_blank" rel="noopener">TikTok</a></li>
+              {%- endif -%}
+              {%- if block.settings.youtube != blank -%}
+                <li><a href="{{ block.settings.youtube }}" target="_blank" rel="noopener">YouTube</a></li>
+              {%- endif -%}
+            </ul>
+          </div>
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+
+  <div class="ed-footer__meta">
+    <span>© {{ year }} {{ shop.name }} · All rights reserved</span>
+    <span class="ed-footer__meta-links">
+      <a href="/policies/privacy-policy">Privacy</a>
+      <a href="/policies/terms-of-service">Terms</a>
+      <a href="/policies/refund-policy">Refunds</a>
+    </span>
+  </div>
+</footer>
+
+{% stylesheet %}
+  .ed-footer {
+    padding: 100px 32px 32px;
+    background: var(--ed-bg);
+    color: var(--ed-fg);
+    border-top: 1px solid var(--ed-line);
+  }
+  .ed-footer__cta {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 40px;
+    align-items: end;
+    margin-bottom: 80px;
+    padding-bottom: 80px;
+    border-bottom: 1px solid var(--ed-line);
+  }
+  .ed-footer__cta-title {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    font-size: clamp(56px, 11vw, 180px);
+    line-height: 0.88;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+  .ed-footer__cta-title em { font-style: italic; }
+  .ed-footer__cta-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .ed-footer__grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1.4fr;
+    gap: 48px;
+    margin-bottom: 64px;
+  }
+  .ed-footer__col-title {
+    font-family: var(--ed-font-body);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ed-muted);
+    margin: 0 0 16px;
+    font-weight: 500;
+  }
+  .ed-footer__col-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-family: var(--ed-font-body);
+    font-size: 14px;
+  }
+  .ed-footer__col-list a {
+    color: var(--ed-fg);
+    text-decoration: none;
+    transition: opacity 0.2s var(--ed-ease);
+  }
+  .ed-footer__col-list a:hover { opacity: 0.6; }
+
+  .ed-footer__brand {
+    max-width: 28em;
+  }
+  .ed-footer__logo {
+    font-family: var(--ed-font-display);
+    font-style: italic;
+    font-size: 32px;
+    letter-spacing: -0.03em;
+    color: var(--ed-fg);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 14px;
+  }
+  .ed-footer__tagline {
+    font-family: var(--ed-font-body);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ed-muted);
+    margin: 0 0 22px;
+    max-width: 22em;
+  }
+  .ed-footer__subscribe {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--ed-line);
+    border-radius: var(--ed-pill);
+    padding: 6px 6px 6px 16px;
+    transition: border-color 0.25s var(--ed-ease);
+    max-width: 360px;
+  }
+  .ed-footer__subscribe:focus-within {
+    border-color: var(--ed-fg);
+  }
+  .ed-footer__subscribe input[type="email"] {
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    font-size: 13px;
+    padding: 10px 0;
+    flex: 1;
+    outline: none;
+    min-width: 0;
+  }
+  .ed-footer__subscribe input[type="email"]::placeholder {
+    color: var(--ed-muted);
+  }
+  .ed-footer__subscribe button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: var(--ed-pill);
+    background: var(--ed-fg);
+    color: var(--ed-bg);
+    padding: 9px 16px;
+    font-family: var(--ed-font-body);
+    font-size: 12px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.25s var(--ed-ease);
+  }
+  .ed-footer__subscribe button:hover { background: var(--ed-accent); color: #0a0a0a; }
+
+  .ed-footer__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 28px;
+    border-top: 1px solid var(--ed-line);
+    font-family: var(--ed-font-body);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ed-muted);
+  }
+  .ed-footer__meta-links { display: inline-flex; gap: 20px; }
+  .ed-footer__meta a {
+    color: var(--ed-muted);
+    text-decoration: none;
+    transition: color 0.2s var(--ed-ease);
+  }
+  .ed-footer__meta a:hover { color: var(--ed-fg); }
+
+  @media (max-width: 1100px) {
+    .ed-footer__grid { grid-template-columns: 1fr 1fr; gap: 36px; }
+    .ed-footer__brand { grid-column: 1 / -1; }
+    .ed-footer__cta { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 720px) {
+    .ed-footer { padding: 60px 20px 24px; }
+    .ed-footer__cta { margin-bottom: 48px; padding-bottom: 48px; gap: 24px; }
+    .ed-footer__grid { grid-template-columns: 1fr; gap: 32px; }
+    .ed-footer__meta { flex-direction: column; gap: 12px; align-items: flex-start; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Footer — Editorial",
+  "tag": "footer",
+  "class": "section-ed-footer",
+  "settings": [
+    { "type": "header", "content": "CTA" },
+    {
+      "type": "richtext",
+      "id": "cta_heading",
+      "label": "CTA heading",
+      "default": "<p><em>Bring it</em><br>home.</p>"
+    },
+    { "type": "text", "id": "cta_primary_label", "label": "Primary CTA label", "default": "Shop now" },
+    { "type": "url", "id": "cta_primary_link", "label": "Primary CTA link" },
+    { "type": "text", "id": "cta_secondary_label", "label": "Secondary CTA label", "default": "Contact" },
+    { "type": "url", "id": "cta_secondary_link", "label": "Secondary CTA link" },
+    { "type": "header", "content": "Brand" },
+    { "type": "text", "id": "logo_text", "label": "Logo text", "default": "Luminaire" },
+    { "type": "textarea", "id": "tagline", "label": "Tagline", "default": "Sculptural lamps for spaces that matter. Hand-finished, considered, made to last." }
+  ],
+  "blocks": [
+    {
+      "type": "menu_column",
+      "name": "Menu column",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Shop" },
+        { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" }
+      ]
+    },
+    {
+      "type": "social",
+      "name": "Social",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Follow" },
+        { "type": "url", "id": "instagram", "label": "Instagram URL" },
+        { "type": "url", "id": "pinterest", "label": "Pinterest URL" },
+        { "type": "url", "id": "tiktok", "label": "TikTok URL" },
+        { "type": "url", "id": "youtube", "label": "YouTube URL" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer — Editorial",
+      "blocks": [
+        { "type": "menu_column", "settings": { "title": "Shop" } },
+        { "type": "menu_column", "settings": { "title": "Help" } },
+        { "type": "menu_column", "settings": { "title": "Studio" } },
+        { "type": "social", "settings": { "title": "Follow" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

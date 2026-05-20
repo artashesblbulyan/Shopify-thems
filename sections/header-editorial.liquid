@@ -1,0 +1,395 @@
+{%- liquid
+  assign cart_count = cart.item_count
+-%}
+
+<header class="ed-header" id="ed-header-{{ section.id }}" data-ed-header>
+  {%- if section.settings.show_announcement and section.settings.announcement_text != blank -%}
+    <div class="ed-header__announce">
+      <span class="ed-header__announce-dot"></span>
+      <span>{{ section.settings.announcement_text }}</span>
+      <span class="ed-header__announce-dot"></span>
+    </div>
+  {%- endif -%}
+
+  <div class="ed-header__bar">
+    <div class="ed-header__left">
+      <button class="ed-header__menu-btn" type="button" aria-label="Open menu" data-ed-menu-open>
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="ed-header__nav" aria-label="Primary">
+        {%- assign linklist_handle = section.settings.menu | default: 'main-menu' -%}
+        {%- for link in linklists[linklist_handle].links -%}
+          <a class="ed-header__nav-link" href="{{ link.url }}">{{ link.title }}</a>
+        {%- endfor -%}
+      </nav>
+    </div>
+
+    <a class="ed-header__logo" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+      {%- if section.settings.logo_text != blank -%}
+        {{ section.settings.logo_text }}
+      {%- else -%}
+        {{ shop.name }}
+      {%- endif -%}
+    </a>
+
+    <div class="ed-header__right">
+      <button class="ed-mode-toggle ed-header__mode" type="button" data-ed-mode-toggle aria-label="Toggle day / night mode">
+        <span data-ed-mode-label>Night</span>
+        <span class="ed-mode-toggle__dot" aria-hidden="true"></span>
+      </button>
+      {%- if section.settings.show_search -%}
+        <a class="ed-header__icon" href="{{ routes.search_url }}" aria-label="Search">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="8" cy="8" r="5.5"/><path d="M16 16l-4-4"/>
+          </svg>
+        </a>
+      {%- endif -%}
+      {%- if shop.customer_accounts_enabled -%}
+        <a class="ed-header__icon" href="{{ routes.account_url }}" aria-label="Account">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="9" cy="6" r="3"/><path d="M3 16c0-3 2.7-5 6-5s6 2 6 5"/>
+          </svg>
+        </a>
+      {%- endif -%}
+      <a class="ed-header__cart" href="{{ routes.cart_url }}" aria-label="Cart">
+        <span>Cart</span>
+        <span class="ed-header__cart-count" data-ed-cart-count>{{ cart_count }}</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<aside class="ed-mobile-menu" data-ed-menu role="dialog" aria-modal="true" aria-label="Menu">
+  <div class="ed-mobile-menu__overlay" data-ed-menu-close></div>
+  <div class="ed-mobile-menu__panel">
+    <div class="ed-mobile-menu__head">
+      <a href="{{ routes.root_url }}" class="ed-mobile-menu__logo">
+        {{ section.settings.logo_text | default: shop.name }}
+      </a>
+      <button class="ed-mobile-menu__close" type="button" aria-label="Close menu" data-ed-menu-close>×</button>
+    </div>
+    <nav class="ed-mobile-menu__nav" aria-label="Mobile">
+      {%- assign linklist_handle = section.settings.menu | default: 'main-menu' -%}
+      {%- for link in linklists[linklist_handle].links -%}
+        <a class="ed-mobile-menu__link" href="{{ link.url }}">
+          <span class="ed-mobile-menu__num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+          <span>{{ link.title }}</span>
+          <span class="ed-mobile-menu__arrow">→</span>
+        </a>
+      {%- endfor -%}
+    </nav>
+    <div class="ed-mobile-menu__foot">
+      <a href="{{ routes.account_url }}">Account</a>
+      <a href="{{ routes.cart_url }}">Cart ({{ cart_count }})</a>
+    </div>
+  </div>
+</aside>
+
+{% stylesheet %}
+  .ed-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--ed-bg) 78%, transparent);
+    backdrop-filter: blur(var(--ed-blur)) saturate(140%);
+    -webkit-backdrop-filter: blur(var(--ed-blur)) saturate(140%);
+    border-bottom: 1px solid var(--ed-line);
+    color: var(--ed-fg);
+    font-family: var(--ed-font-body);
+  }
+  .ed-header__announce {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 11px 24px;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ed-fg);
+    border-bottom: 1px solid var(--ed-line);
+  }
+  .ed-header__announce-dot {
+    width: 4px;
+    height: 4px;
+    background: var(--ed-accent);
+    border-radius: 50%;
+  }
+  .ed-header__bar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 18px 32px;
+    gap: 24px;
+  }
+  .ed-header__left { display: flex; align-items: center; gap: 28px; }
+  .ed-header__right { display: flex; align-items: center; gap: 14px; justify-content: flex-end; }
+
+  .ed-header__nav { display: flex; gap: 28px; }
+  .ed-header__nav-link {
+    position: relative;
+    font-size: 13px;
+    color: var(--ed-fg);
+    text-decoration: none;
+    padding: 6px 0;
+    letter-spacing: 0.02em;
+  }
+  .ed-header__nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 100%;
+    bottom: 0;
+    height: 1px;
+    background: currentColor;
+    transition: right 0.4s var(--ed-ease);
+  }
+  .ed-header__nav-link:hover::after { right: 0; }
+
+  .ed-header__logo {
+    font-family: var(--ed-font-display);
+    font-style: italic;
+    font-size: 28px;
+    letter-spacing: -0.03em;
+    color: var(--ed-fg);
+    text-decoration: none;
+    line-height: 1;
+    text-align: center;
+  }
+
+  .ed-header__mode {
+    /* sit nicely in the header bar */
+    margin: 0;
+  }
+  .ed-header__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: var(--ed-fg);
+    text-decoration: none;
+    transition: background 0.25s var(--ed-ease), transform 0.25s var(--ed-ease);
+    border: 1px solid var(--ed-line);
+  }
+  .ed-header__icon:hover {
+    background: color-mix(in srgb, var(--ed-fg) 8%, transparent);
+    transform: translateY(-1px);
+  }
+  .ed-header__cart {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border: 1px solid var(--ed-line);
+    border-radius: var(--ed-pill);
+    color: var(--ed-fg);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    transition: border-color 0.25s var(--ed-ease), background 0.25s var(--ed-ease);
+  }
+  .ed-header__cart:hover {
+    border-color: var(--ed-fg);
+    background: color-mix(in srgb, var(--ed-fg) 6%, transparent);
+  }
+  .ed-header__cart-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+    background: var(--ed-accent);
+    color: #0a0a0a;
+    font-size: 10px;
+    font-weight: 600;
+    font-feature-settings: "tnum";
+  }
+
+  /* Mobile menu button */
+  .ed-header__menu-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--ed-line);
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    align-items: center;
+  }
+  .ed-header__menu-btn span {
+    display: block;
+    width: 14px;
+    height: 1px;
+    background: var(--ed-fg);
+  }
+
+  /* Mobile menu drawer */
+  .ed-mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .ed-mobile-menu[data-ed-open] {
+    visibility: visible;
+    pointer-events: auto;
+  }
+  .ed-mobile-menu__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.3s var(--ed-ease);
+  }
+  .ed-mobile-menu[data-ed-open] .ed-mobile-menu__overlay { opacity: 1; }
+  .ed-mobile-menu__panel {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: min(420px, 92vw);
+    background: var(--ed-bg);
+    color: var(--ed-fg);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.45s var(--ed-ease);
+    border-right: 1px solid var(--ed-line);
+  }
+  .ed-mobile-menu[data-ed-open] .ed-mobile-menu__panel { transform: translateX(0); }
+  .ed-mobile-menu__head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--ed-line);
+  }
+  .ed-mobile-menu__logo {
+    font-family: var(--ed-font-display);
+    font-style: italic;
+    font-size: 28px;
+    letter-spacing: -0.03em;
+    color: var(--ed-fg);
+    text-decoration: none;
+  }
+  .ed-mobile-menu__close {
+    background: transparent;
+    border: none;
+    color: var(--ed-fg);
+    font-size: 32px;
+    line-height: 1;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+  }
+  .ed-mobile-menu__nav {
+    flex: 1;
+    padding: 32px 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .ed-mobile-menu__link {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--ed-line);
+    color: var(--ed-fg);
+    text-decoration: none;
+    font-family: var(--ed-font-display);
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    transition: padding 0.3s var(--ed-ease);
+  }
+  .ed-mobile-menu__link:hover {
+    padding-left: 8px;
+  }
+  .ed-mobile-menu__num {
+    font-family: var(--ed-font-body);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--ed-muted);
+    text-transform: uppercase;
+    font-feature-settings: "tnum";
+    min-width: 24px;
+  }
+  .ed-mobile-menu__arrow {
+    margin-left: auto;
+    font-size: 18px;
+    color: var(--ed-muted);
+  }
+  .ed-mobile-menu__foot {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 24px;
+    border-top: 1px solid var(--ed-line);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .ed-mobile-menu__foot a {
+    color: var(--ed-fg);
+    text-decoration: none;
+  }
+
+  @media (max-width: 900px) {
+    .ed-header__nav { display: none; }
+    .ed-header__menu-btn { display: inline-flex; }
+    .ed-header__bar { padding: 14px 20px; }
+    .ed-header__logo { font-size: 24px; }
+    .ed-header__mode span:first-child { display: none; }
+    .ed-header__mode { padding: 6px; }
+    .ed-header__icon { width: 32px; height: 32px; }
+  }
+{% endstylesheet %}
+
+<script>
+  (function () {
+    var menu = document.querySelector('[data-ed-menu]');
+    if (!menu) return;
+    document.addEventListener('click', function (e) {
+      if (e.target.closest('[data-ed-menu-open]')) {
+        menu.setAttribute('data-ed-open', '');
+        document.documentElement.style.overflow = 'hidden';
+      } else if (e.target.closest('[data-ed-menu-close]')) {
+        menu.removeAttribute('data-ed-open');
+        document.documentElement.style.overflow = '';
+      }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && menu.hasAttribute('data-ed-open')) {
+        menu.removeAttribute('data-ed-open');
+        document.documentElement.style.overflow = '';
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Header — Editorial",
+  "tag": "section",
+  "class": "section-ed-header",
+  "settings": [
+    { "type": "header", "content": "Branding" },
+    { "type": "text", "id": "logo_text", "label": "Logo text", "default": "Luminaire" },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
+    { "type": "checkbox", "id": "show_search", "label": "Show search icon", "default": true },
+    { "type": "header", "content": "Announcement" },
+    { "type": "checkbox", "id": "show_announcement", "label": "Show announcement", "default": true },
+    { "type": "text", "id": "announcement_text", "label": "Announcement text", "default": "Free shipping over $75 · 30-day returns · New: Sculptural collection" }
+  ],
+  "presets": [
+    { "name": "Header — Editorial" }
+  ]
+}
+{% endschema %}
