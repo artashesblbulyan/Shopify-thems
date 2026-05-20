@@ -41,9 +41,9 @@
       "type": "bento-grid",
       "settings": {
         "index_number": "03",
-        "index_label": "Pendant lamps",
-        "heading": "<p>Pendant lamps<br><em>with presence.</em></p>",
-        "description": "Sculptural ceiling lights for dining tables, hallways, and rooms that need a clear focal point.",
+        "index_label": "Ceiling edit",
+        "heading": "<p>Statement pendants,<br><em>made softer.</em></p>",
+        "description": "Ceiling lights with clean shapes, warm finishes, and enough presence to anchor the room.",
         "view_all_label": "Shop pendants",
         "view_all_link": "shopify://collections/pendant-lamp",
         "collection": "pendant-lamp"
@@ -53,15 +53,15 @@
       "type": "editorial-split",
       "settings": {
         "index_number": "04",
-        "index_label": "Mood",
-        "heading": "<p>Designed around<br><em>atmosphere.</em></p>",
-        "quote": "Choose the shape, scale, and glow that fits the room. A good lamp should feel useful in the day and calm at night.",
-        "cta_label": "Explore all",
+        "index_label": "Room mood",
+        "heading": "<p>Make the room<br><em>feel finished.</em></p>",
+        "quote": "Start with the feeling you want: focused, calm, warm, or sculptural. Then choose the shape and scale that lets the room breathe.",
+        "cta_label": "Explore lighting",
         "cta_link": "shopify://collections/all",
-        "meta_left": "Room-ready lighting",
+        "meta_left": "Warm room edits",
         "meta_right": "Curated online",
         "image": "shopify://shop_images/9.2.jpg",
-        "badge": "Soft glow",
+        "badge": "Mood maker",
         "reverse": false
       }
     },
@@ -69,9 +69,9 @@
       "type": "bento-grid",
       "settings": {
         "index_number": "05",
-        "index_label": "Night lamps",
-        "heading": "<p>Glow for<br><em>evenings.</em></p>",
-        "description": "Compact bedside and accent lights chosen for softer evenings, shelves, and quiet corners.",
+        "index_label": "Bedside glow",
+        "heading": "<p>Small lamps,<br><em>quiet impact.</em></p>",
+        "description": "Compact table lights for softer evenings, low shelves, bedside corners, and warm end-of-day routines.",
         "view_all_label": "Shop night lamps",
         "view_all_link": "shopify://collections/night-lamp",
         "collection": "night-lamp"
@@ -82,14 +82,14 @@
       "settings": {
         "index_number": "06",
         "index_label": "Details",
-        "heading": "<p>Clean forms,<br><em>warm light.</em></p>",
-        "quote": "A focused catalog makes choosing simpler: table lamps, night lights, pendants, and useful pieces for everyday rooms.",
-        "cta_label": "Shop bestsellers",
+        "heading": "<p>Easy to choose,<br><em>easy to live with.</em></p>",
+        "quote": "A tighter catalog keeps the decision simple: clear categories, useful details, and pieces that feel calm once they are home.",
+        "cta_label": "Shop favorites",
         "cta_link": "shopify://collections/all",
         "meta_left": "Simple checkout",
         "meta_right": "Support included",
         "image": "shopify://shop_images/10-1.jpg",
-        "badge": "New edit",
+        "badge": "Easy pick",
         "reverse": true
       }
     },
@@ -104,7 +104,7 @@
       "block_order": ["s1", "s2", "s3", "s4"],
       "settings": {
         "eyebrow": "07 / Service",
-        "heading": "<p>A smoother way<br>to buy <em>lighting.</em></p>"
+        "heading": "<p>Service that keeps<br><em>checkout simple.</em></p>"
       }
     },
     "process": {
@@ -118,8 +118,8 @@
       "settings": {
         "index_number": "08",
         "index_label": "How it works",
-        "heading": "<p>From browsing<br>to <em>glow.</em></p>",
-        "description": "A clear, product-first shopping flow built for confident decisions."
+        "heading": "<p>Choose, check,<br><em>set the mood.</em></p>",
+        "description": "A cleaner path from first look to final placement, built for quick scanning and confident decisions."
       }
     }
   },

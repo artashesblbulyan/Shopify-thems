@@ -28,10 +28,10 @@
       },
       "block_order": ["shop", "help", "studio", "social"],
       "settings": {
-        "cta_heading": "<p>Find your<br><em>next light.</em></p>",
+        "cta_heading": "<p>Ready for a<br><em>warmer room?</em></p>",
         "cta_primary_label": "Shop all",
         "cta_primary_link": "shopify://collections/all",
-        "cta_secondary_label": "Contact",
+        "cta_secondary_label": "Ask a question",
         "cta_secondary_link": "shopify://pages/contact",
         "logo_text": "",
         "tagline": "Design-led lighting for desks, shelves, bedside tables, and quiet corners."

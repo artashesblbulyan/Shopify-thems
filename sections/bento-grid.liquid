@@ -25,8 +25,7 @@
 
       {%- if collection != blank -%}
         <div class="ed-bento__summary" aria-label="Collection summary">
-          <span>{{ collection.title }}</span>
-          <span>{{ collection_count }} {{ collection_count | pluralize: 'piece', 'pieces' }}</span>
+          <span>{{ collection_count }} {{ collection_count | pluralize: 'piece', 'pieces' }} in this edit</span>
         </div>
       {%- endif -%}
 
@@ -44,15 +43,12 @@
       {%- for product in products -%}
         {%- liquid
           assign size_class = size_pattern[forloop.index0] | default: 'lg'
-          assign idx_num = forloop.index | prepend: '0' | slice: -2, 2
           assign hover_image = product.images[1]
           assign badge_text = blank
           if product.compare_at_price > product.price
             assign badge_text = 'Sale'
           elsif product.available == false
             assign badge_text = 'Sold out'
-          elsif forloop.index <= 2
-            assign badge_text = 'New'
           endif
         -%}
         <a class="ed-bento__card ed-bento__card--{{ size_class }} ed-bento__card--v{{ forloop.index | modulo: 4 | plus: 1 }}{% if hover_image != blank %} ed-has-hover-image{% endif %}"
@@ -75,7 +71,6 @@
                 aria-hidden="true"
               ></span>
             {%- endif -%}
-            <span class="ed-bento__card-idx">{{ idx_num }}</span>
             {%- if badge_text != blank -%}
               <span class="ed-bento__badge">{{ badge_text }}</span>
             {%- endif -%}
