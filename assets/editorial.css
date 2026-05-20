@@ -1644,16 +1644,17 @@ html.ed-page-ready .ed-hero__visual {
 }
 
 .ed-bento {
-  padding-top: clamp(44px, 5vw, 68px) !important;
-  padding-bottom: clamp(58px, 6vw, 84px) !important;
+  padding-top: 42px !important;
+  padding-bottom: 64px !important;
   border-top: 1px solid var(--ed-line);
 }
 
 .ed-bento__head {
   grid-template-columns: minmax(0, 1fr) auto !important;
   align-items: center !important;
-  gap: 18px !important;
-  margin-bottom: 18px !important;
+  gap: 16px !important;
+  margin-bottom: 20px !important;
+  padding: 0 !important;
 }
 
 .ed-bento__head .ed-eyebrow {
@@ -1662,10 +1663,10 @@ html.ed-page-ready .ed-hero__visual {
 
 .ed-bento__title {
   max-width: none !important;
-  font-size: clamp(28px, 3.2vw, 44px) !important;
+  font-size: clamp(26px, 2.8vw, 38px) !important;
   line-height: 1 !important;
-  margin-top: 8px !important;
-  letter-spacing: -0.05em !important;
+  margin-top: 6px !important;
+  letter-spacing: -0.045em !important;
 }
 
 .ed-bento__aside {
@@ -1690,8 +1691,8 @@ html.ed-page-ready .ed-hero__visual {
 }
 
 .ed-bento__link.ed-btn {
-  min-height: 40px;
-  padding: 10px 14px !important;
+  min-height: 38px;
+  padding: 9px 13px !important;
   border-color: var(--ed-line-strong);
 }
 
@@ -1707,8 +1708,8 @@ html.ed-page-ready .ed-hero__visual {
 .ed-bento__img {
   border-color: color-mix(in srgb, var(--ed-line) 75%, transparent) !important;
   background:
-    linear-gradient(145deg, color-mix(in srgb, var(--ed-blue) 18%, transparent), transparent 48%),
-    color-mix(in srgb, var(--ed-card) 88%, white 12%) !important;
+    linear-gradient(145deg, color-mix(in srgb, var(--ed-accent) 10%, transparent), transparent 48%),
+    color-mix(in srgb, var(--ed-card) 72%, var(--ed-bg) 28%) !important;
 }
 
 .ed-bento__meta {
@@ -1749,40 +1750,49 @@ html.ed-page-ready .ed-hero__visual {
 .ed-split--reverse {
   min-height: auto !important;
   margin: 0 !important;
-  padding: clamp(64px, 8vw, 104px) 28px !important;
-  display: grid !important;
-  grid-template-columns: minmax(0, 0.78fr) minmax(0, 1fr) !important;
-  gap: 14px !important;
+  padding: 0 28px 72px !important;
+  display: block !important;
   border: 0 !important;
-  border-top: 1px solid var(--ed-line) !important;
+  border-top: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
-  overflow: visible !important;
+  overflow: hidden !important;
 }
 
 .ed-split--reverse {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 0.78fr) !important;
+  display: block !important;
 }
 
 .ed-split__left,
 .ed-split--reverse .ed-split__left {
-  order: initial !important;
-  min-height: min(64vh, 580px);
-  padding: clamp(34px, 5vw, 58px) !important;
+  position: relative;
+  z-index: 2;
+  width: min(620px, calc(100% - 36px));
+  min-height: auto !important;
+  margin: 0 0 -120px 28px;
+  padding: clamp(26px, 4vw, 42px) !important;
   border: 1px solid var(--ed-line) !important;
   border-radius: var(--ed-radius-card) !important;
   background:
-    linear-gradient(135deg, color-mix(in srgb, var(--ed-clay) 8%, transparent), transparent 42%),
-    color-mix(in srgb, var(--ed-card) 86%, transparent) !important;
+    linear-gradient(135deg, color-mix(in srgb, var(--ed-accent) 12%, transparent), transparent 48%),
+    color-mix(in srgb, var(--ed-bg) 92%, transparent) !important;
+  backdrop-filter: blur(14px);
   display: flex !important;
   justify-content: space-between !important;
+  gap: 22px !important;
   box-shadow: none !important;
+}
+
+.ed-split--reverse .ed-split__left {
+  margin-left: auto;
+  margin-right: 28px;
 }
 
 .ed-split__right,
 .ed-split--reverse .ed-split__right {
-  order: initial !important;
-  min-height: min(64vh, 580px) !important;
+  position: relative;
+  z-index: 1;
+  min-height: clamp(360px, 44vw, 560px) !important;
   border: 1px solid var(--ed-line) !important;
   border-radius: var(--ed-radius-card) !important;
   overflow: hidden !important;
@@ -1790,31 +1800,31 @@ html.ed-page-ready .ed-hero__visual {
 }
 
 .ed-split--reverse .ed-split__left {
-  grid-column: 2;
-  grid-row: 1;
+  grid-column: auto;
+  grid-row: auto;
 }
 
 .ed-split--reverse .ed-split__right {
-  grid-column: 1;
-  grid-row: 1;
+  grid-column: auto;
+  grid-row: auto;
 }
 
 .ed-split__title {
-  max-width: 10.5ch;
-  font-size: clamp(44px, 5.4vw, 86px) !important;
-  line-height: 0.92 !important;
+  max-width: 12ch;
+  font-size: clamp(34px, 4.2vw, 62px) !important;
+  line-height: 0.96 !important;
 }
 
 .ed-split__quote {
-  max-width: 34em !important;
-  font-size: 15px !important;
-  line-height: 1.65 !important;
+  max-width: 32em !important;
+  font-size: 14px !important;
+  line-height: 1.58 !important;
 }
 
 .ed-split__meta {
   gap: 10px !important;
   flex-wrap: wrap !important;
-  padding-top: 18px !important;
+  padding-top: 14px !important;
 }
 
 .ed-split__meta span {
