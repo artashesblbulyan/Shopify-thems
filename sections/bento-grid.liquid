@@ -2,11 +2,6 @@
   assign collection = collections[section.settings.collection]
   assign products = collection.products | slice: 0, 6
   assign size_pattern = 'tall,wide,sq,lg,lg,lg' | split: ','
-  assign collection_count = collection.products_count | default: products.size
-  assign section_desc = section.settings.description | strip
-  if section_desc == blank and collection.description != blank
-    assign section_desc = collection.description | strip_html | truncatewords: 24
-  endif
 -%}
 
 <section class="ed-bento ed-section" id="ed-bento-{{ section.id }}">
@@ -17,18 +12,6 @@
     </div>
 
     <div class="ed-bento__aside">
-      {%- if section_desc != blank -%}
-        <p class="ed-bento__desc">{{ section_desc }}</p>
-      {%- elsif collection != blank -%}
-        <p class="ed-bento__desc">A focused edit from {{ collection.title }} with room-ready shapes and warm everyday glow.</p>
-      {%- endif -%}
-
-      {%- if collection != blank -%}
-        <div class="ed-bento__summary" aria-label="Collection summary">
-          <span>{{ collection_count }} {{ collection_count | pluralize: 'piece', 'pieces' }} in this edit</span>
-        </div>
-      {%- endif -%}
-
       {%- if section.settings.view_all_label != blank -%}
         <a class="ed-btn ed-btn--ghost ed-bento__link" href="{{ section.settings.view_all_link | default: collection.url }}">
           {{ section.settings.view_all_label }}

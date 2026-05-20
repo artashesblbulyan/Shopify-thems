@@ -41,9 +41,9 @@
       "type": "bento-grid",
       "settings": {
         "index_number": "03",
-        "index_label": "Ceiling edit",
-        "heading": "<p>Statement pendants,<br><em>made softer.</em></p>",
-        "description": "Ceiling lights with clean shapes, warm finishes, and enough presence to anchor the room.",
+        "index_label": "Pendant lamps",
+        "heading": "<p>Pendant lamps</p>",
+        "description": "",
         "view_all_label": "Shop pendants",
         "view_all_link": "shopify://collections/pendant-lamp",
         "collection": "pendant-lamp"
@@ -69,9 +69,9 @@
       "type": "bento-grid",
       "settings": {
         "index_number": "05",
-        "index_label": "Bedside glow",
-        "heading": "<p>Small lamps,<br><em>quiet impact.</em></p>",
-        "description": "Compact table lights for softer evenings, low shelves, bedside corners, and warm end-of-day routines.",
+        "index_label": "Night lamps",
+        "heading": "<p>Night lamps</p>",
+        "description": "",
         "view_all_label": "Shop night lamps",
         "view_all_link": "shopify://collections/night-lamp",
         "collection": "night-lamp"
