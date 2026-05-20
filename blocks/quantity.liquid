@@ -1,6 +1,9 @@
 
 
-{% render 'quantity-selector', product: closest.product %}
+{% render 'quantity-selector',
+  product: closest.product,
+  shopify_attributes: block.shopify_attributes
+%}
 
 {% schema %}
 {

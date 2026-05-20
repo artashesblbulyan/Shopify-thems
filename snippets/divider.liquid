@@ -12,6 +12,7 @@
 
   @param {boolean} [full_width] - When `true`, the divider spans the full width of its container.
   @param {boolean} [attributes] - When `true`, render block.shopify_attributes on the divider container.
+  @param {string} [shopify_attributes] - Shopify theme editor attributes for the divider container.
 {%- enddoc -%}
 
 <div
@@ -21,7 +22,7 @@
     {% render 'spacing-style', settings: settings %}
   "
   {% if attributes %}
-    {{- block.shopify_attributes -}}
+    {{- shopify_attributes -}}
   {% endif %}
 >
   <span

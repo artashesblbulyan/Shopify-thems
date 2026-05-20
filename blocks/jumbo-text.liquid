@@ -1,6 +1,9 @@
 
 
-{% render 'jumbo-text' %}
+{% render 'jumbo-text',
+  block_settings: block.settings,
+  block_shopify_attributes: block.shopify_attributes
+%}
 
 {% schema %}
 {

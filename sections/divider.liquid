@@ -11,7 +11,13 @@
   class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }}"
   data-testid="divider-{{ section.id }}"
 >
-  {% render 'divider', id: section.id, settings: section.settings, attributes: true, full_width: full_width %}
+  {% render 'divider',
+    id: section.id,
+    settings: section.settings,
+    attributes: true,
+    full_width: full_width,
+    shopify_attributes: section.shopify_attributes
+  %}
 </div>
 
 {% schema %}

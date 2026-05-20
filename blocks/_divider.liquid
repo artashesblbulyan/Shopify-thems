@@ -1,6 +1,11 @@
 
 
-{% render 'divider', id: block.id, settings: block.settings, attributes: true %}
+{% render 'divider',
+  id: block.id,
+  settings: block.settings,
+  attributes: true,
+  shopify_attributes: block.shopify_attributes
+%}
 
 {% schema %}
 {

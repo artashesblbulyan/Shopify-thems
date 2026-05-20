@@ -2,6 +2,7 @@
   Renders the cart summary totals.
 
   @param {string} [accelerated_checkout_buttons_layout] - { 'vertical' } Forced layout of the additional checkout buttons, instead of relying on platform's layout.
+  @param {string} [section_id] - Section ID used by cart discount updates.
 {%- enddoc -%}
 
 <div class="cart__summary-totals">
@@ -139,7 +140,7 @@
           >
             <div id="cart-discount-disclosure">
               <cart-discount-component
-                data-section-id="{{ section.id }}"
+                data-section-id="{{ section_id }}"
               >
                 <div class="cart-discount__content">
                   <form

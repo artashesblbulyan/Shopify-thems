@@ -9,6 +9,7 @@
   @param {string} [class] - custom class for the quantity selector, optional
   @param {boolean} [can_update_quantity] - whether the quantity can be updated, defaults to true
   @param {number} [min] - override the minimum quantity (e.g., 0 for quick order list)
+  @param {string} [shopify_attributes] - Shopify theme editor attributes for product quantity blocks
 {%- enddoc -%}
 
 {% liquid
@@ -37,7 +38,7 @@
     class="quantity-selector{% if class %} {{ class }}{% endif %}"
     data-variant-id="{{ variant.id }}"
     {% if line_index == null %}
-      {{- block.shopify_attributes -}}
+      {{- shopify_attributes -}}
       ref="quantitySelector"
     {% else %}
       ref="quantitySelectors[]"

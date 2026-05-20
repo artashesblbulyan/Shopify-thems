@@ -2,14 +2,14 @@
   Renders text that stretches to fit the full width of its container.
 
   @param {string} [text] - The text to be rendered.
-  @param {object} [block_settings] - The block settings object, defaults to block.settings
+  @param {object} [block_settings] - The block settings object.
+  @param {string} [block_shopify_attributes] - Shopify theme editor attributes for the jumbo text element.
 
   @example
   {% render 'jumbo-text', text: block.settings.text %}
 {%- enddoc -%}
 
 {% liquid
-  assign block_settings = block_settings | default: block.settings
   assign shown_text = text | default: block_settings.text
   assign descenders = 'alphabetic'
   assign trim = 'trim-both'
@@ -58,7 +58,7 @@
     --text-trim: {{text_trim}};
   "
   data-cap-text="{{ cap_text }}"
-  {{ block.shopify_attributes }}
+  {{ block_shopify_attributes }}
 {% endcapture %}
 
 {% if text != blank %}
