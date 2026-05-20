@@ -1,0 +1,560 @@
+{% doc %}
+  @prompt
+    Create a bottom sticky section for my website.
+    
+    Requirements:
+    
+    Add a floating arrow button that scrolls the page to the top when clicked.
+    
+    Add a Contact Us button that opens the contact page.
+    
+    Add a Shop Now button that redirects to the store/products page.
+    
+    Add an About Us button that opens the about page.
+    
+    Design:
+    
+    Modern, clean, mobile-friendly
+    
+    Rounded buttons
+    
+    Smooth hover animations
+    
+    Visible but not blocking content
+    
+    Works on both desktop and mobile
+    
+    Make sure all buttons are responsive and smoothly animated.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-sticky-nav-{{ ai_gen_id }} {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    background-color: {{ block.settings.background_color }};
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, {{ block.settings.shadow_opacity | divided_by: 100.0 }});
+    padding: {{ block.settings.padding_vertical }}px {{ block.settings.padding_horizontal }}px;
+    transition: transform 0.3s ease;
+    display: block;
+  }
+
+  .ai-sticky-nav-{{ ai_gen_id }}.hidden {
+    transform: translateY(100%);
+  }
+
+  .ai-sticky-nav-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: {{ block.settings.button_gap }}px;
+  }
+
+  .ai-sticky-nav-button-{{ ai_gen_id }} {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: {{ block.settings.button_padding_vertical }}px {{ block.settings.button_padding_horizontal }}px;
+    background-color: {{ block.settings.button_background }};
+    color: {{ block.settings.button_text_color }};
+    border: {{ block.settings.button_border_width }}px solid {{ block.settings.button_border_color }};
+    border-radius: {{ block.settings.button_border_radius }}px;
+    text-decoration: none;
+    font-size: {{ block.settings.button_font_size }}px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .ai-sticky-nav-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_background }};
+    color: {{ block.settings.button_hover_text_color }};
+    border-color: {{ block.settings.button_hover_border_color }};
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .ai-sticky-nav-scroll-top-{{ ai_gen_id }} {
+    flex: 0 0 auto;
+    width: {{ block.settings.scroll_button_size }}px;
+    height: {{ block.settings.scroll_button_size }}px;
+    padding: 0;
+    background-color: {{ block.settings.scroll_button_background }};
+    color: {{ block.settings.scroll_button_icon_color }};
+    border: {{ block.settings.button_border_width }}px solid {{ block.settings.scroll_button_border_color }};
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .ai-sticky-nav-scroll-top-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.scroll_button_hover_background }};
+    color: {{ block.settings.scroll_button_hover_icon_color }};
+    border-color: {{ block.settings.scroll_button_hover_border_color }};
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .ai-sticky-nav-icon-{{ ai_gen_id }} {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .ai-sticky-nav-scroll-icon-{{ ai_gen_id }} {
+    width: 24px;
+    height: 24px;
+  }
+
+  .ai-sticky-nav-text-{{ ai_gen_id }} {
+    display: inline;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-sticky-nav-{{ ai_gen_id }} {
+      padding: {{ block.settings.padding_vertical | times: 0.8 }}px {{ block.settings.padding_horizontal | times: 0.8 }}px;
+    }
+
+    .ai-sticky-nav-container-{{ ai_gen_id }} {
+      gap: {{ block.settings.button_gap | times: 0.7 }}px;
+    }
+
+    .ai-sticky-nav-button-{{ ai_gen_id }} {
+      padding: {{ block.settings.button_padding_vertical | times: 0.8 }}px {{ block.settings.button_padding_horizontal | times: 0.6 }}px;
+      font-size: {{ block.settings.button_font_size | times: 0.9 }}px;
+    }
+
+    .ai-sticky-nav-text-{{ ai_gen_id }} {
+      {% if block.settings.hide_text_mobile %}
+        display: none;
+      {% endif %}
+    }
+
+    .ai-sticky-nav-scroll-top-{{ ai_gen_id }} {
+      width: {{ block.settings.scroll_button_size | times: 0.9 }}px;
+      height: {{ block.settings.scroll_button_size | times: 0.9 }}px;
+    }
+
+    .ai-sticky-nav-icon-{{ ai_gen_id }} {
+      width: 18px;
+      height: 18px;
+    }
+
+    .ai-sticky-nav-scroll-icon-{{ ai_gen_id }} {
+      width: 20px;
+      height: 20px;
+    }
+  }
+{% endstyle %}
+
+<sticky-bottom-nav-{{ ai_gen_id }} class="ai-sticky-nav-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-sticky-nav-container-{{ ai_gen_id }}">
+    {% if block.settings.show_about_button %}
+      <a href="{{ block.settings.about_link }}" class="ai-sticky-nav-button-{{ ai_gen_id }}">
+        <svg class="ai-sticky-nav-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <span class="ai-sticky-nav-text-{{ ai_gen_id }}">{{ block.settings.about_text }}</span>
+      </a>
+    {% endif %}
+
+    {% if block.settings.show_shop_button %}
+      <a href="{{ block.settings.shop_link }}" class="ai-sticky-nav-button-{{ ai_gen_id }}">
+        <svg class="ai-sticky-nav-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span class="ai-sticky-nav-text-{{ ai_gen_id }}">{{ block.settings.shop_text }}</span>
+      </a>
+    {% endif %}
+
+    {% if block.settings.show_contact_button %}
+      <a href="{{ block.settings.contact_link }}" class="ai-sticky-nav-button-{{ ai_gen_id }}">
+        <svg class="ai-sticky-nav-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <span class="ai-sticky-nav-text-{{ ai_gen_id }}">{{ block.settings.contact_text }}</span>
+      </a>
+    {% endif %}
+
+    {% if block.settings.show_scroll_button %}
+      <button class="ai-sticky-nav-scroll-top-{{ ai_gen_id }}" aria-label="Scroll to top">
+        <svg class="ai-sticky-nav-scroll-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="19" x2="12" y2="5"></line>
+          <polyline points="5 12 12 5 19 12"></polyline>
+        </svg>
+      </button>
+    {% endif %}
+  </div>
+</sticky-bottom-nav-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class StickyBottomNav{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.scrollButton = this.querySelector('.ai-sticky-nav-scroll-top-{{ ai_gen_id }}');
+        this.hideOnScroll = {{ block.settings.hide_on_scroll_down }};
+        this.lastScrollTop = 0;
+        this.scrollThreshold = 100;
+      }
+
+      connectedCallback() {
+        if (this.scrollButton) {
+          this.scrollButton.addEventListener('click', this.scrollToTop.bind(this));
+        }
+
+        if (this.hideOnScroll) {
+          window.addEventListener('scroll', this.handleScroll.bind(this));
+        }
+      }
+
+      disconnectedCallback() {
+        if (this.scrollButton) {
+          this.scrollButton.removeEventListener('click', this.scrollToTop.bind(this));
+        }
+
+        if (this.hideOnScroll) {
+          window.removeEventListener('scroll', this.handleScroll.bind(this));
+        }
+      }
+
+      scrollToTop() {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }
+
+      handleScroll() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        if (scrollTop > this.lastScrollTop && scrollTop > this.scrollThreshold) {
+          this.classList.add('hidden');
+        } else {
+          this.classList.remove('hidden');
+        }
+
+        this.lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+      }
+    }
+
+    customElements.define('sticky-bottom-nav-{{ ai_gen_id }}', StickyBottomNav{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Sticky bottom navigation",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 600,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "label": "Vertical padding",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 8,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "button_gap",
+      "label": "Button spacing",
+      "min": 4,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_on_scroll_down",
+      "label": "Hide when scrolling down",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "shadow_opacity",
+      "label": "Shadow opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "About us button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_about_button",
+      "label": "Show about button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "about_text",
+      "label": "Button text",
+      "default": "About Us"
+    },
+    {
+      "type": "url",
+      "id": "about_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Shop now button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shop_button",
+      "label": "Show shop button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "shop_text",
+      "label": "Button text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "shop_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Contact us button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_contact_button",
+      "label": "Show contact button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "contact_text",
+      "label": "Button text",
+      "default": "Contact Us"
+    },
+    {
+      "type": "url",
+      "id": "contact_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Scroll to top button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_button",
+      "label": "Show scroll button",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "scroll_button_size",
+      "label": "Button size",
+      "min": 40,
+      "max": 70,
+      "step": 2,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "color",
+      "id": "scroll_button_background",
+      "label": "Background color",
+      "default": "#c3cca6"
+    },
+    {
+      "type": "color",
+      "id": "scroll_button_icon_color",
+      "label": "Icon color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "scroll_button_border_color",
+      "label": "Border color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "scroll_button_hover_background",
+      "label": "Hover background color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "scroll_button_hover_icon_color",
+      "label": "Hover icon color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "scroll_button_hover_border_color",
+      "label": "Hover border color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Button style"
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "label": "Vertical padding",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 12,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "button_border_width",
+      "label": "Border width",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Border color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_background",
+      "label": "Hover background color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_border_color",
+      "label": "Hover border color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_text_mobile",
+      "label": "Hide button text on mobile",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sticky bottom navigation"
+    }
+  ]
+}
+{% endschema %}
