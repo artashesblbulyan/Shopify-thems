@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
@@ -45,7 +54,7 @@
         "heading": "<p>Pendant lamps</p>",
         "description": "",
         "view_all_label": "Shop pendants",
-        "view_all_link": "shopify://collections/pendant-lamp",
+        "view_all_link": "shopify://products/accordion-cube-table-lamp",
         "collection": "pendant-lamp"
       }
     },
@@ -96,12 +105,57 @@
     "stats": {
       "type": "stats-strip",
       "blocks": {
-        "s1": { "type": "stat", "settings": { "number": "01", "count_target": 0, "label": "Secure checkout", "sublabel": "Fast, familiar payment methods." } },
-        "s2": { "type": "stat", "settings": { "number": "02", "count_target": 0, "label": "Carefully packed", "sublabel": "Products ship protected and ready to place." } },
-        "s3": { "type": "stat", "settings": { "number": "03", "count_target": 0, "label": "Easy returns", "sublabel": "Clear return path if the fit is not right." } },
-        "s4": { "type": "stat", "settings": { "number": "04", "count_target": 0, "label": "Support included", "sublabel": "Questions before or after purchase are welcome." } }
+        "s1": {
+          "type": "stat",
+          "settings": {
+            "number": "01",
+            "count_target": 0,
+            "count_prefix": "",
+            "count_suffix": "",
+            "label": "Secure checkout",
+            "sublabel": "Fast, familiar payment methods."
+          }
+        },
+        "s2": {
+          "type": "stat",
+          "settings": {
+            "number": "02",
+            "count_target": 0,
+            "count_prefix": "",
+            "count_suffix": "",
+            "label": "Carefully packed",
+            "sublabel": "Products ship protected and ready to place."
+          }
+        },
+        "s3": {
+          "type": "stat",
+          "settings": {
+            "number": "03",
+            "count_target": 0,
+            "count_prefix": "",
+            "count_suffix": "",
+            "label": "Easy returns",
+            "sublabel": "Clear return path if the fit is not right."
+          }
+        },
+        "s4": {
+          "type": "stat",
+          "settings": {
+            "number": "04",
+            "count_target": 0,
+            "count_prefix": "",
+            "count_suffix": "",
+            "label": "Support included",
+            "sublabel": "Questions before or after purchase are welcome."
+          }
+        }
       },
-      "block_order": ["s1", "s2", "s3", "s4"],
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4"
+      ],
       "settings": {
         "eyebrow": "07 / Service",
         "heading": "<p>Service that keeps<br><em>checkout simple.</em></p>"
@@ -110,11 +164,39 @@
     "process": {
       "type": "process-steps",
       "blocks": {
-        "p1": { "type": "step", "settings": { "number": "01", "title": "Choose the room", "body": "Browse by collection and pick the scale, shape, and mood that matches your space.", "tag": "Discover" } },
-        "p2": { "type": "step", "settings": { "number": "02", "title": "Check the details", "body": "Review price, variants, dimensions, and shipping notes before adding to cart.", "tag": "Compare" } },
-        "p3": { "type": "step", "settings": { "number": "03", "title": "Set the mood", "body": "Unbox, place, and tune the glow for a warmer desk, shelf, bedside, or hallway.", "tag": "Enjoy" } }
+        "p1": {
+          "type": "step",
+          "settings": {
+            "number": "01",
+            "title": "Choose the room",
+            "body": "Browse by collection and pick the scale, shape, and mood that matches your space.",
+            "tag": "Discover"
+          }
+        },
+        "p2": {
+          "type": "step",
+          "settings": {
+            "number": "02",
+            "title": "Check the details",
+            "body": "Review price, variants, dimensions, and shipping notes before adding to cart.",
+            "tag": "Compare"
+          }
+        },
+        "p3": {
+          "type": "step",
+          "settings": {
+            "number": "03",
+            "title": "Set the mood",
+            "body": "Unbox, place, and tune the glow for a warmer desk, shelf, bedside, or hallway.",
+            "tag": "Enjoy"
+          }
+        }
       },
-      "block_order": ["p1", "p2", "p3"],
+      "block_order": [
+        "p1",
+        "p2",
+        "p3"
+      ],
       "settings": {
         "index_number": "08",
         "index_label": "How it works",
