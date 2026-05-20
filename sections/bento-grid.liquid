@@ -23,7 +23,8 @@
         {%- assign tag_text = tag_pattern[forloop.index0] -%}
         {%- assign idx_num = forloop.index | prepend: '0' | slice: -2, 2 -%}
         {%- assign total = products.size | prepend: '0' | slice: -2, 2 -%}
-        <a class="ed-bento__card ed-bento__card--{{ size_class }} ed-bento__card--v{{ forloop.index | modulo: 4 | plus: 1 }}"
+        {%- assign hover_image = product.images[1] -%}
+        <a class="ed-bento__card ed-bento__card--{{ size_class }} ed-bento__card--v{{ forloop.index | modulo: 4 | plus: 1 }}{% if hover_image != blank %} ed-has-hover-image{% endif %}"
            href="{{ product.url }}"
            aria-label="{{ product.title | escape }}">
           <div class="ed-bento__img">
@@ -33,7 +34,16 @@
                 widths: '400, 600, 900, 1000',
                 sizes: '(max-width: 900px) 50vw, 33vw',
                 alt: product.featured_image.alt | default: product.title,
-                class: 'ed-bento__photo'
+                class: 'ed-bento__photo ed-bento__photo--primary'
+              }}
+            {%- endif -%}
+            {%- if hover_image != blank -%}
+              {{ hover_image | image_url: width: 1000 | image_tag:
+                loading: 'lazy',
+                widths: '400, 600, 900, 1000',
+                sizes: '(max-width: 900px) 50vw, 33vw',
+                alt: hover_image.alt | default: product.title,
+                class: 'ed-bento__photo ed-bento__photo--hover'
               }}
             {%- endif -%}
           </div>
@@ -160,12 +170,28 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.7s var(--ed-ease), filter 0.4s var(--ed-ease);
+    transition: opacity 0.42s var(--ed-ease), transform 0.7s var(--ed-ease), filter 0.4s var(--ed-ease);
     filter: brightness(0.85) saturate(0.95);
+  }
+  .ed-bento__photo--primary {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .ed-bento__photo--hover {
+    opacity: 0;
+    transform: scale(1.035);
   }
   .ed-bento__card:hover .ed-bento__photo {
     transform: scale(1.07);
     filter: brightness(1) saturate(1.05);
+  }
+  .ed-bento__card.ed-has-hover-image:hover .ed-bento__photo--primary {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  .ed-bento__card.ed-has-hover-image:hover .ed-bento__photo--hover {
+    opacity: 1;
+    transform: scale(1.08);
   }
   html[data-ed-mode="day"] .ed-bento__img {
     background:
