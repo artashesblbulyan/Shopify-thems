@@ -4,6 +4,7 @@
 {%- enddoc -%}
 
 <div class="ed-scroll-progress" data-ed-scroll-progress aria-hidden="true"></div>
+<div class="ed-page-transition" data-ed-page-transition aria-hidden="true"></div>
 
 {% comment %}
   Floating fallback toggle, only visible on pages without the editorial header
@@ -24,6 +25,22 @@
 <script>
   (function () {
     var html = document.documentElement;
+    var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function onReady(fn) {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fn);
+      } else {
+        fn();
+      }
+    }
+
+    // Page entrance
+    onReady(function () {
+      requestAnimationFrame(function () {
+        html.classList.add('ed-page-ready');
+      });
+    });
 
     // Show floating toggle only when there is no editorial header toggle on the page
     document.addEventListener('DOMContentLoaded', function () {
@@ -65,6 +82,26 @@
     window.addEventListener('scroll', updateScroll, { passive: true });
     window.addEventListener('resize', updateScroll);
     updateScroll();
+
+    // Subtle live scroll state: sticky header depth + hero image drift
+    var motionTicking = false;
+    function updateLiveMotion() {
+      var y = window.scrollY || document.documentElement.scrollTop || 0;
+      html.classList.toggle('ed-has-scrolled', y > 14);
+      if (!reducedMotion) {
+        html.style.setProperty('--ed-hero-img-parallax', (-Math.min(34, y * 0.035)).toFixed(2) + 'px');
+        html.style.setProperty('--ed-scroll-ratio', Math.min(1, y / 520).toFixed(3));
+      }
+      motionTicking = false;
+    }
+    function requestLiveMotion() {
+      if (motionTicking) return;
+      motionTicking = true;
+      requestAnimationFrame(updateLiveMotion);
+    }
+    window.addEventListener('scroll', requestLiveMotion, { passive: true });
+    window.addEventListener('resize', requestLiveMotion);
+    requestLiveMotion();
 
     // Scroll reveal — IntersectionObserver, runs after DOM is ready
     function bindReveal() {
@@ -124,5 +161,82 @@
     } else {
       bindCountUp();
     }
+
+    // Product/card tilt. Kept shallow so it feels premium, not gimmicky.
+    function bindCardTilt() {
+      if (reducedMotion || !window.matchMedia || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+      var cards = document.querySelectorAll([
+        '.ed-bestsellers__card',
+        '.ed-bento__card',
+        '.ed-collection__card',
+        '.ed-search__card',
+        '.ed-list-collections__card'
+      ].join(','));
+
+      cards.forEach(function (card) {
+        card.classList.add('ed-can-tilt');
+
+        card.addEventListener('pointermove', function (event) {
+          var rect = card.getBoundingClientRect();
+          var x = (event.clientX - rect.left) / rect.width - 0.5;
+          var y = (event.clientY - rect.top) / rect.height - 0.5;
+          card.style.setProperty('--ed-tilt-x', (-y * 4.5).toFixed(2) + 'deg');
+          card.style.setProperty('--ed-tilt-y', (x * 5.5).toFixed(2) + 'deg');
+          card.style.setProperty('--ed-glare-x', ((x + 0.5) * 100).toFixed(1) + '%');
+          card.style.setProperty('--ed-glare-y', ((y + 0.5) * 100).toFixed(1) + '%');
+          card.style.setProperty('--ed-shift-x', (-x * 8).toFixed(2) + 'px');
+          card.style.setProperty('--ed-shift-y', (-y * 6).toFixed(2) + 'px');
+          card.classList.add('is-tilting');
+        });
+
+        card.addEventListener('pointerleave', function () {
+          card.classList.remove('is-tilting');
+          card.style.setProperty('--ed-tilt-x', '0deg');
+          card.style.setProperty('--ed-tilt-y', '0deg');
+          card.style.setProperty('--ed-shift-x', '0px');
+          card.style.setProperty('--ed-shift-y', '0px');
+        });
+      });
+    }
+    onReady(bindCardTilt);
+
+    // Soft page transitions for internal navigation.
+    function shouldAnimateLink(link) {
+      if (reducedMotion || html.classList.contains('shopify-design-mode')) return false;
+      if (!link || link.target || link.hasAttribute('download')) return false;
+      if (link.closest('[data-no-page-transition], .shopify-payment-button')) return false;
+
+      var href = link.getAttribute('href') || '';
+      if (!href || href.charAt(0) === '#' || href.indexOf('mailto:') === 0 || href.indexOf('tel:') === 0 || href.indexOf('javascript:') === 0) {
+        return false;
+      }
+
+      try {
+        var url = new URL(link.href, window.location.href);
+        if (url.origin !== window.location.origin) return false;
+        if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return false;
+      } catch (e) {
+        return false;
+      }
+
+      return true;
+    }
+
+    document.addEventListener('click', function (event) {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      var link = event.target.closest && event.target.closest('a[href]');
+      if (!shouldAnimateLink(link)) return;
+
+      event.preventDefault();
+      html.classList.add('ed-page-leaving');
+      window.setTimeout(function () {
+        window.location.href = link.href;
+      }, 240);
+    });
+
+    window.addEventListener('pageshow', function () {
+      html.classList.remove('ed-page-leaving');
+      html.classList.add('ed-page-ready');
+    });
   })();
 </script>
