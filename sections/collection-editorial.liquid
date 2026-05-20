@@ -62,7 +62,8 @@
     <div class="ed-collection__grid ed-reveal-stagger">
       {%- for product in coll.products -%}
         {%- assign idx = forloop.index | prepend: '0' | slice: -2, 2 -%}
-        <a class="ed-collection__card" href="{{ product.url }}">
+        {%- assign hover_image = product.images[1] -%}
+        <a class="ed-collection__card{% if hover_image != blank %} ed-has-hover-image{% endif %}" href="{{ product.url }}">
           <div class="ed-collection__card-img">
             {%- if product.featured_image -%}
               {{ product.featured_image | image_url: width: 900 | image_tag:
@@ -70,8 +71,15 @@
                 widths: '300, 500, 700, 900',
                 sizes: '(max-width: 720px) 50vw, 25vw',
                 alt: product.featured_image.alt | default: product.title,
-                class: 'ed-collection__photo'
+                class: 'ed-collection__photo ed-collection__photo--primary'
               }}
+            {%- endif -%}
+            {%- if hover_image != blank -%}
+              <span
+                class="ed-collection__hover-image"
+                style="--ed-hover-image: url('{{ hover_image | image_url: width: 900 }}');"
+                aria-hidden="true"
+              ></span>
             {%- endif -%}
             <span class="ed-collection__card-idx">{{ idx }}</span>
             {%- if product.compare_at_price > product.price -%}
@@ -253,16 +261,45 @@
     margin-bottom: 12px;
   }
   .ed-collection__photo {
+    position: absolute;
+    inset: 0;
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.7s var(--ed-ease);
+    z-index: 0;
   }
-  .ed-collection__card:hover .ed-collection__photo { transform: scale(1.05); }
+  .ed-collection__hover-image {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: block;
+    background-image: var(--ed-hover-image);
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(1.035);
+    transition: opacity 0.42s var(--ed-ease), visibility 0.42s var(--ed-ease), transform 0.7s var(--ed-ease);
+    pointer-events: none;
+  }
+  .ed-collection__card:not(.ed-has-hover-image):hover .ed-collection__photo {
+    transform: scale(1.05);
+  }
+  .ed-collection__card.ed-has-hover-image:hover .ed-collection__photo--primary {
+    transform: scale(1.02);
+  }
+  .ed-collection__card.ed-has-hover-image:hover .ed-collection__hover-image {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1.055);
+  }
   .ed-collection__card-idx {
     position: absolute;
     top: 14px;
     left: 14px;
+    z-index: 2;
     font-family: var(--ed-font-body);
     font-size: 10px;
     letter-spacing: 0.16em;
@@ -278,6 +315,7 @@
     position: absolute;
     top: 14px;
     right: 14px;
+    z-index: 2;
     font-family: var(--ed-font-body);
     font-size: 10px;
     letter-spacing: 0.16em;

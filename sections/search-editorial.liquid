@@ -37,14 +37,25 @@
     <div class="ed-search__grid ed-reveal-stagger">
       {%- for item in search.results -%}
         {%- assign idx = forloop.index | prepend: '0' | slice: -2, 2 -%}
-        <a class="ed-search__card" href="{{ item.url }}">
+        {%- assign hover_image = blank -%}
+        {%- if item.object_type == 'product' -%}
+          {%- assign hover_image = item.images[1] -%}
+        {%- endif -%}
+        <a class="ed-search__card{% if hover_image != blank %} ed-has-hover-image{% endif %}" href="{{ item.url }}">
           <div class="ed-search__card-img">
             {%- if item.object_type == 'product' and item.featured_image -%}
               {{ item.featured_image | image_url: width: 600 | image_tag:
-                loading: 'lazy', alt: item.title, class: 'ed-search__photo' }}
+                loading: 'lazy', alt: item.title, class: 'ed-search__photo ed-search__photo--primary' }}
             {%- elsif item.object_type == 'article' and item.image -%}
               {{ item.image | image_url: width: 600 | image_tag:
-                loading: 'lazy', alt: item.title, class: 'ed-search__photo' }}
+                loading: 'lazy', alt: item.title, class: 'ed-search__photo ed-search__photo--primary' }}
+            {%- endif -%}
+            {%- if hover_image != blank -%}
+              <span
+                class="ed-search__hover-image"
+                style="--ed-hover-image: url('{{ hover_image | image_url: width: 600 }}');"
+                aria-hidden="true"
+              ></span>
             {%- endif -%}
             <span class="ed-search__card-idx">{{ idx }}</span>
             <span class="ed-search__card-type">{{ item.object_type }}</span>
@@ -177,9 +188,44 @@
     border: 1px solid var(--ed-line);
     margin-bottom: 12px;
   }
-  .ed-search__photo { width: 100%; height: 100%; object-fit: cover; }
+  .ed-search__photo {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    transition: transform 0.7s var(--ed-ease);
+  }
+  .ed-search__hover-image {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: block;
+    background-image: var(--ed-hover-image);
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(1.035);
+    transition: opacity 0.42s var(--ed-ease), visibility 0.42s var(--ed-ease), transform 0.7s var(--ed-ease);
+    pointer-events: none;
+  }
+  .ed-search__card:not(.ed-has-hover-image):hover .ed-search__photo {
+    transform: scale(1.05);
+  }
+  .ed-search__card.ed-has-hover-image:hover .ed-search__photo--primary {
+    transform: scale(1.02);
+  }
+  .ed-search__card.ed-has-hover-image:hover .ed-search__hover-image {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1.055);
+  }
   .ed-search__card-idx, .ed-search__card-type {
     position: absolute;
+    z-index: 2;
     font-family: var(--ed-font-body);
     font-size: 10px;
     letter-spacing: 0.14em;

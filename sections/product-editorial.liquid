@@ -32,7 +32,15 @@
       {%- if p.media.size > 1 -%}
         <div class="ed-product__thumbs">
           {%- for m in p.media limit: 6 -%}
-            <button type="button" class="ed-product__thumb {% if m.id == featured_media.id %}is-active{% endif %}" data-ed-thumb data-ed-media-id="{{ m.id }}" aria-label="View image {{ forloop.index }}">
+            <button
+              type="button"
+              class="ed-product__thumb {% if m.id == featured_media.id %}is-active{% endif %}"
+              data-ed-thumb
+              data-ed-media-id="{{ m.id }}"
+              data-ed-main-src="{{ m.preview_image | image_url: width: 1600 }}"
+              data-ed-main-alt="{{ m.alt | default: p.title | escape }}"
+              aria-label="View image {{ forloop.index }}"
+            >
               {{ m.preview_image | image_url: width: 240 | image_tag:
                 loading: 'lazy',
                 class: 'ed-product__thumb-img',
@@ -60,12 +68,6 @@
       </div>
       <span class="ed-product__sale" {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>Sale</span>
     </div>
-
-    {%- if p.description != blank -%}
-      <div class="ed-product__desc">
-        {{ p.description }}
-      </div>
-    {%- endif -%}
 
     <form
       action="{{ routes.cart_add_url }}"
@@ -108,12 +110,14 @@
         </div>
       </div>
 
-      <button type="submit" class="ed-btn ed-btn--solid ed-product__add" data-ed-add-text {% unless current_variant.available %}disabled{% endunless %}>
-        {%- if current_variant.available -%}
-          Add to cart - {{ current_variant.price | money }}
-        {%- else -%}
-          Sold out
-        {%- endif -%}
+      <button type="submit" class="ed-btn ed-btn--solid ed-product__add" data-ed-add-button {% unless current_variant.available %}disabled{% endunless %}>
+        <span data-ed-add-label>
+          {%- if current_variant.available -%}
+            Add to cart - {{ current_variant.price | money }}
+          {%- else -%}
+            Sold out
+          {%- endif -%}
+        </span>
         <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
       </button>
     </form>
@@ -126,20 +130,24 @@
     </ul>
 
     <details class="ed-product__accordion" open>
-      <summary>Details</summary>
-      <div>
-        <p>Review the product description, photos, and selected variant before checkout. If you need an exact measurement or compatibility detail, contact us before ordering.</p>
+      <summary aria-expanded="true">Description</summary>
+      <div class="ed-product__accordion-content ed-product__rte">
+        {%- if p.description != blank -%}
+          {{ p.description }}
+        {%- else -%}
+          <p>Product details are being updated. Review the photos and selected variant before checkout.</p>
+        {%- endif -%}
       </div>
     </details>
     <details class="ed-product__accordion">
-      <summary>Shipping &amp; Returns</summary>
-      <div>
+      <summary aria-expanded="false">Shipping &amp; Returns</summary>
+      <div class="ed-product__accordion-content ed-product__rte">
         <p>Shipping, taxes, and available delivery options are calculated at checkout. For returns, use the policy links in the footer or contact support before sending an item back.</p>
       </div>
     </details>
     <details class="ed-product__accordion">
-      <summary>Care</summary>
-      <div>
+      <summary aria-expanded="false">Care</summary>
+      <div class="ed-product__accordion-content ed-product__rte">
         <p>Wipe gently with a soft, dry cloth. Avoid harsh cleaners, moisture, and long exposure to direct sunlight unless the product page says otherwise.</p>
       </div>
     </details>
@@ -278,16 +286,6 @@
     border: 1px solid var(--ed-accent);
     border-radius: var(--ed-pill);
   }
-  .ed-product__desc {
-    font-family: var(--ed-font-body);
-    font-size: 15px;
-    line-height: 1.6;
-    color: var(--ed-muted);
-    max-width: 36em;
-  }
-  .ed-product__desc p { margin: 0 0 12px; }
-  .ed-product__desc p:last-child { margin-bottom: 0; }
-
   /* Form */
   .ed-product__form {
     display: flex;
@@ -444,15 +442,43 @@
     content: "-";
   }
   .ed-product__accordion summary::-webkit-details-marker { display: none; }
-  .ed-product__accordion[open] div {
+  .ed-product__accordion[open] .ed-product__accordion-content {
     margin-top: 12px;
   }
-  .ed-product__accordion div p {
+  .ed-product__rte {
     font-family: var(--ed-font-body);
     font-size: 14px;
     line-height: 1.6;
     color: var(--ed-muted);
+    overflow-wrap: anywhere;
+  }
+  .ed-product__rte p {
     margin: 0 0 10px;
+  }
+  .ed-product__rte p:last-child { margin-bottom: 0; }
+  .ed-product__rte ul,
+  .ed-product__rte ol {
+    margin: 0 0 12px;
+    padding-left: 20px;
+  }
+  .ed-product__rte li { margin-bottom: 6px; }
+  .ed-product__rte a {
+    color: var(--ed-fg);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .ed-product__rte img,
+  .ed-product__rte video,
+  .ed-product__rte iframe {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--ed-radius);
+  }
+  .ed-product__rte table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
   }
 
   @media (max-width: 1100px) {
@@ -504,7 +530,8 @@
       var price = productSection && productSection.querySelector('.ed-product__price');
       var compare = productSection && productSection.querySelector('.ed-product__price-compare');
       var sale = productSection && productSection.querySelector('.ed-product__sale');
-      var add = form.querySelector('[data-ed-add-text]');
+      var add = form.querySelector('[data-ed-add-button]');
+      var addLabel = add && add.querySelector('[data-ed-add-label]');
 
       if (idInput) idInput.value = variant.id;
       if (price) price.textContent = money(variant.price);
@@ -516,8 +543,40 @@
       }
       if (add) {
         add.disabled = !variant.available;
-        add.childNodes[0].nodeValue = variant.available ? 'Add to cart - ' + money(variant.price) + ' ' : 'Sold out ';
       }
+      if (addLabel) {
+        addLabel.textContent = variant.available ? 'Add to cart - ' + money(variant.price) : 'Sold out';
+      }
+      if (productSection && variant.featured_media && variant.featured_media.id) {
+        setActiveMedia(productSection, variant.featured_media.id);
+      }
+    }
+
+    function setMainMedia(section, thumb) {
+      var wrap = section.querySelector('.ed-product__gallery-main');
+      if (!wrap || !thumb) return;
+      var src = thumb.dataset.edMainSrc;
+      if (!src) return;
+      var main = wrap.querySelector('.ed-product__media-main');
+      if (!main || main.tagName !== 'IMG') {
+        wrap.innerHTML = '';
+        main = document.createElement('img');
+        main.className = 'ed-product__media-main';
+        main.loading = 'eager';
+        wrap.appendChild(main);
+      }
+      main.src = src;
+      main.srcset = '';
+      main.alt = thumb.dataset.edMainAlt || '';
+    }
+
+    function setActiveMedia(section, mediaId) {
+      var thumb = section.querySelector('[data-ed-media-id="' + mediaId + '"]');
+      if (!thumb) return;
+      setMainMedia(section, thumb);
+      section.querySelectorAll('[data-ed-thumb]').forEach(function (b) {
+        b.classList.toggle('is-active', b === thumb);
+      });
     }
 
     document.addEventListener('change', function (e) {
@@ -538,18 +597,19 @@
       if (!btn) return;
       var section = btn.closest('.ed-product');
       if (!section) return;
-      var main = section.querySelector('.ed-product__media-main');
-      var img = btn.querySelector('img');
-      if (main && img) {
-        if (main.tagName === 'IMG') {
-          main.src = img.src.replace('width=240', 'width=1600');
-          main.srcset = '';
-        }
-      }
+      setMainMedia(section, btn);
       section.querySelectorAll('[data-ed-thumb]').forEach(function (b) {
         b.classList.toggle('is-active', b === btn);
       });
     });
+
+    document.addEventListener('toggle', function (e) {
+      var details = e.target.closest && e.target.closest('.ed-product__accordion');
+      if (!details) return;
+      var summary = details.querySelector('summary');
+      if (summary) summary.setAttribute('aria-expanded', details.open ? 'true' : 'false');
+    }, true);
+
     // Quantity stepper
     document.addEventListener('click', function (e) {
       var btn = e.target.closest('[data-ed-qty-step]');

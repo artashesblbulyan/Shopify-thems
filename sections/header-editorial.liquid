@@ -79,7 +79,9 @@
       {%- endfor -%}
     </nav>
     <div class="ed-mobile-menu__foot">
-      <a href="{{ routes.account_url }}">Account</a>
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{{ routes.account_url }}">Account</a>
+      {%- endif -%}
       <a href="{{ routes.cart_url }}">Cart ({{ cart_count }})</a>
     </div>
   </div>

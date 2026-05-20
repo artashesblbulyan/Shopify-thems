@@ -18,18 +18,22 @@
         <div class="ed-eyebrow">Studio</div>
         <p>{{ section.settings.address | default: 'Online studio' | newline_to_br }}</p>
       </div>
-      <div class="ed-contact__info-block">
-        <div class="ed-eyebrow">Email</div>
-        <p><a href="mailto:{{ general_email }}">{{ general_email }}</a></p>
-      </div>
+      {%- if general_email != blank -%}
+        <div class="ed-contact__info-block">
+          <div class="ed-eyebrow">Email</div>
+          <p><a href="mailto:{{ general_email }}">{{ general_email }}</a></p>
+        </div>
+      {%- endif -%}
       <div class="ed-contact__info-block">
         <div class="ed-eyebrow">Hours</div>
         <p>{{ section.settings.hours | newline_to_br }}</p>
       </div>
-      <div class="ed-contact__info-block">
-        <div class="ed-eyebrow">Press &amp; wholesale</div>
-        <p><a href="mailto:{{ press_email }}">{{ press_email }}</a></p>
-      </div>
+      {%- if press_email != blank -%}
+        <div class="ed-contact__info-block">
+          <div class="ed-eyebrow">Press &amp; wholesale</div>
+          <p><a href="mailto:{{ press_email }}">{{ press_email }}</a></p>
+        </div>
+      {%- endif -%}
     </div>
 
     <div class="ed-contact__form-wrap ed-reveal">

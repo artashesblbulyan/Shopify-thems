@@ -19,6 +19,8 @@
     <form action="{{ routes.cart_url }}" method="post" novalidate class="ed-cart__form" id="cart-form">
       <div class="ed-cart__items ed-reveal-stagger">
         {%- for item in cart.items -%}
+          {%- assign decrease_quantity = item.quantity | minus: 1 -%}
+          {%- assign increase_quantity = item.quantity | plus: 1 -%}
           <article class="ed-cart__item">
             <a class="ed-cart__item-img" href="{{ item.url }}">
               {%- if item.image -%}
@@ -41,7 +43,7 @@
               </div>
               <div class="ed-cart__item-bottom">
                 <div class="ed-cart__qty">
-                  <a href="{{ item.url_to_change }}?quantity={{ item.quantity | minus: 1 }}" data-ed-cart-step="-1" data-line="{{ forloop.index }}" data-key="{{ item.key }}" data-qty="{{ item.quantity | minus: 1 }}" aria-label="Decrease">-</a>
+                  <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity={{ decrease_quantity }}" data-ed-cart-step="-1" data-line="{{ forloop.index }}" data-key="{{ item.key }}" data-qty="{{ decrease_quantity }}" aria-label="Decrease">-</a>
                   <input
                     type="number"
                     name="updates[{{ item.key }}]"
@@ -49,7 +51,7 @@
                     min="0"
                     aria-label="Quantity"
                   >
-                  <a href="{{ item.url_to_change }}?quantity={{ item.quantity | plus: 1 }}" data-ed-cart-step="1" data-line="{{ forloop.index }}" data-key="{{ item.key }}" data-qty="{{ item.quantity | plus: 1 }}" aria-label="Increase">+</a>
+                  <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity={{ increase_quantity }}" data-ed-cart-step="1" data-line="{{ forloop.index }}" data-key="{{ item.key }}" data-qty="{{ increase_quantity }}" aria-label="Increase">+</a>
                 </div>
                 <a href="{{ item.url_to_remove }}" class="ed-cart__item-remove">Remove</a>
               </div>
