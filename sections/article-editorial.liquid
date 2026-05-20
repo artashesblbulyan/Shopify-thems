@@ -1,0 +1,329 @@
+{%- liquid
+  assign a = article
+-%}
+
+<article class="ed-article ed-section">
+  <header class="ed-article__head ed-reveal-stagger">
+    <div class="ed-eyebrow">{{ a.blog.title | default: 'Journal' }} / {{ a.published_at | date: '%B %d, %Y' }}</div>
+    <h1 class="ed-display ed-article__title">{{ a.title }}</h1>
+    {%- if a.excerpt != blank -%}
+      <p class="ed-article__lede">{{ a.excerpt | strip_html }}</p>
+    {%- endif -%}
+    <div class="ed-article__byline">
+      <div class="ed-article__author">
+        <span class="ed-article__avatar" aria-hidden="true">{{ a.author | slice: 0, 1 }}</span>
+        <div>
+          <div class="ed-article__author-name">{{ a.author }}</div>
+          <div class="ed-article__author-role">Studio writer</div>
+        </div>
+      </div>
+      <div class="ed-article__meta">
+        <span>{{ a.content | strip_html | split: ' ' | size | divided_by: 200 | plus: 1 }} min read</span>
+        {%- if a.tags.size > 0 -%}
+          <span>/</span>
+          <span>{{ a.tags | first }}</span>
+        {%- endif -%}
+      </div>
+    </div>
+  </header>
+
+  {%- if a.image -%}
+    <figure class="ed-article__hero ed-reveal">
+      {{ a.image | image_url: width: 2000 | image_tag:
+        loading: 'eager', fetchpriority: 'high',
+        widths: '600, 900, 1200, 1600, 2000',
+        sizes: '100vw',
+        alt: a.title,
+        class: 'ed-article__hero-img'
+      }}
+    </figure>
+  {%- endif -%}
+
+  <div class="ed-article__body ed-reveal">
+    {{ a.content }}
+  </div>
+
+  {%- if a.tags.size > 0 -%}
+    <div class="ed-article__tags ed-reveal">
+      <span class="ed-eyebrow">Filed under</span>
+      <div>
+        {%- for tag in a.tags -%}
+          <a href="{{ a.blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <nav class="ed-article__nav">
+    {%- if a.previous_article -%}
+      <a class="ed-article__nav-link" href="{{ a.previous_article.url }}">
+        <span class="ed-eyebrow">&lt;- Previous</span>
+        <span class="ed-article__nav-title">{{ a.previous_article.title }}</span>
+      </a>
+    {%- else -%}
+      <span></span>
+    {%- endif -%}
+    <a class="ed-btn ed-btn--ghost" href="{{ a.blog.url }}">All articles</a>
+    {%- if a.next_article -%}
+      <a class="ed-article__nav-link ed-article__nav-link--next" href="{{ a.next_article.url }}">
+        <span class="ed-eyebrow">Next -&gt;</span>
+        <span class="ed-article__nav-title">{{ a.next_article.title }}</span>
+      </a>
+    {%- else -%}
+      <span></span>
+    {%- endif -%}
+  </nav>
+
+  {%- if blog.comments_enabled? and a.comments_count > 0 -%}
+    <section class="ed-article__comments">
+      <h2 class="ed-display ed-article__comments-title">
+        <em>{{ a.comments_count }}</em> {{ a.comments_count | pluralize: 'response', 'responses' }}
+      </h2>
+      {%- for comment in a.comments -%}
+        <div class="ed-article__comment">
+          <div class="ed-article__comment-meta">
+            <strong>{{ comment.author }}</strong> / {{ comment.created_at | date: '%b %d, %Y' }}
+          </div>
+          <p>{{ comment.content }}</p>
+        </div>
+      {%- endfor -%}
+    </section>
+  {%- endif -%}
+</article>
+
+{% stylesheet %}
+  .ed-article {
+    padding: 64px 32px 96px;
+    max-width: 920px;
+    margin: 0 auto;
+  }
+  .ed-article__head {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 40px;
+  }
+  .ed-article__title {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    font-size: clamp(40px, 6vw, 88px);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  .ed-article__lede {
+    font-family: var(--ed-font-display);
+    font-style: italic;
+    font-size: clamp(20px, 2.4vw, 28px);
+    line-height: 1.3;
+    color: var(--ed-muted);
+    margin: 0;
+    max-width: 30em;
+  }
+  .ed-article__byline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 24px;
+    border-top: 1px solid var(--ed-line);
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .ed-article__author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .ed-article__avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--ed-accent);
+    color: #0a0a0a;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--ed-font-display);
+    font-style: italic;
+    font-size: 20px;
+  }
+  .ed-article__author-name {
+    font-family: var(--ed-font-body);
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .ed-article__author-role {
+    font-family: var(--ed-font-body);
+    font-size: 11px;
+    color: var(--ed-muted);
+    letter-spacing: 0.02em;
+  }
+  .ed-article__meta {
+    display: flex;
+    gap: 8px;
+    font-family: var(--ed-font-body);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ed-muted);
+  }
+
+  .ed-article__hero {
+    margin: 40px 0;
+    border-radius: var(--ed-radius-card);
+    overflow: hidden;
+    border: 1px solid var(--ed-line);
+  }
+  .ed-article__hero-img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .ed-article__body {
+    font-family: var(--ed-font-body);
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--ed-fg);
+    max-width: 36em;
+  }
+  .ed-article__body p { margin: 0 0 22px; }
+  .ed-article__body p:last-child { margin-bottom: 0; }
+  .ed-article__body h2 {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    margin: 48px 0 16px;
+    line-height: 1.1;
+  }
+  .ed-article__body h3 {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    font-size: 24px;
+    margin: 32px 0 12px;
+  }
+  .ed-article__body blockquote {
+    font-family: var(--ed-font-display);
+    font-style: italic;
+    font-size: 24px;
+    line-height: 1.4;
+    color: var(--ed-fg);
+    border-left: 2px solid var(--ed-accent);
+    padding: 6px 0 6px 24px;
+    margin: 32px 0;
+    max-width: 28em;
+  }
+  .ed-article__body img {
+    margin: 32px 0;
+    border-radius: var(--ed-radius);
+  }
+  .ed-article__body a {
+    color: var(--ed-fg);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+  .ed-article__body a:hover { color: var(--ed-accent); }
+  .ed-article__body ul, .ed-article__body ol {
+    padding-left: 22px;
+    margin: 0 0 22px;
+  }
+  .ed-article__body li { margin-bottom: 6px; }
+
+  .ed-article__tags {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--ed-line);
+  }
+  .ed-article__tags > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .ed-article__tags a {
+    font-family: var(--ed-font-body);
+    font-size: 12px;
+    padding: 7px 14px;
+    border: 1px solid var(--ed-line);
+    border-radius: var(--ed-pill);
+    color: var(--ed-fg);
+    text-decoration: none;
+    transition: border-color 0.2s var(--ed-ease);
+  }
+  .ed-article__tags a:hover { border-color: var(--ed-fg); }
+
+  .ed-article__nav {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 24px;
+    margin-top: 64px;
+    padding: 40px 0;
+    border-top: 1px solid var(--ed-line);
+    border-bottom: 1px solid var(--ed-line);
+  }
+  .ed-article__nav-link {
+    color: var(--ed-fg);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 18em;
+  }
+  .ed-article__nav-link--next { text-align: right; align-self: end; justify-self: end; }
+  .ed-article__nav-title {
+    font-family: var(--ed-font-display);
+    font-size: 18px;
+    line-height: 1.2;
+  }
+
+  .ed-article__comments {
+    margin-top: 64px;
+    padding-top: 40px;
+    border-top: 1px solid var(--ed-line);
+  }
+  .ed-article__comments-title {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    font-size: 32px;
+    margin: 0 0 24px;
+  }
+  .ed-article__comment {
+    padding: 18px 0;
+    border-bottom: 1px solid var(--ed-line);
+  }
+  .ed-article__comment-meta {
+    font-family: var(--ed-font-body);
+    font-size: 12px;
+    color: var(--ed-muted);
+    margin-bottom: 6px;
+  }
+  .ed-article__comment strong { color: var(--ed-fg); font-weight: 500; }
+  .ed-article__comment p {
+    font-family: var(--ed-font-body);
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ed-fg);
+    margin: 0;
+  }
+
+  @media (max-width: 720px) {
+    .ed-article { padding: 48px 20px 64px; }
+    .ed-article__nav { grid-template-columns: 1fr; text-align: left; }
+    .ed-article__nav-link--next { text-align: left; justify-self: start; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Article - Editorial",
+  "tag": "article",
+  "class": "section-ed-article",
+  "settings": [],
+  "presets": [ { "name": "Article - Editorial" } ],
+  "enabled_on": { "templates": ["article"] }
+}
+{% endschema %}

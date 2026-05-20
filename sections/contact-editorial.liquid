@@ -1,0 +1,231 @@
+<section class="ed-contact ed-section">
+  <header class="ed-contact__head ed-reveal-stagger">
+    <div class="ed-eyebrow">{{ section.settings.eyebrow }}</div>
+    <h1 class="ed-display ed-contact__title">{{ section.settings.heading }}</h1>
+    {%- if section.settings.description != blank -%}
+      <p class="ed-contact__desc">{{ section.settings.description }}</p>
+    {%- endif -%}
+  </header>
+
+  <div class="ed-contact__grid">
+    <div class="ed-contact__info ed-reveal">
+      <div class="ed-contact__info-block">
+        <div class="ed-eyebrow">Studio</div>
+        <p>{{ section.settings.address | default: '12 Lighthouse Lane' | newline_to_br }}</p>
+      </div>
+      <div class="ed-contact__info-block">
+        <div class="ed-eyebrow">Email</div>
+        <p><a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a></p>
+      </div>
+      <div class="ed-contact__info-block">
+        <div class="ed-eyebrow">Hours</div>
+        <p>{{ section.settings.hours | newline_to_br }}</p>
+      </div>
+      <div class="ed-contact__info-block">
+        <div class="ed-eyebrow">Press &amp; wholesale</div>
+        <p><a href="mailto:{{ section.settings.press_email }}">{{ section.settings.press_email }}</a></p>
+      </div>
+    </div>
+
+    <div class="ed-contact__form-wrap ed-reveal">
+      {%- form 'contact', class: 'ed-contact__form' -%}
+        {%- if form.posted_successfully? -%}
+          <div class="ed-contact__success">
+            <div class="ed-eyebrow">Sent</div>
+            <h3>Thanks - we will be in touch soon.</h3>
+          </div>
+        {%- elsif form.errors -%}
+          <div class="ed-contact__errors">
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <div class="ed-contact__row">
+          <label>
+            <span>Name</span>
+            <input type="text" name="contact[name]" required>
+          </label>
+          <label>
+            <span>Email</span>
+            <input type="email" name="contact[email]" required>
+          </label>
+        </div>
+        <label>
+          <span>Subject</span>
+          <input type="text" name="contact[subject]">
+        </label>
+        <label>
+          <span>Message</span>
+          <textarea name="contact[body]" rows="5" required></textarea>
+        </label>
+        <button type="submit" class="ed-btn ed-btn--solid ed-contact__submit">
+          Send message <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
+        </button>
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .ed-contact { padding: 64px 32px 96px; }
+  .ed-contact__head {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 56px;
+    max-width: 800px;
+  }
+  .ed-contact__title {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    font-size: clamp(56px, 9vw, 140px);
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+  }
+  .ed-contact__desc {
+    font-family: var(--ed-font-body);
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ed-muted);
+    margin: 0;
+    max-width: 32em;
+  }
+
+  .ed-contact__grid {
+    display: grid;
+    grid-template-columns: 4fr 7fr;
+    gap: 64px;
+    align-items: start;
+  }
+  .ed-contact__info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 24px;
+  }
+  .ed-contact__info-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .ed-contact__info-block p {
+    font-family: var(--ed-font-display);
+    font-size: 18px;
+    line-height: 1.4;
+    color: var(--ed-fg);
+    margin: 0;
+  }
+  .ed-contact__info-block a { color: inherit; text-decoration: underline; text-underline-offset: 4px; }
+  .ed-contact__info-block a:hover { color: var(--ed-accent); }
+
+  .ed-contact__form-wrap {
+    border: 1px solid var(--ed-line);
+    border-radius: var(--ed-radius-card);
+    padding: 36px;
+    background: var(--ed-card);
+  }
+  .ed-contact__form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .ed-contact__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .ed-contact__form label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .ed-contact__form label > span {
+    font-family: var(--ed-font-body);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ed-muted);
+  }
+  .ed-contact__form input,
+  .ed-contact__form textarea {
+    background: transparent;
+    border: 1px solid var(--ed-line);
+    border-radius: var(--ed-radius);
+    color: var(--ed-fg);
+    padding: 14px 16px;
+    font: inherit;
+    font-size: 14px;
+    transition: border-color 0.2s var(--ed-ease);
+    width: 100%;
+    resize: vertical;
+  }
+  .ed-contact__form input:focus,
+  .ed-contact__form textarea:focus {
+    outline: none;
+    border-color: var(--ed-fg);
+  }
+  .ed-contact__submit {
+    margin-top: 8px;
+    justify-content: center;
+  }
+  .ed-contact__success {
+    padding: 24px;
+    border: 1px solid var(--ed-accent);
+    border-radius: var(--ed-radius);
+    background: color-mix(in srgb, var(--ed-accent) 12%, transparent);
+    margin-bottom: 8px;
+  }
+  .ed-contact__success h3 {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    font-size: 22px;
+    margin: 6px 0 0;
+  }
+  .ed-contact__errors {
+    padding: 16px;
+    border: 1px solid #c44;
+    border-radius: var(--ed-radius);
+    color: #f6a;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+
+  @media (max-width: 1100px) {
+    .ed-contact__grid { grid-template-columns: 1fr; gap: 32px; }
+  }
+  @media (max-width: 720px) {
+    .ed-contact { padding: 48px 20px 64px; }
+    .ed-contact__info { grid-template-columns: 1fr; gap: 24px; }
+    .ed-contact__row { grid-template-columns: 1fr; }
+    .ed-contact__form-wrap { padding: 24px; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Contact - Editorial",
+  "tag": "section",
+  "class": "section-ed-contact",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Contact" },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>Say <em>hello</em>.</p>"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Whether you are curious about a piece, need a custom finish, or want to stock our work - drop us a line."
+    },
+    { "type": "header", "content": "Studio info" },
+    { "type": "textarea", "id": "address", "label": "Address", "default": "12 Lighthouse Lane\nVisit by appointment" },
+    { "type": "text", "id": "email", "label": "General email", "default": "hello@luminaire.studio" },
+    { "type": "textarea", "id": "hours", "label": "Hours", "default": "Mon-Fri / 10-18\nSat / By appointment" },
+    { "type": "text", "id": "press_email", "label": "Press / wholesale email", "default": "press@luminaire.studio" }
+  ],
+  "presets": [ { "name": "Contact - Editorial" } ],
+  "enabled_on": { "templates": ["page"] }
+}
+{% endschema %}

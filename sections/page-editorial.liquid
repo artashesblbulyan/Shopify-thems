@@ -1,0 +1,117 @@
+{%- liquid
+  assign p = page
+-%}
+
+<section class="ed-page ed-section">
+  <header class="ed-page__head ed-reveal-stagger">
+    <div class="ed-eyebrow">{{ section.settings.eyebrow }}</div>
+    <h1 class="ed-display ed-page__title">{{ p.title }}</h1>
+  </header>
+
+  <div class="ed-page__body ed-reveal">
+    {{ p.content }}
+  </div>
+
+  {%- if section.settings.show_cta -%}
+    <div class="ed-page__cta ed-reveal">
+      <a class="ed-btn ed-btn--solid" href="{{ section.settings.cta_link | default: routes.all_products_collection_url }}">
+        {{ section.settings.cta_label }} <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
+      </a>
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .ed-page {
+    padding: 64px 32px 96px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .ed-page__head {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--ed-line);
+  }
+  .ed-page__title {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    font-size: clamp(48px, 8vw, 120px);
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+  .ed-page__body {
+    font-family: var(--ed-font-body);
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--ed-fg);
+    max-width: 36em;
+  }
+  .ed-page__body p { margin: 0 0 22px; }
+  .ed-page__body p:last-child { margin-bottom: 0; }
+  .ed-page__body h2 {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    font-size: 36px;
+    letter-spacing: -0.02em;
+    margin: 48px 0 16px;
+    line-height: 1.1;
+  }
+  .ed-page__body h3 {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    font-size: 24px;
+    margin: 32px 0 12px;
+  }
+  .ed-page__body a {
+    color: var(--ed-fg);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .ed-page__body a:hover { color: var(--ed-accent); }
+  .ed-page__body ul, .ed-page__body ol {
+    padding-left: 22px;
+    margin: 0 0 22px;
+  }
+  .ed-page__body blockquote {
+    font-family: var(--ed-font-display);
+    font-style: italic;
+    font-size: 24px;
+    line-height: 1.4;
+    color: var(--ed-fg);
+    border-left: 2px solid var(--ed-accent);
+    padding: 6px 0 6px 24px;
+    margin: 32px 0;
+  }
+  .ed-page__body img {
+    margin: 32px 0;
+    border-radius: var(--ed-radius);
+  }
+  .ed-page__cta {
+    margin-top: 56px;
+    padding-top: 32px;
+    border-top: 1px solid var(--ed-line);
+  }
+  @media (max-width: 720px) {
+    .ed-page { padding: 48px 20px 64px; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Page - Editorial",
+  "tag": "section",
+  "class": "section-ed-page",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Page" },
+    { "type": "checkbox", "id": "show_cta", "label": "Show CTA at bottom", "default": false },
+    { "type": "text", "id": "cta_label", "label": "CTA label", "default": "Shop the collection" },
+    { "type": "url", "id": "cta_link", "label": "CTA link" }
+  ],
+  "presets": [ { "name": "Page - Editorial" } ],
+  "enabled_on": { "templates": ["page"] }
+}
+{% endschema %}

@@ -1,0 +1,119 @@
+<section class="ed-404 ed-section">
+  <div class="ed-404__inner ed-reveal-stagger">
+    <div class="ed-eyebrow">{{ section.settings.eyebrow }}</div>
+    <h1 class="ed-display ed-404__title"><em>404</em></h1>
+    <p class="ed-404__subtitle">{{ section.settings.subtitle }}</p>
+    <p class="ed-404__body">{{ section.settings.body }}</p>
+    <div class="ed-404__cta">
+      <a class="ed-btn ed-btn--solid" href="{{ routes.root_url }}">
+        Back home <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
+      </a>
+      <a class="ed-btn ed-btn--ghost" href="{{ routes.all_products_collection_url }}">Shop all</a>
+    </div>
+    <div class="ed-404__divider"></div>
+    <p class="ed-404__hint">
+      <span class="ed-eyebrow">Try</span>
+      <a href="{{ routes.search_url }}">Search</a> /
+      <a href="{{ routes.all_products_collection_url }}">All products</a> /
+      <a href="/pages/contact">Contact us</a>
+    </p>
+  </div>
+</section>
+
+{% stylesheet %}
+  .ed-404 {
+    min-height: 80svh;
+    display: grid;
+    place-items: center;
+    padding: 96px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .ed-404::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 30%, rgba(253,198,86,0.18), transparent 55%),
+      radial-gradient(ellipse at 50% 80%, rgba(195,204,166,0.08), transparent 60%);
+    pointer-events: none;
+  }
+  .ed-404__inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    max-width: 560px;
+  }
+  .ed-404__title {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    font-size: clamp(140px, 22vw, 320px);
+    line-height: 0.86;
+    letter-spacing: -0.05em;
+    margin: 0;
+  }
+  .ed-404__subtitle {
+    font-family: var(--ed-font-display);
+    font-style: italic;
+    font-size: clamp(24px, 3vw, 36px);
+    color: var(--ed-fg);
+    margin: 0;
+    line-height: 1.15;
+  }
+  .ed-404__body {
+    font-family: var(--ed-font-body);
+    font-size: 14px;
+    color: var(--ed-muted);
+    line-height: 1.6;
+    margin: 8px 0 16px;
+    max-width: 32em;
+  }
+  .ed-404__cta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .ed-404__divider {
+    width: 60px;
+    height: 1px;
+    background: var(--ed-line);
+    margin: 32px 0;
+  }
+  .ed-404__hint {
+    font-family: var(--ed-font-body);
+    font-size: 12px;
+    color: var(--ed-muted);
+    letter-spacing: 0.02em;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .ed-404__hint a {
+    color: var(--ed-fg);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .ed-404__hint a:hover { color: var(--ed-accent); }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "404 - Editorial",
+  "tag": "section",
+  "class": "section-ed-404",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Page not found" },
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "This page slipped into the dark." },
+    { "type": "textarea", "id": "body", "label": "Body", "default": "The page you were looking for has moved, does not exist, or never did. Let us guide you back to the light." }
+  ],
+  "presets": [ { "name": "404 - Editorial" } ],
+  "enabled_on": { "templates": ["404"] }
+}
+{% endschema %}

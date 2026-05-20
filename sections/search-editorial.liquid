@@ -1,0 +1,300 @@
+{%- liquid
+  assign q = search.terms
+-%}
+
+{%- paginate search.results by 24 -%}
+
+<section class="ed-search ed-section">
+  <header class="ed-search__head ed-reveal-stagger">
+    <div class="ed-eyebrow">{{ section.settings.eyebrow }}</div>
+    <h1 class="ed-display ed-search__title">
+      {%- if q != blank -%}
+        Results for <em>"{{ q }}"</em>
+      {%- else -%}
+        <em>Search</em> the studio
+      {%- endif -%}
+    </h1>
+    <form action="{{ routes.search_url }}" method="get" role="search" class="ed-search__form">
+      <input type="hidden" name="type" value="product">
+      <input
+        type="search"
+        name="q"
+        value="{{ q | escape }}"
+        placeholder="Search lamps, collections, journal..."
+        aria-label="Search"
+        autocomplete="off"
+      >
+      <button type="submit">Search <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span></button>
+    </form>
+    {%- if q != blank -%}
+      <p class="ed-search__count">
+        {{ search.results_count }} {{ search.results_count | pluralize: 'result', 'results' }}
+      </p>
+    {%- endif -%}
+  </header>
+
+  {%- if q != blank and search.results.size > 0 -%}
+    <div class="ed-search__grid ed-reveal-stagger">
+      {%- for item in search.results -%}
+        {%- assign idx = forloop.index | prepend: '0' | slice: -2, 2 -%}
+        <a class="ed-search__card" href="{{ item.url }}">
+          <div class="ed-search__card-img">
+            {%- if item.object_type == 'product' and item.featured_image -%}
+              {{ item.featured_image | image_url: width: 600 | image_tag:
+                loading: 'lazy', alt: item.title, class: 'ed-search__photo' }}
+            {%- elsif item.object_type == 'article' and item.image -%}
+              {{ item.image | image_url: width: 600 | image_tag:
+                loading: 'lazy', alt: item.title, class: 'ed-search__photo' }}
+            {%- endif -%}
+            <span class="ed-search__card-idx">{{ idx }}</span>
+            <span class="ed-search__card-type">{{ item.object_type }}</span>
+          </div>
+          <div class="ed-search__card-meta">
+            <div class="ed-search__card-title">{{ item.title }}</div>
+            {%- if item.object_type == 'product' -%}
+              <div class="ed-search__card-price">{{ item.price | money }}</div>
+            {%- elsif item.object_type == 'article' -%}
+              <div class="ed-search__card-byline">{{ item.author }} / {{ item.published_at | date: '%b %d, %Y' }}</div>
+            {%- endif -%}
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+
+    {%- if paginate.pages > 1 -%}
+      <nav class="ed-search__pagination">
+        {%- if paginate.previous -%}
+          <a class="ed-btn ed-btn--ghost" href="{{ paginate.previous.url }}">&lt;- Previous</a>
+        {%- endif -%}
+        <span>Page {{ paginate.current_page }} / {{ paginate.pages }}</span>
+        {%- if paginate.next -%}
+          <a class="ed-btn ed-btn--ghost" href="{{ paginate.next.url }}">Next -&gt;</a>
+        {%- endif -%}
+      </nav>
+    {%- endif -%}
+  {%- elsif q != blank -%}
+    <div class="ed-search__empty">
+      <h2>No matches for <em>"{{ q }}"</em></h2>
+      <p>Try a broader search, or explore the full collection.</p>
+      <a class="ed-btn ed-btn--solid" href="{{ routes.all_products_collection_url }}">
+        Shop all <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
+      </a>
+    </div>
+  {%- else -%}
+    <div class="ed-search__suggestions ed-reveal">
+      <div class="ed-eyebrow">Popular searches</div>
+      <ul>
+        <li><a href="{{ routes.search_url }}?q=pendant">Pendant lamps</a></li>
+        <li><a href="{{ routes.search_url }}?q=night">Night lamps</a></li>
+        <li><a href="{{ routes.search_url }}?q=moon">Moon series</a></li>
+        <li><a href="{{ routes.search_url }}?q=brass">Brass</a></li>
+      </ul>
+    </div>
+  {%- endif -%}
+</section>
+
+{%- endpaginate -%}
+
+{% stylesheet %}
+  .ed-search { padding: 64px 32px 96px; }
+  .ed-search__head {
+    display: flex; flex-direction: column; gap: 18px;
+    margin-bottom: 48px;
+    max-width: 920px;
+  }
+  .ed-search__title {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    font-size: clamp(48px, 7vw, 96px);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+  .ed-search__form {
+    display: flex;
+    border: 1px solid var(--ed-line);
+    border-radius: var(--ed-pill);
+    padding: 6px 6px 6px 20px;
+    background: var(--ed-card);
+    transition: border-color 0.2s var(--ed-ease);
+    max-width: 600px;
+  }
+  .ed-search__form:focus-within { border-color: var(--ed-fg); }
+  .ed-search__form input[type="search"] {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--ed-fg);
+    font: inherit;
+    font-size: 14px;
+    padding: 12px 0;
+    outline: none;
+    min-width: 0;
+  }
+  .ed-search__form input[type="search"]::placeholder { color: var(--ed-muted); }
+  .ed-search__form button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: var(--ed-pill);
+    background: var(--ed-fg);
+    color: var(--ed-bg);
+    padding: 10px 18px;
+    font-family: var(--ed-font-body);
+    font-size: 12px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s var(--ed-ease);
+  }
+  .ed-search__form button:hover { background: var(--ed-accent); color: #0a0a0a; }
+  .ed-search__count {
+    font-family: var(--ed-font-body);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ed-muted);
+  }
+
+  .ed-search__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .ed-search__card {
+    text-decoration: none;
+    color: var(--ed-fg);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.35s var(--ed-ease);
+  }
+  .ed-search__card:hover { transform: translateY(-4px); }
+  .ed-search__card-img {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: var(--ed-radius-card);
+    overflow: hidden;
+    background: var(--ed-card);
+    border: 1px solid var(--ed-line);
+    margin-bottom: 12px;
+  }
+  .ed-search__photo { width: 100%; height: 100%; object-fit: cover; }
+  .ed-search__card-idx, .ed-search__card-type {
+    position: absolute;
+    font-family: var(--ed-font-body);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 4px 9px;
+    border-radius: var(--ed-pill);
+    backdrop-filter: blur(8px);
+  }
+  .ed-search__card-idx {
+    top: 12px; left: 12px;
+    background: color-mix(in srgb, var(--ed-bg) 75%, transparent);
+    color: var(--ed-fg);
+    border: 1px solid var(--ed-line);
+  }
+  .ed-search__card-type {
+    top: 12px; right: 12px;
+    background: var(--ed-accent);
+    color: #0a0a0a;
+  }
+  .ed-search__card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px 4px 0;
+  }
+  .ed-search__card-title { font-family: var(--ed-font-body); font-size: 14px; }
+  .ed-search__card-price {
+    font-family: var(--ed-font-display);
+    font-style: italic;
+    font-size: 20px;
+  }
+  .ed-search__card-byline {
+    font-family: var(--ed-font-body);
+    font-size: 11px;
+    color: var(--ed-muted);
+    letter-spacing: 0.02em;
+  }
+
+  .ed-search__pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    margin-top: 56px;
+    padding-top: 32px;
+    border-top: 1px solid var(--ed-line);
+    font-family: var(--ed-font-body);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ed-muted);
+  }
+
+  .ed-search__empty {
+    text-align: center;
+    padding: 80px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    border: 1px dashed var(--ed-line);
+    border-radius: var(--ed-radius-card);
+  }
+  .ed-search__empty h2 {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    font-size: 36px;
+    margin: 0;
+  }
+  .ed-search__empty p { color: var(--ed-muted); margin: 0; max-width: 32em; }
+
+  .ed-search__suggestions {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .ed-search__suggestions ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .ed-search__suggestions a {
+    display: inline-block;
+    padding: 9px 18px;
+    border: 1px solid var(--ed-line);
+    border-radius: var(--ed-pill);
+    color: var(--ed-fg);
+    text-decoration: none;
+    font-family: var(--ed-font-body);
+    font-size: 13px;
+    transition: border-color 0.2s var(--ed-ease), background 0.2s var(--ed-ease);
+  }
+  .ed-search__suggestions a:hover { border-color: var(--ed-fg); }
+
+  @media (max-width: 1100px) {
+    .ed-search__grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 720px) {
+    .ed-search { padding: 48px 20px 64px; }
+    .ed-search__grid { grid-template-columns: 1fr 1fr; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Search - Editorial",
+  "tag": "section",
+  "class": "section-ed-search",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Search" }
+  ],
+  "presets": [ { "name": "Search - Editorial" } ],
+  "enabled_on": { "templates": ["search"] }
+}
+{% endschema %}

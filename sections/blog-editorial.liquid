@@ -1,0 +1,333 @@
+{%- liquid
+  assign b = blog
+-%}
+
+{%- paginate b.articles by 12 -%}
+
+<section class="ed-blog ed-section">
+  <header class="ed-blog__head ed-reveal-stagger">
+    <div class="ed-eyebrow">{{ section.settings.eyebrow }} / {{ b.title }}</div>
+    <h1 class="ed-display ed-blog__title">{{ section.settings.heading }}</h1>
+    {%- if section.settings.description != blank -%}
+      <p class="ed-blog__desc">{{ section.settings.description }}</p>
+    {%- endif -%}
+    <div class="ed-blog__meta">
+      <span>{{ b.articles_count }} {{ b.articles_count | pluralize: 'piece', 'pieces' }}</span>
+      <span>/</span>
+      <span>Updated monthly</span>
+    </div>
+  </header>
+
+  {%- if b.articles.size > 0 -%}
+    {%- assign first_article = b.articles | first -%}
+    <article class="ed-blog__feature ed-reveal">
+      <a class="ed-blog__feature-img" href="{{ first_article.url }}">
+        {%- if first_article.image -%}
+          {{ first_article.image | image_url: width: 1600 | image_tag:
+            loading: 'lazy', alt: first_article.title, class: 'ed-blog__feature-photo' }}
+        {%- endif -%}
+        <span class="ed-blog__feature-badge">Latest</span>
+      </a>
+      <div class="ed-blog__feature-meta">
+        <div class="ed-eyebrow">{{ first_article.published_at | date: '%B %d, %Y' }}</div>
+        <h2 class="ed-display ed-blog__feature-title">
+          <a href="{{ first_article.url }}">{{ first_article.title }}</a>
+        </h2>
+        <p class="ed-blog__feature-excerpt">{{ first_article.excerpt_or_content | strip_html | truncatewords: 38 }}</p>
+        <div class="ed-blog__feature-author">
+          <span>{{ first_article.author }}</span>
+          {%- if first_article.tags.size > 0 -%}
+            <span>/</span>
+            <span>{{ first_article.tags | first }}</span>
+          {%- endif -%}
+        </div>
+        <a class="ed-btn ed-btn--ghost" href="{{ first_article.url }}">
+          Read article <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
+        </a>
+      </div>
+    </article>
+
+    {%- if b.articles.size > 1 -%}
+      <div class="ed-blog__grid ed-reveal-stagger">
+        {%- for article in b.articles offset: 1 -%}
+          {%- assign idx = forloop.index | plus: 1 | prepend: '0' | slice: -2, 2 -%}
+          <a class="ed-blog__card" href="{{ article.url }}">
+            <div class="ed-blog__card-img">
+              {%- if article.image -%}
+                {{ article.image | image_url: width: 800 | image_tag:
+                  loading: 'lazy', alt: article.title, class: 'ed-blog__card-photo' }}
+              {%- endif -%}
+              <span class="ed-blog__card-idx">{{ idx }}</span>
+            </div>
+            <div class="ed-blog__card-meta">
+              <div class="ed-blog__card-date">{{ article.published_at | date: '%b %d, %Y' }}</div>
+              <h3 class="ed-blog__card-title">{{ article.title }}</h3>
+              <p class="ed-blog__card-excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 18 }}</p>
+              <span class="ed-blog__card-author">{{ article.author }}</span>
+            </div>
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if paginate.pages > 1 -%}
+      <nav class="ed-blog__pagination">
+        {%- if paginate.previous -%}
+          <a class="ed-btn ed-btn--ghost" href="{{ paginate.previous.url }}">&lt;- Previous</a>
+        {%- endif -%}
+        <span>Page {{ paginate.current_page }} / {{ paginate.pages }}</span>
+        {%- if paginate.next -%}
+          <a class="ed-btn ed-btn--ghost" href="{{ paginate.next.url }}">Next -&gt;</a>
+        {%- endif -%}
+      </nav>
+    {%- endif -%}
+  {%- else -%}
+    <p class="ed-blog__empty">No articles yet. Check back soon.</p>
+  {%- endif -%}
+</section>
+
+{%- endpaginate -%}
+
+{% stylesheet %}
+  .ed-blog { padding: 64px 32px 96px; }
+  .ed-blog__head {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 56px;
+    max-width: 900px;
+  }
+  .ed-blog__title {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    font-size: clamp(56px, 9vw, 140px);
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+  .ed-blog__desc {
+    font-family: var(--ed-font-body);
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ed-muted);
+    max-width: 36em;
+    margin: 0;
+  }
+  .ed-blog__meta {
+    display: flex;
+    gap: 10px;
+    font-family: var(--ed-font-body);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ed-muted);
+    padding-top: 14px;
+    border-top: 1px solid var(--ed-line);
+    margin-top: 8px;
+  }
+
+  /* Featured article */
+  .ed-blog__feature {
+    display: grid;
+    grid-template-columns: 7fr 5fr;
+    gap: 40px;
+    align-items: center;
+    margin-bottom: 80px;
+    padding-bottom: 80px;
+    border-bottom: 1px solid var(--ed-line);
+  }
+  .ed-blog__feature-img {
+    position: relative;
+    aspect-ratio: 4/3;
+    border-radius: var(--ed-radius-card);
+    overflow: hidden;
+    background: var(--ed-card);
+    border: 1px solid var(--ed-line);
+    text-decoration: none;
+    display: block;
+  }
+  .ed-blog__feature-photo {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.8s var(--ed-ease);
+  }
+  .ed-blog__feature-img:hover .ed-blog__feature-photo { transform: scale(1.04); }
+  .ed-blog__feature-badge {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-family: var(--ed-font-body);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    background: var(--ed-accent);
+    color: #0a0a0a;
+    border-radius: var(--ed-pill);
+  }
+  .ed-blog__feature-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-self: center;
+  }
+  .ed-blog__feature-title {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    font-size: clamp(36px, 4vw, 56px);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    margin: 0;
+  }
+  .ed-blog__feature-title a {
+    color: var(--ed-fg);
+    text-decoration: none;
+  }
+  .ed-blog__feature-excerpt {
+    font-family: var(--ed-font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ed-muted);
+    margin: 0;
+    max-width: 32em;
+  }
+  .ed-blog__feature-author {
+    display: flex;
+    gap: 8px;
+    font-family: var(--ed-font-body);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ed-muted);
+  }
+
+  /* Grid */
+  .ed-blog__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px 24px;
+  }
+  .ed-blog__card {
+    text-decoration: none;
+    color: var(--ed-fg);
+    display: flex;
+    flex-direction: column;
+  }
+  .ed-blog__card-img {
+    position: relative;
+    aspect-ratio: 4/3;
+    border-radius: var(--ed-radius-card);
+    overflow: hidden;
+    background: var(--ed-card);
+    border: 1px solid var(--ed-line);
+    margin-bottom: 16px;
+  }
+  .ed-blog__card-photo {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.6s var(--ed-ease);
+  }
+  .ed-blog__card:hover .ed-blog__card-photo { transform: scale(1.06); }
+  .ed-blog__card-idx {
+    position: absolute;
+    top: 14px; left: 14px;
+    font-family: var(--ed-font-body);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 4px 9px;
+    background: color-mix(in srgb, var(--ed-bg) 80%, transparent);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--ed-line);
+    border-radius: var(--ed-pill);
+  }
+  .ed-blog__card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .ed-blog__card-date {
+    font-family: var(--ed-font-body);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ed-muted);
+  }
+  .ed-blog__card-title {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.15;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .ed-blog__card-excerpt {
+    font-family: var(--ed-font-body);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ed-muted);
+    margin: 0;
+  }
+  .ed-blog__card-author {
+    font-family: var(--ed-font-body);
+    font-size: 11px;
+    color: var(--ed-muted);
+    margin-top: 4px;
+    letter-spacing: 0.02em;
+  }
+
+  .ed-blog__pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    margin-top: 56px;
+    padding-top: 32px;
+    border-top: 1px solid var(--ed-line);
+    font-family: var(--ed-font-body);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ed-muted);
+  }
+  .ed-blog__empty {
+    text-align: center;
+    padding: 80px;
+    color: var(--ed-muted);
+    border: 1px dashed var(--ed-line);
+    border-radius: var(--ed-radius-card);
+  }
+
+  @media (max-width: 1100px) {
+    .ed-blog__feature { grid-template-columns: 1fr; gap: 24px; }
+    .ed-blog__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 720px) {
+    .ed-blog { padding: 48px 20px 64px; }
+    .ed-blog__feature { padding-bottom: 48px; margin-bottom: 48px; }
+    .ed-blog__grid { grid-template-columns: 1fr; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Blog - Editorial",
+  "tag": "section",
+  "class": "section-ed-blog",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Journal" },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>The <em>Journal</em>.</p>"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Notes on light, craft, and the spaces we build around them."
+    }
+  ],
+  "presets": [ { "name": "Blog - Editorial" } ],
+  "enabled_on": { "templates": ["blog"] }
+}
+{% endschema %}
