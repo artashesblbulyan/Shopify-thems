@@ -11,9 +11,9 @@
   --ed-line-strong: rgba(22, 20, 16, 0.28);
   --ed-card: #fffaf0;
   --ed-card-hover: #ece6da;
-  --ed-accent: #c8ff5f;
-  --ed-accent-soft: rgba(200, 255, 95, 0.22);
-  --ed-sage: #9bbd8f;
+  --ed-accent: #e7a63a;
+  --ed-accent-soft: rgba(231, 166, 58, 0.2);
+  --ed-sage: #b8ada0;
   --ed-cream: #f5f1e8;
   --ed-ink: #161410;
   --ed-blue: #b8d7ff;
@@ -38,8 +38,8 @@ html[data-ed-mode="night"] {
   --ed-line-strong: rgba(248, 244, 234, 0.28);
   --ed-card: #1a1916;
   --ed-card-hover: #23211d;
-  --ed-accent: #d8ff6d;
-  --ed-accent-soft: rgba(216, 255, 109, 0.18);
+  --ed-accent: #f0b64a;
+  --ed-accent-soft: rgba(240, 182, 74, 0.18);
   --ed-shadow-card: 0 18px 50px rgba(0, 0, 0, 0.36);
   --ed-shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.28);
 }

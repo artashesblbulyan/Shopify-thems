@@ -25,12 +25,24 @@
         "speed": 34
       }
     },
+    "bestsellers": {
+      "type": "bestsellers-editorial",
+      "settings": {
+        "eyebrow": "Best sellers",
+        "heading": "<p>Shop the<br><em>favorites.</em></p>",
+        "description": "A clean edit of the products that deserve the first look. Built for quick scanning, clear prices, and fast add-to-cart.",
+        "view_all_label": "View all products",
+        "view_all_link": "shopify://collections/all",
+        "collection": "all",
+        "product_limit": 8
+      }
+    },
     "bento_pendant": {
       "type": "bento-grid",
       "settings": {
-        "index_number": "02",
-        "index_label": "Bestsellers",
-        "heading": "<p>Most wanted <em>pieces.</em></p>",
+        "index_number": "03",
+        "index_label": "Featured edit",
+        "heading": "<p>Designed to<br><em>stand out.</em></p>",
         "view_all_label": "View all",
         "view_all_link": "shopify://collections/pendant-lamp",
         "collection": "pendant-lamp"
@@ -39,7 +51,7 @@
     "split_story": {
       "type": "editorial-split",
       "settings": {
-        "index_number": "03",
+        "index_number": "04",
         "index_label": "Mood",
         "heading": "<p>Designed around<br><em>atmosphere.</em></p>",
         "quote": "Choose the shape, scale, and glow that fits the room. A good lamp should feel useful in the day and calm at night.",
@@ -55,7 +67,7 @@
     "bento_night": {
       "type": "bento-grid",
       "settings": {
-        "index_number": "04",
+        "index_number": "05",
         "index_label": "Night lamps",
         "heading": "<p>Glow for<br><em>evenings.</em></p>",
         "view_all_label": "View all",
@@ -66,7 +78,7 @@
     "split_light": {
       "type": "editorial-split",
       "settings": {
-        "index_number": "05",
+        "index_number": "06",
         "index_label": "Details",
         "heading": "<p>Clean forms,<br><em>warm light.</em></p>",
         "quote": "A focused catalog makes choosing simpler: table lamps, night lights, pendants, and useful pieces for everyday rooms.",
@@ -89,7 +101,7 @@
       },
       "block_order": ["s1", "s2", "s3", "s4"],
       "settings": {
-        "eyebrow": "06 / Service",
+        "eyebrow": "07 / Service",
         "heading": "<p>A smoother way<br>to buy <em>lighting.</em></p>"
       }
     },
@@ -102,7 +114,7 @@
       },
       "block_order": ["p1", "p2", "p3"],
       "settings": {
-        "index_number": "07",
+        "index_number": "08",
         "index_label": "How it works",
         "heading": "<p>From browsing<br>to <em>glow.</em></p>",
         "description": "A clear, product-first shopping flow built for confident decisions."
@@ -112,6 +124,7 @@
   "order": [
     "hero",
     "marquee",
+    "bestsellers",
     "bento_pendant",
     "split_story",
     "bento_night",

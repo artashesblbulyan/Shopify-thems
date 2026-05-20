@@ -1,0 +1,382 @@
+{%- liquid
+  assign source_collection = collections[section.settings.collection]
+  if source_collection == blank
+    assign source_collection = collections.all
+  endif
+  assign product_limit = section.settings.product_limit | default: 8
+-%}
+
+<section class="ed-bestsellers ed-section" id="ed-bestsellers-{{ section.id }}">
+  <header class="ed-bestsellers__head ed-reveal-stagger">
+    <div>
+      {%- if section.settings.eyebrow != blank -%}
+        <div class="ed-eyebrow">{{ section.settings.eyebrow }}</div>
+      {%- endif -%}
+      <h2 class="ed-display ed-bestsellers__title">{{ section.settings.heading }}</h2>
+    </div>
+    {%- if section.settings.description != blank -%}
+      <p class="ed-bestsellers__desc">{{ section.settings.description }}</p>
+    {%- endif -%}
+    {%- if section.settings.view_all_label != blank -%}
+      <a class="ed-btn ed-btn--ghost ed-bestsellers__view" href="{{ section.settings.view_all_link | default: source_collection.url | default: routes.all_products_collection_url }}">
+        {{ section.settings.view_all_label }}
+        <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
+      </a>
+    {%- endif -%}
+  </header>
+
+  {%- if source_collection.products.size > 0 -%}
+    <div class="ed-bestsellers__grid ed-reveal-stagger">
+      {%- for product in source_collection.products limit: product_limit -%}
+        {%- assign card_variant = product.selected_or_first_available_variant -%}
+        {%- assign idx = forloop.index | prepend: '0' | slice: -2, 2 -%}
+        <article class="ed-bestsellers__card">
+          <a class="ed-bestsellers__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+            {%- if product.featured_image -%}
+              {{ product.featured_image | image_url: width: 900 | image_tag:
+                loading: 'lazy',
+                widths: '360, 540, 720, 900',
+                sizes: '(max-width: 720px) 50vw, 25vw',
+                alt: product.featured_image.alt | default: product.title,
+                class: 'ed-bestsellers__photo'
+              }}
+            {%- endif -%}
+            <span class="ed-bestsellers__idx">{{ idx }}</span>
+            {%- if product.compare_at_price > product.price -%}
+              <span class="ed-bestsellers__badge">Sale</span>
+            {%- elsif product.available == false -%}
+              <span class="ed-bestsellers__badge">Sold out</span>
+            {%- elsif forloop.index <= 3 -%}
+              <span class="ed-bestsellers__badge">Popular</span>
+            {%- endif -%}
+          </a>
+
+          <div class="ed-bestsellers__info">
+            <a class="ed-bestsellers__name" href="{{ product.url }}">{{ product.title }}</a>
+            <div class="ed-bestsellers__price-row">
+              <span class="ed-bestsellers__price">{{ product.price | money }}</span>
+              {%- if product.compare_at_price > product.price -%}
+                <span class="ed-bestsellers__compare">{{ product.compare_at_price | money }}</span>
+              {%- endif -%}
+            </div>
+          </div>
+
+          <div class="ed-bestsellers__actions">
+            {%- if product.available and card_variant -%}
+              <form method="post" action="{{ routes.cart_add_url }}" class="ed-bestsellers__form">
+                <input type="hidden" name="id" value="{{ card_variant.id }}">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="ed-bestsellers__quick">
+                  Quick add
+                </button>
+              </form>
+            {%- else -%}
+              <span class="ed-bestsellers__unavailable">Sold out</span>
+            {%- endif -%}
+            <a class="ed-bestsellers__details" href="{{ product.url }}">Details</a>
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+  {%- else -%}
+    <div class="ed-bestsellers__empty">
+      <p>Select a collection with products to populate this section.</p>
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .ed-bestsellers {
+    padding: 92px 28px 104px;
+    border-bottom: 1px solid var(--ed-line);
+  }
+
+  .ed-bestsellers__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 0.45fr) auto;
+    gap: 28px;
+    align-items: end;
+    margin-bottom: 34px;
+  }
+
+  .ed-bestsellers__title {
+    font-family: var(--ed-font-body);
+    font-size: clamp(46px, 7vw, 112px);
+    line-height: 0.88;
+    letter-spacing: -0.065em;
+    font-weight: 900;
+    margin-top: 14px;
+    max-width: 8.5ch;
+  }
+
+  .ed-bestsellers__title em {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+  }
+
+  .ed-bestsellers__desc {
+    margin: 0;
+    color: var(--ed-muted);
+    font-family: var(--ed-font-body);
+    font-size: 14px;
+    line-height: 1.55;
+    max-width: 32em;
+  }
+
+  .ed-bestsellers__view {
+    justify-self: end;
+  }
+
+  .ed-bestsellers__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .ed-bestsellers__card {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ed-bestsellers__media {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 5;
+    border: 1px solid var(--ed-line);
+    border-radius: var(--ed-radius-card);
+    overflow: hidden;
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--ed-accent) 16%, transparent), transparent 45%),
+      var(--ed-card);
+  }
+
+  .ed-bestsellers__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.55s var(--ed-ease);
+  }
+
+  .ed-bestsellers__card:hover .ed-bestsellers__photo {
+    transform: scale(1.04);
+  }
+
+  .ed-bestsellers__idx,
+  .ed-bestsellers__badge {
+    position: absolute;
+    top: 12px;
+    z-index: 2;
+    border-radius: var(--ed-pill);
+    font-family: var(--ed-font-body);
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 10px;
+  }
+
+  .ed-bestsellers__idx {
+    left: 12px;
+    background: color-mix(in srgb, var(--ed-bg) 78%, transparent);
+    color: var(--ed-fg);
+    border: 1px solid var(--ed-line);
+    backdrop-filter: blur(10px);
+  }
+
+  .ed-bestsellers__badge {
+    right: 12px;
+    background: var(--ed-accent);
+    color: var(--ed-ink);
+  }
+
+  .ed-bestsellers__info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    min-height: 46px;
+  }
+
+  .ed-bestsellers__name {
+    color: var(--ed-fg);
+    text-decoration: none;
+    font-family: var(--ed-font-body);
+    font-size: 15px;
+    font-weight: 750;
+    line-height: 1.22;
+  }
+
+  .ed-bestsellers__name:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .ed-bestsellers__price-row {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+
+  .ed-bestsellers__price {
+    color: var(--ed-fg);
+    font-family: var(--ed-font-body);
+    font-size: 15px;
+    font-weight: 850;
+    letter-spacing: -0.035em;
+    white-space: nowrap;
+  }
+
+  .ed-bestsellers__compare {
+    color: var(--ed-muted);
+    font-family: var(--ed-font-body);
+    font-size: 12px;
+    text-decoration: line-through;
+    white-space: nowrap;
+  }
+
+  .ed-bestsellers__actions {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .ed-bestsellers__form {
+    min-width: 0;
+  }
+
+  .ed-bestsellers__quick,
+  .ed-bestsellers__details,
+  .ed-bestsellers__unavailable {
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--ed-radius-card);
+    font-family: var(--ed-font-body);
+    font-size: 12px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .ed-bestsellers__quick {
+    width: 100%;
+    border: 1px solid var(--ed-fg);
+    background: var(--ed-fg);
+    color: var(--ed-bg);
+    cursor: pointer;
+    transition: background 0.2s var(--ed-ease), color 0.2s var(--ed-ease), border-color 0.2s var(--ed-ease);
+  }
+
+  .ed-bestsellers__quick:hover {
+    background: var(--ed-accent);
+    border-color: var(--ed-accent);
+    color: var(--ed-ink);
+  }
+
+  .ed-bestsellers__details {
+    padding-inline: 14px;
+    border: 1px solid var(--ed-line);
+    color: var(--ed-fg);
+    background: color-mix(in srgb, var(--ed-card) 78%, transparent);
+  }
+
+  .ed-bestsellers__details:hover {
+    border-color: var(--ed-line-strong);
+  }
+
+  .ed-bestsellers__unavailable {
+    border: 1px solid var(--ed-line);
+    color: var(--ed-muted);
+  }
+
+  .ed-bestsellers__empty {
+    padding: 52px 24px;
+    border: 1px dashed var(--ed-line);
+    border-radius: var(--ed-radius-card);
+    color: var(--ed-muted);
+    text-align: center;
+  }
+
+  @media (max-width: 1100px) {
+    .ed-bestsellers__head {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+
+    .ed-bestsellers__view {
+      justify-self: start;
+    }
+
+    .ed-bestsellers__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 720px) {
+    .ed-bestsellers {
+      padding: 64px 18px 76px;
+    }
+
+    .ed-bestsellers__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px 10px;
+    }
+
+    .ed-bestsellers__name,
+    .ed-bestsellers__price {
+      font-size: 13px;
+    }
+
+    .ed-bestsellers__actions {
+      grid-template-columns: 1fr;
+    }
+
+    .ed-bestsellers__details {
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Bestsellers - Editorial",
+  "tag": "section",
+  "class": "section-ed-bestsellers",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Bestsellers" },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>Shop our<br><em>best sellers.</em></p>"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "A focused edit of the pieces shoppers reach for first."
+    },
+    { "type": "text", "id": "view_all_label", "label": "View all label", "default": "View all products" },
+    { "type": "url", "id": "view_all_link", "label": "View all link" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    {
+      "type": "range",
+      "id": "product_limit",
+      "label": "Products",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    }
+  ],
+  "presets": [
+    { "name": "Bestsellers - Editorial" }
+  ]
+}
+{% endschema %}
