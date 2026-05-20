@@ -1434,3 +1434,122 @@ html.ed-page-ready .ed-hero__visual {
     filter: none;
   }
 }
+
+/* ============================================================
+   Uniform product cards
+   Matches the editorial collection product card size:
+   4 columns desktop, 3 tablet, 2 mobile, square media.
+   ============================================================ */
+
+:root {
+  --ed-product-card-gap: 12px;
+  --ed-product-card-radius: var(--ed-radius-card);
+}
+
+.ed-collection__grid,
+.ed-bestsellers__grid,
+.ed-search__grid,
+.ed-bento__grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: var(--ed-product-card-gap) !important;
+}
+
+.ed-collection__card-img,
+.ed-bestsellers__media,
+.ed-search__card-img,
+.ed-bento__img {
+  aspect-ratio: 1 !important;
+  border-radius: var(--ed-product-card-radius) !important;
+}
+
+.ed-bento__grid {
+  grid-auto-rows: auto !important;
+}
+
+.ed-bento__card,
+.ed-bento__card--tall,
+.ed-bento__card--wide,
+.ed-bento__card--sq,
+.ed-bento__card--lg {
+  grid-column: span 1 !important;
+  grid-row: span 1 !important;
+}
+
+.ed-bento__card {
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: visible !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.ed-bento__img {
+  position: relative !important;
+  margin-bottom: 12px !important;
+}
+
+.ed-bento__meta {
+  position: relative !important;
+  height: auto !important;
+  padding: 4px 4px 0 !important;
+  gap: 6px !important;
+  justify-content: flex-start !important;
+}
+
+.ed-bento__hover-cta {
+  display: none !important;
+}
+
+.ed-bento__card:hover .ed-bento__info {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Native Shopify product cards used by recommendations/product-list/search blocks. */
+.product-grid {
+  --product-grid-gap: var(--ed-product-card-gap) !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: var(--ed-product-card-gap) !important;
+}
+
+.section-resource-list .resource-list--grid:has(.product-card),
+.section-resource-list .resource-list--grid:has(product-card) {
+  --resource-list-column-gap-desktop: var(--ed-product-card-gap) !important;
+  --resource-list-row-gap-desktop: var(--ed-product-card-gap) !important;
+  --resource-list-columns: repeat(4, minmax(0, 1fr)) !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: var(--ed-product-card-gap) !important;
+}
+
+.product-card .card-gallery,
+.product-card .product-card__image,
+.predictive-search-results__card--product .card-gallery,
+.section-resource-list .resource-card:has(.product-card) .card-gallery {
+  --gallery-aspect-ratio: 1 !important;
+  aspect-ratio: 1 !important;
+}
+
+@media (max-width: 1100px) {
+  .ed-collection__grid,
+  .ed-bestsellers__grid,
+  .ed-search__grid,
+  .ed-bento__grid,
+  .product-grid,
+  .section-resource-list .resource-list--grid:has(.product-card),
+  .section-resource-list .resource-list--grid:has(product-card) {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .ed-collection__grid,
+  .ed-bestsellers__grid,
+  .ed-search__grid,
+  .ed-bento__grid,
+  .product-grid,
+  .section-resource-list .resource-list--grid:has(.product-card),
+  .section-resource-list .resource-list--grid:has(product-card) {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+}
