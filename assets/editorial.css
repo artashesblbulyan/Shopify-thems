@@ -654,7 +654,12 @@ html[data-ed-mode="night"] .ed-hero__img {
   padding-bottom: 88px;
 }
 
-.ed-bento__head,
+.ed-bento__head {
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
+  align-items: end;
+  gap: 28px;
+}
+
 .ed-testimonials__head {
   grid-template-columns: 1fr auto;
   align-items: end;
@@ -688,6 +693,41 @@ html[data-ed-mode="night"] .ed-hero__img {
   font-family: var(--ed-font-display);
   font-weight: 400;
   letter-spacing: -0.025em;
+}
+
+.ed-bento__aside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.ed-bento__desc {
+  margin: 0;
+  max-width: 34em;
+  color: var(--ed-muted);
+  font-family: var(--ed-font-body);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.ed-bento__summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--ed-muted);
+  font-family: var(--ed-font-body);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.ed-bento__summary span {
+  padding: 6px 10px;
+  border: 1px solid var(--ed-line);
+  border-radius: var(--ed-pill);
+  background: color-mix(in srgb, var(--ed-card) 72%, transparent);
 }
 
 .ed-bento__grid {
@@ -743,8 +783,7 @@ html[data-ed-mode="night"] .ed-bento__img {
   align-items: center;
 }
 
-.ed-bento__tag,
-.ed-bento__card-sale,
+.ed-bento__badge,
 .ed-collection__card-sale,
 .ed-search__card-type,
 .ed-list-collections__count {
@@ -759,11 +798,11 @@ html[data-ed-mode="night"] .ed-bento__img {
 }
 
 .ed-bento__info {
-  padding: 12px;
-  margin: -12px;
-  border-radius: var(--ed-radius-card);
-  background: color-mix(in srgb, var(--ed-bg) 72%, transparent);
-  backdrop-filter: blur(10px);
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+  background: transparent;
+  backdrop-filter: none;
 }
 
 .ed-bento__title-line,
@@ -1454,6 +1493,12 @@ html.ed-page-ready .ed-hero__visual {
   --ed-product-card-radius: var(--ed-radius-card);
 }
 
+.ed-bento__head {
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 420px) !important;
+  align-items: end !important;
+  gap: 28px !important;
+}
+
 .ed-collection__grid,
 .ed-bestsellers__grid,
 .ed-search__grid,
@@ -1513,6 +1558,13 @@ html.ed-page-ready .ed-hero__visual {
   transform: none !important;
 }
 
+.ed-bento__info {
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+}
+
 /* Native Shopify product cards used by recommendations/product-list/search blocks. */
 .product-grid {
   --product-grid-gap: var(--ed-product-card-gap) !important;
@@ -1550,6 +1602,22 @@ html.ed-page-ready .ed-hero__visual {
 }
 
 @media (max-width: 720px) {
+  .ed-bento__head {
+    grid-template-columns: 1fr !important;
+    align-items: start !important;
+    margin-bottom: 26px !important;
+  }
+
+  .ed-bento__info {
+    flex-direction: column !important;
+    gap: 4px !important;
+  }
+
+  .ed-bento__price-row {
+    align-items: flex-start !important;
+    text-align: left !important;
+  }
+
   .ed-collection__grid,
   .ed-bestsellers__grid,
   .ed-search__grid,

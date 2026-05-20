@@ -41,9 +41,10 @@
       "type": "bento-grid",
       "settings": {
         "index_number": "03",
-        "index_label": "Featured edit",
-        "heading": "<p>Designed to<br><em>stand out.</em></p>",
-        "view_all_label": "View all",
+        "index_label": "Pendant lamps",
+        "heading": "<p>Pendant lamps<br><em>with presence.</em></p>",
+        "description": "Sculptural ceiling lights for dining tables, hallways, and rooms that need a clear focal point.",
+        "view_all_label": "Shop pendants",
         "view_all_link": "shopify://collections/pendant-lamp",
         "collection": "pendant-lamp"
       }
@@ -70,7 +71,8 @@
         "index_number": "05",
         "index_label": "Night lamps",
         "heading": "<p>Glow for<br><em>evenings.</em></p>",
-        "view_all_label": "View all",
+        "description": "Compact bedside and accent lights chosen for softer evenings, shelves, and quiet corners.",
+        "view_all_label": "Shop night lamps",
         "view_all_link": "shopify://collections/night-lamp",
         "collection": "night-lamp"
       }
