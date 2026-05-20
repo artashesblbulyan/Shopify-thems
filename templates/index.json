@@ -32,8 +32,8 @@
         "heading": "<p>Shop the<br><em>favorites.</em></p>",
         "description": "A clean edit of the products that deserve the first look. Built for quick scanning, clear prices, and fast add-to-cart.",
         "view_all_label": "View all products",
-        "view_all_link": "shopify://collections/all",
-        "collection": "all",
+        "view_all_link": "shopify://collections/best-sellers",
+        "collection": "best-sellers",
         "product_limit": 8
       }
     },

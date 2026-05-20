@@ -1,6 +1,12 @@
 {%- liquid
   assign source_collection = collections[section.settings.collection]
   if source_collection == blank
+    assign source_collection = collections['best-sellers']
+  endif
+  if source_collection == blank
+    assign source_collection = collections['best-selling']
+  endif
+  if source_collection == blank
     assign source_collection = collections.all
   endif
   assign product_limit = section.settings.product_limit | default: 8
