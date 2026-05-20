@@ -1,0 +1,113 @@
+{%- doc -%}
+  Site-wide editorial chrome: scroll progress bar, floating day/night toggle,
+  and scroll-reveal initializer. Rendered once in theme.liquid.
+{%- enddoc -%}
+
+<div class="ed-scroll-progress" data-ed-scroll-progress aria-hidden="true"></div>
+
+<button
+  type="button"
+  class="ed-mode-floating"
+  data-ed-mode-toggle
+  aria-label="Toggle day / night mode"
+>
+  <span data-ed-mode-label>Night</span>
+  <span class="ed-mode-floating__dot" aria-hidden="true"></span>
+</button>
+
+<script>
+  (function () {
+    var html = document.documentElement;
+
+    // Sync labels
+    function syncLabels() {
+      var mode = html.dataset.edMode === 'day' ? 'Day' : 'Night';
+      document.querySelectorAll('[data-ed-mode-label]').forEach(function (el) {
+        el.textContent = mode;
+      });
+    }
+    syncLabels();
+
+    // Toggle handler
+    document.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-ed-mode-toggle]');
+      if (!btn) return;
+      var next = html.dataset.edMode === 'night' ? 'day' : 'night';
+      html.dataset.edMode = next;
+      try { localStorage.setItem('ed-mode', next); } catch (e) {}
+      syncLabels();
+    });
+
+    // Scroll progress
+    var bar = document.querySelector('[data-ed-scroll-progress]');
+    function updateScroll() {
+      var doc = document.documentElement;
+      var max = doc.scrollHeight - doc.clientHeight;
+      if (!max) return;
+      var pct = (doc.scrollTop / max) * 100;
+      if (bar) bar.style.width = pct + '%';
+    }
+    window.addEventListener('scroll', updateScroll, { passive: true });
+    window.addEventListener('resize', updateScroll);
+    updateScroll();
+
+    // Scroll reveal — IntersectionObserver, runs after DOM is ready
+    function bindReveal() {
+      var els = document.querySelectorAll('.ed-reveal, .ed-reveal-stagger');
+      if (!('IntersectionObserver' in window)) {
+        els.forEach(function (el) { el.classList.add('is-in'); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-in');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+      els.forEach(function (el) { io.observe(el); });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bindReveal);
+    } else {
+      bindReveal();
+    }
+
+    // Count-up numbers (data-ed-count="12000" data-ed-count-suffix="+")
+    function bindCountUp() {
+      var nums = document.querySelectorAll('[data-ed-count]');
+      if (!nums.length || !('IntersectionObserver' in window)) return;
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var el = entry.target;
+          var target = parseFloat(el.dataset.edCount) || 0;
+          var prefix = el.dataset.edCountPrefix || '';
+          var suffix = el.dataset.edCountSuffix || '';
+          var dur = parseInt(el.dataset.edCountDuration || '1400', 10);
+          var start = performance.now();
+          function tick(now) {
+            var t = Math.min(1, (now - start) / dur);
+            var eased = 1 - Math.pow(1 - t, 3);
+            var val = Math.round(target * eased);
+            if (target >= 1000) {
+              el.textContent = prefix + (val >= 1000 ? (val / 1000).toFixed(1).replace(/\.0$/, '') + 'K' : val) + suffix;
+            } else {
+              el.textContent = prefix + val + suffix;
+            }
+            if (t < 1) requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+          io.unobserve(el);
+        });
+      }, { threshold: 0.5 });
+      nums.forEach(function (n) { io.observe(n); });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bindCountUp);
+    } else {
+      bindCountUp();
+    }
+  })();
+</script>

@@ -1,0 +1,368 @@
+{%- liquid
+  assign sid = section.id
+  assign hero_image = section.settings.image
+  assign overlay_amount = section.settings.overlay_opacity | times: 0.01
+-%}
+
+<section class="ed-hero ed-section" id="ed-hero-{{ sid }}">
+  <div class="ed-hero__visual" aria-hidden="true">
+    {%- if hero_image != blank -%}
+      {{ hero_image | image_url: width: 2200 | image_tag:
+        loading: 'eager',
+        fetchpriority: 'high',
+        widths: '600, 900, 1200, 1800, 2200',
+        sizes: '100vw',
+        class: 'ed-hero__img'
+      }}
+    {%- endif -%}
+    <div class="ed-hero__lamp"></div>
+    <div class="ed-hero__glow"></div>
+    <div class="ed-hero__overlay" style="--ed-hero-overlay: {{ overlay_amount }};"></div>
+  </div>
+
+  <div class="ed-hero__index ed-reveal">
+    <span class="ed-hero__index-num">{{ section.settings.index_number }}</span>
+    <hr>
+    <span>{{ section.settings.index_label }}</span>
+  </div>
+
+  <div class="ed-hero__heading ed-reveal">
+    <h1 class="ed-display">
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="ed-hero__eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+      {{ section.settings.headline }}
+    </h1>
+  </div>
+
+  <div class="ed-hero__meta ed-reveal-stagger">
+    {%- if section.settings.description != blank -%}
+      <p class="ed-hero__desc">{{ section.settings.description }}</p>
+    {%- endif -%}
+    <div class="ed-hero__cta">
+      {%- if section.settings.primary_cta_label != blank -%}
+        <a class="ed-btn ed-btn--solid" href="{{ section.settings.primary_cta_link | default: '#' }}">
+          {{ section.settings.primary_cta_label }}
+          <span class="ed-btn__arrow" aria-hidden="true">→</span>
+        </a>
+      {%- endif -%}
+      {%- if section.settings.secondary_cta_label != blank -%}
+        <a class="ed-btn ed-btn--ghost" href="{{ section.settings.secondary_cta_link | default: '#' }}">
+          {{ section.settings.secondary_cta_label }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if section.settings.corner_value != blank -%}
+    <div class="ed-hero__corner ed-reveal">
+      <strong>{{ section.settings.corner_value }}</strong>
+      <span>{{ section.settings.corner_label }}</span>
+    </div>
+  {%- endif -%}
+
+  <a href="#ed-after-hero-{{ sid }}" class="ed-hero__scroll ed-reveal" aria-label="Scroll down">
+    <span class="ed-hero__scroll-label">Scroll</span>
+    <span class="ed-hero__scroll-arrow">↓</span>
+  </a>
+</section>
+<span id="ed-after-hero-{{ sid }}"></span>
+
+{% stylesheet %}
+  .ed-hero {
+    position: relative;
+    min-height: 100svh;
+    padding: 96px 32px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr auto;
+    gap: 0 32px;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* Background visual */
+  .ed-hero__visual {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .ed-hero__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0.5;
+    filter: blur(2px) brightness(0.5);
+    transform: scale(1.06);
+  }
+  html[data-ed-mode="day"] .ed-hero__img {
+    opacity: 0.35;
+    filter: blur(2px) brightness(1.1);
+  }
+  .ed-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg,
+        color-mix(in srgb, var(--ed-bg) 30%, transparent) 0%,
+        color-mix(in srgb, var(--ed-bg) 85%, transparent) 70%,
+        var(--ed-bg) 100%);
+  }
+  .ed-hero__lamp {
+    position: absolute;
+    top: 4%;
+    right: 6%;
+    width: 36vw;
+    height: 84%;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 32%, rgba(253,198,86,0.55), transparent 60%),
+      linear-gradient(180deg, #1a1612 0%, #0a0a0a 100%);
+    border-radius: 200px 200px 220px 220px / 360px 360px 80px 80px;
+    box-shadow: 0 0 200px rgba(253,198,86,0.22);
+    filter: blur(1.5px);
+    opacity: 0.55;
+    animation: ed-hero-lamp-float 9s ease-in-out infinite;
+  }
+  html[data-ed-mode="day"] .ed-hero__lamp {
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 32%, rgba(253,198,86,0.85), transparent 60%),
+      linear-gradient(180deg, #d4cfc4 0%, #b8b1a3 100%);
+    box-shadow: 0 0 200px rgba(253,198,86,0.4);
+    opacity: 0.7;
+  }
+  .ed-hero__glow {
+    position: absolute;
+    top: 14%;
+    right: 10%;
+    width: 30vw;
+    height: 38vh;
+    background: radial-gradient(ellipse at center, rgba(253,198,86,0.7) 0%, rgba(253,198,86,0.2) 30%, transparent 65%);
+    filter: blur(50px);
+    animation: ed-hero-glow-pulse 7s ease-in-out infinite;
+  }
+  @keyframes ed-hero-lamp-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  @keyframes ed-hero-glow-pulse {
+    0%, 100% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.04); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ed-hero__lamp, .ed-hero__glow { animation: none; }
+  }
+
+  /* Index pill */
+  .ed-hero__index {
+    position: absolute;
+    top: 100px;
+    left: 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--ed-font-body);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ed-muted);
+    z-index: 3;
+  }
+  .ed-hero__index-num {
+    color: var(--ed-fg);
+    font-feature-settings: "tnum";
+    padding: 4px 10px;
+    border: 1px solid var(--ed-line-strong);
+    border-radius: var(--ed-pill);
+  }
+  .ed-hero__index hr {
+    width: 40px;
+    height: 1px;
+    background: var(--ed-line);
+    border: none;
+    margin: 0;
+  }
+
+  /* Heading */
+  .ed-hero__heading {
+    grid-column: 1 / -1;
+    align-self: end;
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .ed-hero__heading h1 {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    font-size: clamp(72px, 17vw, 260px);
+    line-height: 0.84;
+    letter-spacing: -0.045em;
+    text-wrap: balance;
+    color: var(--ed-fg);
+  }
+  .ed-hero__eyebrow {
+    display: inline-block;
+    font-size: 0.16em;
+    vertical-align: super;
+    font-style: normal;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-family: var(--ed-font-body);
+    font-weight: 500;
+    color: var(--ed-muted);
+    margin-right: 0.8em;
+    transform: translateY(-2em);
+    padding: 6px 10px;
+    border: 1px solid var(--ed-line);
+    border-radius: var(--ed-pill);
+  }
+
+  /* Meta + CTA */
+  .ed-hero__meta {
+    grid-column: 1;
+    align-self: end;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 34em;
+    z-index: 2;
+    margin-top: 32px;
+    position: relative;
+  }
+  .ed-hero__desc {
+    font-family: var(--ed-font-body);
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ed-muted);
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .ed-hero__cta {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  /* Corner */
+  .ed-hero__corner {
+    position: absolute;
+    bottom: 64px;
+    right: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    font-family: var(--ed-font-body);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ed-muted);
+    z-index: 3;
+    padding: 14px 16px;
+    border: 1px solid var(--ed-line);
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+    background: color-mix(in srgb, var(--ed-bg) 30%, transparent);
+  }
+  .ed-hero__corner strong {
+    color: var(--ed-fg);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+  }
+
+  /* Scroll cue */
+  .ed-hero__scroll {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--ed-muted);
+    text-decoration: none;
+    font-family: var(--ed-font-body);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    transition: color 0.25s var(--ed-ease), transform 0.25s var(--ed-ease);
+  }
+  .ed-hero__scroll:hover {
+    color: var(--ed-fg);
+    transform: translate(-50%, -2px);
+  }
+  .ed-hero__scroll-arrow {
+    font-size: 18px;
+    animation: ed-hero-scroll-bounce 2s ease-in-out infinite;
+  }
+  @keyframes ed-hero-scroll-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+
+  @media (max-width: 900px) {
+    .ed-hero {
+      padding: 80px 20px 60px;
+      grid-template-columns: 1fr;
+    }
+    .ed-hero__index { top: 72px; left: 20px; }
+    .ed-hero__corner { display: none; }
+    .ed-hero__heading h1 { font-size: clamp(56px, 18vw, 140px); }
+    .ed-hero__lamp { width: 70vw; right: -10vw; }
+    .ed-hero__glow { width: 60vw; right: 0; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Hero — Editorial",
+  "tag": "section",
+  "class": "section-ed-hero",
+  "settings": [
+    { "type": "header", "content": "Index" },
+    { "type": "text", "id": "index_number", "label": "Index number", "default": "01" },
+    { "type": "text", "id": "index_label", "label": "Index label", "default": "The collection" },
+    { "type": "header", "content": "Heading" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Spring '26" },
+    {
+      "type": "richtext",
+      "id": "headline",
+      "label": "Headline",
+      "default": "<p>Light,<br><em>refined.</em></p>"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Sculptural lamps for spaces that matter."
+    },
+    { "type": "header", "content": "Primary CTA" },
+    { "type": "text", "id": "primary_cta_label", "label": "Label", "default": "Shop the collection" },
+    { "type": "url", "id": "primary_cta_link", "label": "Link" },
+    { "type": "header", "content": "Secondary CTA" },
+    { "type": "text", "id": "secondary_cta_label", "label": "Label", "default": "The story" },
+    { "type": "url", "id": "secondary_cta_link", "label": "Link" },
+    { "type": "header", "content": "Corner badge" },
+    { "type": "text", "id": "corner_value", "label": "Value", "default": "04 pieces" },
+    { "type": "text", "id": "corner_label", "label": "Label", "default": "In stock now" },
+    { "type": "header", "content": "Visual" },
+    { "type": "image_picker", "id": "image", "label": "Background image" },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay strength",
+      "min": 0, "max": 100, "step": 5, "unit": "%", "default": 60
+    }
+  ],
+  "presets": [
+    { "name": "Hero — Editorial" }
+  ]
+}
+{% endschema %}

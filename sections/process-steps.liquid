@@ -1,0 +1,176 @@
+<section class="ed-process ed-section" id="ed-process-{{ section.id }}">
+  <header class="ed-process__head ed-reveal-stagger">
+    <div class="ed-eyebrow">{{ section.settings.index_number }} / {{ section.settings.index_label }}</div>
+    <h2 class="ed-display ed-process__title">{{ section.settings.heading }}</h2>
+    {%- if section.settings.description != blank -%}
+      <p class="ed-process__desc">{{ section.settings.description }}</p>
+    {%- endif -%}
+  </header>
+
+  <ol class="ed-process__steps ed-reveal-stagger">
+    {%- for block in section.blocks -%}
+      <li class="ed-process__step" {{ block.shopify_attributes }}>
+        <div class="ed-process__step-num">
+          <span>{{ block.settings.number | default: forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+          <span class="ed-process__step-total">/{{ section.blocks.size | prepend: '0' | slice: -2, 2 }}</span>
+        </div>
+        <h3 class="ed-process__step-title">{{ block.settings.title }}</h3>
+        <p class="ed-process__step-body">{{ block.settings.body }}</p>
+        {%- if block.settings.tag != blank -%}
+          <span class="ed-process__step-tag">{{ block.settings.tag }}</span>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ol>
+</section>
+
+{% stylesheet %}
+  .ed-process {
+    padding: 112px 32px;
+    border-top: 1px solid var(--ed-line);
+  }
+  .ed-process__head {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 64px;
+    max-width: 760px;
+  }
+  .ed-process__title {
+    font-size: clamp(40px, 6vw, 88px);
+    line-height: 0.95;
+    text-wrap: balance;
+  }
+  .ed-process__desc {
+    font-family: var(--ed-font-body);
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ed-muted);
+    margin: 0;
+    max-width: 36em;
+  }
+  .ed-process__steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--ed-line);
+  }
+  .ed-process__step {
+    position: relative;
+    padding: 48px 32px;
+    border-right: 1px solid var(--ed-line);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: background 0.3s var(--ed-ease);
+  }
+  .ed-process__step:last-child {
+    border-right: none;
+  }
+  .ed-process__step:hover {
+    background: color-mix(in srgb, var(--ed-fg) 4%, transparent);
+  }
+  .ed-process__step-num {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+    font-family: var(--ed-font-display);
+    font-style: italic;
+    font-size: clamp(48px, 5vw, 72px);
+    line-height: 1;
+    color: var(--ed-fg);
+    letter-spacing: -0.03em;
+    font-feature-settings: "tnum";
+  }
+  .ed-process__step-total {
+    font-size: 0.4em;
+    color: var(--ed-muted);
+    margin-left: 4px;
+  }
+  .ed-process__step-title {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 1.1;
+    margin: 0;
+    color: var(--ed-fg);
+    letter-spacing: -0.02em;
+  }
+  .ed-process__step-body {
+    font-family: var(--ed-font-body);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ed-muted);
+    margin: 0;
+    max-width: 30ch;
+  }
+  .ed-process__step-tag {
+    align-self: flex-start;
+    font-family: var(--ed-font-body);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border: 1px solid var(--ed-line);
+    border-radius: var(--ed-pill);
+    color: var(--ed-muted);
+    margin-top: 8px;
+  }
+  @media (max-width: 900px) {
+    .ed-process { padding: 72px 20px; }
+    .ed-process__steps { grid-template-columns: 1fr; }
+    .ed-process__step { border-right: none; border-bottom: 1px solid var(--ed-line); padding: 36px 20px; }
+    .ed-process__step:last-child { border-bottom: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Process — Editorial",
+  "tag": "section",
+  "class": "section-ed-process",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "header", "content": "Heading" },
+    { "type": "text", "id": "index_number", "label": "Index number", "default": "07" },
+    { "type": "text", "id": "index_label", "label": "Index label", "default": "Craft" },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>Slow craft, <em>built</em> to last.</p>"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Every fixture goes through three deliberate stages before it leaves our studio. No shortcuts, no fillers."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        { "type": "text", "id": "number", "label": "Number (override)", "default": "01" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Designed in studio" },
+        { "type": "textarea", "id": "body", "label": "Body", "default": "Every silhouette is sketched by hand and refined across dozens of iterations before tooling begins." },
+        { "type": "text", "id": "tag", "label": "Tag (optional)", "default": "In-house" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Process — Editorial",
+      "blocks": [
+        { "type": "step", "settings": { "number": "01", "title": "Designed in studio", "body": "Every silhouette is sketched by hand and refined across dozens of iterations before tooling begins.", "tag": "In-house" } },
+        { "type": "step", "settings": { "number": "02", "title": "Cast & finished", "body": "We work with small-batch foundries — each piece is finished by a single craftsperson, start to end.", "tag": "Small batch" } },
+        { "type": "step", "settings": { "number": "03", "title": "Inspected & signed", "body": "Before shipping, every lamp is signed and numbered. Lifetime serviceable, fully repairable.", "tag": "Numbered" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,241 @@
+{%- liquid
+  assign img = section.settings.image
+  assign reverse = section.settings.reverse
+-%}
+
+<section class="ed-split ed-section {% if reverse %}ed-split--reverse{% endif %}" id="ed-split-{{ section.id }}">
+  <div class="ed-split__left ed-reveal ed-reveal--lr">
+    <div class="ed-eyebrow">{{ section.settings.index_number }} / {{ section.settings.index_label }}</div>
+    <h2 class="ed-display ed-split__title">{{ section.settings.heading }}</h2>
+    {%- if section.settings.quote != blank -%}
+      <p class="ed-split__quote">{{ section.settings.quote }}<span class="ed-split__quote-end">”</span></p>
+    {%- endif -%}
+    {%- if section.settings.cta_label != blank -%}
+      <div class="ed-split__cta">
+        <a class="ed-btn ed-btn--solid" href="{{ section.settings.cta_link | default: '#' }}">
+          {{ section.settings.cta_label }}
+          <span class="ed-btn__arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    {%- endif -%}
+    <div class="ed-split__meta">
+      <span>{{ section.settings.meta_left | default: '— Founder' }}</span>
+      <span>{{ section.settings.meta_right | default: 'Estd. 2024' }}</span>
+    </div>
+  </div>
+
+  <div class="ed-split__right ed-reveal">
+    {%- if img != blank -%}
+      {{ img | image_url: width: 1600 | image_tag:
+        loading: 'lazy',
+        widths: '600, 900, 1200, 1600',
+        sizes: '(max-width: 900px) 100vw, 60vw',
+        class: 'ed-split__img'
+      }}
+    {%- endif -%}
+    {%- if section.settings.badge != blank -%}
+      <span class="ed-split__badge">
+        <span class="ed-split__badge-dot"></span>{{ section.settings.badge }}
+      </span>
+    {%- endif -%}
+    <div class="ed-split__index" aria-hidden="true">{{ section.settings.index_number }}</div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .ed-split {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    align-items: stretch;
+    min-height: 88vh;
+    border-block: 1px solid var(--ed-line);
+  }
+  .ed-split--reverse {
+    grid-template-columns: 7fr 5fr;
+  }
+  .ed-split--reverse .ed-split__left {
+    order: 2;
+    border-right: none;
+    border-left: 1px solid var(--ed-line);
+  }
+  .ed-split--reverse .ed-split__right {
+    order: 1;
+  }
+  .ed-split__left {
+    padding: 96px 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 40px;
+    border-right: 1px solid var(--ed-line);
+    background: var(--ed-bg);
+  }
+  .ed-split__title {
+    font-size: clamp(48px, 7.5vw, 112px);
+    line-height: 0.92;
+    text-wrap: balance;
+  }
+  .ed-split__quote {
+    font-family: var(--ed-font-display);
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.4;
+    max-width: 24em;
+    color: var(--ed-muted);
+    margin: 0;
+    position: relative;
+    padding-left: 22px;
+  }
+  .ed-split__quote::before {
+    content: "“";
+    color: var(--ed-accent);
+    font-size: 60px;
+    line-height: 1;
+    position: absolute;
+    left: -10px;
+    top: -12px;
+    font-style: italic;
+  }
+  .ed-split__quote-end {
+    color: var(--ed-accent);
+  }
+  .ed-split__cta { margin: 0; }
+  .ed-split__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 24px;
+    border-top: 1px solid var(--ed-line);
+    font-family: var(--ed-font-body);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ed-muted);
+  }
+  .ed-split__right {
+    background: linear-gradient(135deg, #2a2520 0%, #0c0a08 60%);
+    position: relative;
+    overflow: hidden;
+  }
+  .ed-split__right::after {
+    content: "";
+    position: absolute;
+    width: 60%;
+    height: 60%;
+    top: 20%;
+    left: 25%;
+    background: radial-gradient(ellipse at center, rgba(253,198,86,0.45), transparent 60%);
+    filter: blur(40px);
+    z-index: 1;
+    animation: ed-split-pulse 6s ease-in-out infinite;
+  }
+  @keyframes ed-split-pulse {
+    0%, 100% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.08); }
+  }
+  html[data-ed-mode="day"] .ed-split__right {
+    background: linear-gradient(135deg, #ddd6c8, #b8b1a3);
+  }
+  .ed-split__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 2;
+    transition: transform 1.2s var(--ed-ease);
+  }
+  .ed-split__right:hover .ed-split__img {
+    transform: scale(1.04);
+  }
+  .ed-split__badge {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    z-index: 3;
+    color: #fff;
+    font-family: var(--ed-font-body);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: var(--ed-pill);
+  }
+  .ed-split__badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ed-accent);
+    box-shadow: 0 0 8px var(--ed-accent);
+  }
+  .ed-split__index {
+    position: absolute;
+    bottom: 32px;
+    right: 40px;
+    z-index: 3;
+    font-family: var(--ed-font-display);
+    font-style: italic;
+    font-size: clamp(80px, 12vw, 180px);
+    line-height: 0.8;
+    color: rgba(255,255,255,0.1);
+    pointer-events: none;
+    font-feature-settings: "tnum";
+  }
+  @media (max-width: 1100px) {
+    .ed-split, .ed-split--reverse {
+      grid-template-columns: 1fr;
+    }
+    .ed-split__left, .ed-split--reverse .ed-split__left {
+      border-right: none;
+      border-left: none;
+      border-bottom: 1px solid var(--ed-line);
+      padding: 64px 24px;
+      order: 1;
+    }
+    .ed-split__right, .ed-split--reverse .ed-split__right {
+      min-height: 60vh;
+      order: 2;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Editorial split",
+  "tag": "section",
+  "class": "section-ed-split",
+  "settings": [
+    { "type": "header", "content": "Index" },
+    { "type": "text", "id": "index_number", "label": "Index number", "default": "03" },
+    { "type": "text", "id": "index_label", "label": "Index label", "default": "The story" },
+    { "type": "header", "content": "Copy" },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>Your unique <em>decor.</em></p>"
+    },
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "Pull-quote",
+      "default": "A lamp is not just a source of light — it is a quiet object that shapes the mood of a room before anyone notices it has done so."
+    },
+    { "type": "text", "id": "cta_label", "label": "CTA label", "default": "Shop now" },
+    { "type": "url", "id": "cta_link", "label": "CTA link" },
+    { "type": "text", "id": "meta_left", "label": "Meta left", "default": "— Founder" },
+    { "type": "text", "id": "meta_right", "label": "Meta right", "default": "Estd. 2024" },
+    { "type": "header", "content": "Visual" },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "badge", "label": "Image badge", "default": "Featured" },
+    { "type": "checkbox", "id": "reverse", "label": "Reverse (image on left)", "default": false }
+  ],
+  "presets": [ { "name": "Editorial split" } ]
+}
+{% endschema %}

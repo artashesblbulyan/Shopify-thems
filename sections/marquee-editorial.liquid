@@ -1,0 +1,107 @@
+{%- liquid
+  assign words = section.settings.words | split: ','
+  assign speed = section.settings.speed | default: 32
+-%}
+
+<div class="ed-marquee ed-section" id="ed-marquee-{{ section.id }}">
+  <div class="ed-marquee__track" style="--ed-marquee-duration: {{ speed }}s;">
+    {%- for repeat in (1..2) -%}
+      <span class="ed-marquee__group" aria-hidden="{% if repeat == 2 %}true{% else %}false{% endif %}">
+        {%- for word in words -%}
+          <span class="ed-marquee__word">{{ word | strip }}</span>
+          <span class="ed-marquee__sep" aria-hidden="true">✦</span>
+        {%- endfor -%}
+      </span>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .ed-marquee {
+    border-block: 1px solid var(--ed-line);
+    padding: 26px 0;
+    overflow: hidden;
+    display: flex;
+    white-space: nowrap;
+    position: relative;
+  }
+  .ed-marquee::before,
+  .ed-marquee::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 80px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .ed-marquee::before {
+    left: 0;
+    background: linear-gradient(to right, var(--ed-bg), transparent);
+  }
+  .ed-marquee::after {
+    right: 0;
+    background: linear-gradient(to left, var(--ed-bg), transparent);
+  }
+  .ed-marquee__track {
+    display: inline-flex;
+    animation: ed-marquee-scroll var(--ed-marquee-duration, 32s) linear infinite;
+    font-family: var(--ed-font-display);
+    font-size: clamp(28px, 3.4vw, 44px);
+    font-style: italic;
+    line-height: 1;
+    color: var(--ed-fg);
+  }
+  .ed-marquee:hover .ed-marquee__track {
+    animation-play-state: paused;
+  }
+  .ed-marquee__group {
+    display: inline-flex;
+    align-items: center;
+    gap: 36px;
+    padding-right: 36px;
+  }
+  .ed-marquee__word {
+    display: inline-block;
+    transition: color 0.3s var(--ed-ease);
+  }
+  .ed-marquee__word:hover {
+    color: var(--ed-accent);
+  }
+  .ed-marquee__sep {
+    color: var(--ed-accent);
+    font-size: 14px;
+    font-style: normal;
+    opacity: 0.7;
+  }
+  @keyframes ed-marquee-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ed-marquee__track { animation: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Marquee — Editorial",
+  "tag": "section",
+  "class": "section-ed-marquee",
+  "settings": [
+    {
+      "type": "text",
+      "id": "words",
+      "label": "Words (comma-separated)",
+      "default": "Hand-finished, Sculptural, Ambient, Timeless, Considered"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Scroll duration",
+      "min": 10, "max": 80, "step": 2, "unit": "s", "default": 38
+    }
+  ],
+  "presets": [ { "name": "Marquee — Editorial" } ]
+}
+{% endschema %}

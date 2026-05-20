@@ -1,0 +1,147 @@
+<section class="ed-stats ed-section" id="ed-stats-{{ section.id }}">
+  {%- if section.settings.heading != blank -%}
+    <div class="ed-stats__head ed-reveal">
+      {%- if section.settings.eyebrow != blank -%}
+        <div class="ed-eyebrow">{{ section.settings.eyebrow }}</div>
+      {%- endif -%}
+      <h2 class="ed-display ed-stats__title">{{ section.settings.heading }}</h2>
+    </div>
+  {%- endif -%}
+
+  <div class="ed-stats__row ed-reveal-stagger">
+    {%- for block in section.blocks -%}
+      <div class="ed-stats__item" {{ block.shopify_attributes }}>
+        <div class="ed-stats__num">
+          {%- if block.settings.count_target > 0 -%}
+            <span
+              data-ed-count="{{ block.settings.count_target }}"
+              data-ed-count-prefix="{{ block.settings.count_prefix | escape }}"
+              data-ed-count-suffix="{{ block.settings.count_suffix | escape }}"
+            >0{{ block.settings.count_suffix | escape }}</span>
+          {%- else -%}
+            {{ block.settings.number }}
+          {%- endif -%}
+        </div>
+        <div class="ed-stats__label">{{ block.settings.label }}</div>
+        {%- if block.settings.sublabel != blank -%}
+          <div class="ed-stats__sublabel">{{ block.settings.sublabel }}</div>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .ed-stats {
+    padding: 32px 0 0;
+  }
+  .ed-stats__head {
+    padding: 0 32px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 720px;
+  }
+  .ed-stats__title {
+    font-size: clamp(32px, 4.5vw, 56px);
+    line-height: 0.95;
+    text-wrap: balance;
+  }
+  .ed-stats__row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-block: 1px solid var(--ed-line);
+  }
+  .ed-stats__item {
+    padding: 64px 32px;
+    border-right: 1px solid var(--ed-line);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: background 0.3s var(--ed-ease);
+  }
+  .ed-stats__item:hover {
+    background: color-mix(in srgb, var(--ed-fg) 4%, transparent);
+  }
+  .ed-stats__item:last-child {
+    border-right: none;
+  }
+  .ed-stats__num {
+    font-family: var(--ed-font-display);
+    font-style: italic;
+    font-size: clamp(40px, 5.5vw, 72px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+    color: var(--ed-fg);
+    font-feature-settings: "tnum";
+  }
+  .ed-stats__label {
+    font-family: var(--ed-font-body);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ed-fg);
+  }
+  .ed-stats__sublabel {
+    font-family: var(--ed-font-body);
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--ed-muted);
+    margin-top: 6px;
+    max-width: 22ch;
+  }
+  @media (max-width: 1100px) {
+    .ed-stats__row { grid-template-columns: repeat(2, 1fr); }
+    .ed-stats__item:nth-child(2) { border-right: none; }
+    .ed-stats__item:nth-child(-n+2) { border-bottom: 1px solid var(--ed-line); }
+  }
+  @media (max-width: 720px) {
+    .ed-stats__head { padding: 0 20px 32px; }
+    .ed-stats__item { padding: 48px 20px; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Stats strip",
+  "tag": "section",
+  "class": "section-ed-stats",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "header", "content": "Heading (optional)" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "06 / Trust" },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>Made for <em>people</em> who care.</p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        { "type": "text", "id": "number", "label": "Number (static, used when target = 0)", "default": "12K+" },
+        { "type": "number", "id": "count_target", "label": "Count-up target (animates from 0)", "default": 0 },
+        { "type": "text", "id": "count_prefix", "label": "Count prefix" },
+        { "type": "text", "id": "count_suffix", "label": "Count suffix" },
+        { "type": "text", "id": "label", "label": "Label", "default": "Happy homes" },
+        { "type": "text", "id": "sublabel", "label": "Sublabel (optional)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Stats strip",
+      "blocks": [
+        { "type": "stat", "settings": { "count_target": 12000, "count_suffix": "+", "label": "Happy homes", "sublabel": "Across 18 countries" } },
+        { "type": "stat", "settings": { "number": "04", "label": "Collections", "sublabel": "Updated every season" } },
+        { "type": "stat", "settings": { "number": "02 yr", "label": "Warranty", "sublabel": "Free repairs covered" } },
+        { "type": "stat", "settings": { "number": "★ 4.9", "label": "Customer rating", "sublabel": "Verified reviews" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

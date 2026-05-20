@@ -1,0 +1,213 @@
+<section class="ed-testimonials ed-section" id="ed-testimonials-{{ section.id }}">
+  <header class="ed-testimonials__head ed-reveal-stagger">
+    <div class="ed-eyebrow">{{ section.settings.index_number }} / {{ section.settings.index_label }}</div>
+    <h2 class="ed-display ed-testimonials__title">{{ section.settings.heading }}</h2>
+    {%- if section.settings.rating != blank -%}
+      <div class="ed-testimonials__rating">
+        <span class="ed-testimonials__stars" aria-hidden="true">★ ★ ★ ★ ★</span>
+        <span>{{ section.settings.rating }}</span>
+      </div>
+    {%- endif -%}
+  </header>
+
+  <div class="ed-testimonials__grid ed-reveal-stagger">
+    {%- for block in section.blocks -%}
+      <figure class="ed-testimonials__card" {{ block.shopify_attributes }}>
+        <div class="ed-testimonials__quote-mark" aria-hidden="true">“</div>
+        <blockquote class="ed-testimonials__quote">{{ block.settings.quote }}</blockquote>
+        <figcaption class="ed-testimonials__author">
+          <div class="ed-testimonials__avatar" aria-hidden="true">
+            {%- if block.settings.avatar -%}
+              {{ block.settings.avatar | image_url: width: 80 | image_tag: loading: 'lazy', class: 'ed-testimonials__avatar-img', alt: block.settings.name | escape }}
+            {%- else -%}
+              <span>{{ block.settings.name | slice: 0, 1 }}</span>
+            {%- endif -%}
+          </div>
+          <div>
+            <div class="ed-testimonials__name">{{ block.settings.name }}</div>
+            <div class="ed-testimonials__role">{{ block.settings.role }}</div>
+          </div>
+          <span class="ed-testimonials__verified" title="Verified buyer" aria-label="Verified buyer">✓</span>
+        </figcaption>
+      </figure>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .ed-testimonials {
+    padding: 112px 32px;
+    border-top: 1px solid var(--ed-line);
+  }
+  .ed-testimonials__head {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: end;
+    gap: 32px;
+    margin-bottom: 56px;
+  }
+  .ed-testimonials__title {
+    font-size: clamp(40px, 6vw, 88px);
+    line-height: 0.95;
+    text-wrap: balance;
+  }
+  .ed-testimonials__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--ed-font-body);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--ed-muted);
+  }
+  .ed-testimonials__stars { color: var(--ed-accent); letter-spacing: 0.1em; }
+
+  .ed-testimonials__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .ed-testimonials__card {
+    position: relative;
+    padding: 36px 30px 28px;
+    border-radius: var(--ed-radius-card);
+    background: var(--ed-card);
+    border: 1px solid var(--ed-line);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin: 0;
+    transition: transform 0.35s var(--ed-ease), border-color 0.3s var(--ed-ease),
+      box-shadow 0.35s var(--ed-ease);
+  }
+  .ed-testimonials__card:hover {
+    transform: translateY(-4px);
+    border-color: var(--ed-line-strong);
+    box-shadow: var(--ed-shadow-soft);
+  }
+  .ed-testimonials__quote-mark {
+    font-family: var(--ed-font-display);
+    font-style: italic;
+    font-size: 80px;
+    line-height: 0.6;
+    color: var(--ed-accent);
+    position: absolute;
+    top: 18px;
+    left: 28px;
+    opacity: 0.6;
+  }
+  .ed-testimonials__quote {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.35;
+    margin: 0;
+    color: var(--ed-fg);
+    text-wrap: pretty;
+    padding-top: 24px;
+    letter-spacing: -0.01em;
+  }
+  .ed-testimonials__quote::before { content: "“"; }
+  .ed-testimonials__quote::after { content: "”"; }
+  .ed-testimonials__author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 18px;
+    border-top: 1px solid var(--ed-line);
+  }
+  .ed-testimonials__avatar {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--ed-accent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--ed-font-display);
+    font-style: italic;
+    color: #0a0a0a;
+    overflow: hidden;
+  }
+  .ed-testimonials__avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .ed-testimonials__name {
+    font-family: var(--ed-font-body);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ed-fg);
+  }
+  .ed-testimonials__role {
+    font-family: var(--ed-font-body);
+    font-size: 11px;
+    color: var(--ed-muted);
+    letter-spacing: 0.02em;
+  }
+  .ed-testimonials__verified {
+    margin-left: auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--ed-accent) 30%, transparent);
+    color: var(--ed-fg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  @media (max-width: 1100px) {
+    .ed-testimonials__head { grid-template-columns: 1fr; gap: 16px; }
+    .ed-testimonials__grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 720px) {
+    .ed-testimonials { padding: 72px 20px; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "tag": "section",
+  "class": "section-ed-testimonials",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "header", "content": "Heading" },
+    { "type": "text", "id": "index_number", "label": "Index number", "default": "08" },
+    { "type": "text", "id": "index_label", "label": "Index label", "default": "Reviews" },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>Trusted by <em>thoughtful</em> homes.</p>"
+    },
+    { "type": "text", "id": "rating", "label": "Rating summary", "default": "4.9 / 5 — 12K verified reviews" }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "textarea", "id": "quote", "label": "Quote", "default": "The most considered lamp I’ve ever owned. The light it casts genuinely changes how I use the room." },
+        { "type": "text", "id": "name", "label": "Name", "default": "Alex M." },
+        { "type": "text", "id": "role", "label": "Role / location", "default": "Architect, Berlin" },
+        { "type": "image_picker", "id": "avatar", "label": "Avatar (optional)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials",
+      "blocks": [
+        { "type": "review", "settings": { "quote": "The most considered lamp I’ve ever owned. The light it casts genuinely changes how I use the room.", "name": "Alex M.", "role": "Architect, Berlin" } },
+        { "type": "review", "settings": { "quote": "It arrived perfectly packed, signed and numbered. Feels like an object you’d pass down, not replace.", "name": "Sofia R.", "role": "Interior designer, Milan" } },
+        { "type": "review", "settings": { "quote": "I have three from the night collection now. The light quality is unlike anything I’ve owned before.", "name": "Daniel K.", "role": "Photographer, NYC" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

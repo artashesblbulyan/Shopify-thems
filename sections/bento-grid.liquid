@@ -1,0 +1,326 @@
+{%- liquid
+  assign collection = collections[section.settings.collection]
+  assign products = collection.products | slice: 0, 6
+  assign size_pattern = 'tall,wide,sq,lg,lg,lg' | split: ','
+  assign tag_pattern  = 'New · Bestseller,Limited,New,Editor’s pick,Restocked,04 colors' | split: ','
+-%}
+
+<section class="ed-bento ed-section" id="ed-bento-{{ section.id }}">
+  <header class="ed-bento__head ed-reveal-stagger">
+    <div class="ed-eyebrow">{{ section.settings.index_number }} / {{ section.settings.index_label }}</div>
+    <h2 class="ed-display ed-bento__title">{{ section.settings.heading }}</h2>
+    {%- if section.settings.view_all_label != blank -%}
+      <a class="ed-bento__link" href="{{ section.settings.view_all_link | default: collection.url }}">
+        {{ section.settings.view_all_label }} <span aria-hidden="true">→</span>
+      </a>
+    {%- endif -%}
+  </header>
+
+  {%- if products.size > 0 -%}
+    <div class="ed-bento__grid ed-reveal-stagger">
+      {%- for product in products -%}
+        {%- assign size_class = size_pattern[forloop.index0] | default: 'lg' -%}
+        {%- assign tag_text = tag_pattern[forloop.index0] -%}
+        {%- assign idx_num = forloop.index | prepend: '0' | slice: -2, 2 -%}
+        {%- assign total = products.size | prepend: '0' | slice: -2, 2 -%}
+        <a class="ed-bento__card ed-bento__card--{{ size_class }} ed-bento__card--v{{ forloop.index | modulo: 4 | plus: 1 }}"
+           href="{{ product.url }}"
+           aria-label="{{ product.title | escape }}">
+          <div class="ed-bento__img">
+            {%- if product.featured_image -%}
+              {{ product.featured_image | image_url: width: 1000 | image_tag:
+                loading: 'lazy',
+                widths: '400, 600, 900, 1000',
+                sizes: '(max-width: 900px) 50vw, 33vw',
+                alt: product.featured_image.alt | default: product.title,
+                class: 'ed-bento__photo'
+              }}
+            {%- endif -%}
+          </div>
+          <div class="ed-bento__meta">
+            <div class="ed-bento__top">
+              {%- if tag_text != blank -%}
+                <span class="ed-bento__tag">{{ tag_text | strip }}</span>
+              {%- endif -%}
+              <span class="ed-bento__idx">{{ idx_num }} / {{ total }}</span>
+            </div>
+            <div class="ed-bento__info">
+              <div class="ed-bento__col">
+                <div class="ed-bento__title-line">{{ product.title }}</div>
+                {%- if product.compare_at_price > product.price -%}
+                  <div class="ed-bento__sale-note">Sale</div>
+                {%- endif -%}
+              </div>
+              <div class="ed-bento__price-col">
+                <div class="ed-bento__price">{{ product.price | money }}</div>
+                {%- if product.compare_at_price > product.price -%}
+                  <div class="ed-bento__price-old">{{ product.compare_at_price | money }}</div>
+                {%- endif -%}
+              </div>
+            </div>
+            <div class="ed-bento__hover-cta">
+              <span>View product</span>
+              <span class="ed-btn__arrow" aria-hidden="true">→</span>
+            </div>
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  {%- else -%}
+    <p class="ed-bento__empty">Select a collection in the theme editor to populate this section.</p>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .ed-bento {
+    padding: 96px 32px;
+  }
+  .ed-bento__head {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: end;
+    gap: 32px;
+    margin-bottom: 48px;
+  }
+  .ed-bento__title {
+    font-size: clamp(40px, 6.5vw, 96px);
+    line-height: 0.95;
+    text-wrap: balance;
+  }
+  .ed-bento__link {
+    position: relative;
+    font-family: var(--ed-font-body);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 6px;
+    color: var(--ed-fg);
+    text-decoration: none;
+  }
+  .ed-bento__link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--ed-fg);
+    transform-origin: right;
+    transition: transform 0.4s var(--ed-ease);
+  }
+  .ed-bento__link:hover::after {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .ed-bento__grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: 230px;
+    gap: 14px;
+  }
+  .ed-bento__card {
+    position: relative;
+    background: var(--ed-card);
+    border-radius: var(--ed-radius-card);
+    overflow: hidden;
+    transition: transform 0.45s var(--ed-ease), background 0.3s var(--ed-ease),
+      box-shadow 0.45s var(--ed-ease);
+    isolation: isolate;
+    text-decoration: none;
+    color: var(--ed-fg);
+    box-shadow: 0 0 0 1px var(--ed-line) inset;
+  }
+  .ed-bento__card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--ed-shadow-card), 0 0 0 1px var(--ed-line-strong) inset;
+  }
+  .ed-bento__card--tall { grid-column: span 4; grid-row: span 2; }
+  .ed-bento__card--wide { grid-column: span 5; grid-row: span 1; }
+  .ed-bento__card--sq   { grid-column: span 3; grid-row: span 1; }
+  .ed-bento__card--lg   { grid-column: span 4; grid-row: span 1; }
+
+  .ed-bento__img {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 55% 45% at 60% 35%, rgba(253,198,86,0.4) 0%, transparent 65%),
+      linear-gradient(160deg, #2a2520, #0c0a08);
+  }
+  .ed-bento__card--v2 .ed-bento__img { background: radial-gradient(ellipse 60% 50% at 30% 65%, rgba(195,204,166,0.35) 0%, transparent 60%), linear-gradient(135deg, #1a1c14, #0c0a08); }
+  .ed-bento__card--v3 .ed-bento__img { background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.18) 0%, transparent 50%), linear-gradient(180deg, #1c1c1c, #050505); }
+  .ed-bento__card--v4 .ed-bento__img { background: radial-gradient(ellipse 40% 60% at 50% 40%, rgba(253,198,86,0.5) 0%, transparent 55%), linear-gradient(135deg, #2d251a, #0c0a08); }
+
+  .ed-bento__photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s var(--ed-ease), filter 0.4s var(--ed-ease);
+    filter: brightness(0.85) saturate(0.95);
+  }
+  .ed-bento__card:hover .ed-bento__photo {
+    transform: scale(1.07);
+    filter: brightness(1) saturate(1.05);
+  }
+  html[data-ed-mode="day"] .ed-bento__img {
+    background:
+      radial-gradient(ellipse 55% 45% at 60% 35%, rgba(253,198,86,0.6) 0%, transparent 65%),
+      linear-gradient(160deg, #b8aea0, #d4cfc4);
+  }
+  html[data-ed-mode="day"] .ed-bento__photo {
+    filter: brightness(1) saturate(1);
+  }
+
+  .ed-bento__meta {
+    position: relative;
+    z-index: 2;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    pointer-events: none;
+  }
+  .ed-bento__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .ed-bento__tag {
+    align-self: flex-start;
+    font-family: var(--ed-font-body);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    background: color-mix(in srgb, var(--ed-fg) 12%, transparent);
+    backdrop-filter: blur(8px);
+    padding: 7px 11px;
+    border-radius: var(--ed-pill);
+    color: var(--ed-fg);
+    border: 1px solid var(--ed-line);
+  }
+  .ed-bento__idx {
+    font-family: var(--ed-font-body);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--ed-muted);
+    font-feature-settings: "tnum";
+  }
+  .ed-bento__info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 12px;
+  }
+  .ed-bento__title-line {
+    font-family: var(--ed-font-body);
+    font-size: 15px;
+    line-height: 1.3;
+    max-width: 16ch;
+  }
+  .ed-bento__sale-note {
+    margin-top: 4px;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ed-accent);
+  }
+  .ed-bento__price-col {
+    text-align: right;
+  }
+  .ed-bento__price {
+    font-family: var(--ed-font-display);
+    font-style: italic;
+    font-size: 22px;
+  }
+  .ed-bento__price-old {
+    font-family: var(--ed-font-body);
+    font-size: 12px;
+    color: var(--ed-muted);
+    text-decoration: line-through;
+  }
+  .ed-bento__hover-cta {
+    position: absolute;
+    bottom: -50px;
+    left: 22px;
+    right: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    border-radius: var(--ed-pill);
+    background: var(--ed-fg);
+    color: var(--ed-bg);
+    font-family: var(--ed-font-body);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+    opacity: 0;
+    transition: bottom 0.4s var(--ed-ease), opacity 0.3s var(--ed-ease);
+  }
+  .ed-bento__card:hover .ed-bento__hover-cta {
+    bottom: 22px;
+    opacity: 1;
+  }
+  .ed-bento__card:hover .ed-bento__info {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s var(--ed-ease), transform 0.3s var(--ed-ease);
+  }
+  .ed-bento__info {
+    transition: opacity 0.3s var(--ed-ease), transform 0.3s var(--ed-ease);
+  }
+  .ed-bento__empty {
+    color: var(--ed-muted);
+    font-family: var(--ed-font-body);
+    text-align: center;
+    padding: 60px;
+    border: 1px dashed var(--ed-line);
+    border-radius: var(--ed-radius-card);
+  }
+  @media (max-width: 1100px) {
+    .ed-bento__grid { grid-template-columns: repeat(6, 1fr); grid-auto-rows: 220px; }
+    .ed-bento__card--tall { grid-column: span 3; grid-row: span 2; }
+    .ed-bento__card--wide, .ed-bento__card--sq, .ed-bento__card--lg { grid-column: span 3; }
+  }
+  @media (max-width: 720px) {
+    .ed-bento { padding: 64px 20px; }
+    .ed-bento__head { grid-template-columns: 1fr; gap: 18px; }
+    .ed-bento__grid { grid-template-columns: 1fr 1fr; grid-auto-rows: 220px; }
+    .ed-bento__card--tall, .ed-bento__card--wide, .ed-bento__card--sq, .ed-bento__card--lg { grid-column: span 1; grid-row: span 1; }
+    .ed-bento__card--tall { grid-row: span 2; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Bento — Featured",
+  "tag": "section",
+  "class": "section-ed-bento",
+  "settings": [
+    { "type": "header", "content": "Heading" },
+    { "type": "text", "id": "index_number", "label": "Index number", "default": "02" },
+    { "type": "text", "id": "index_label", "label": "Index label", "default": "Featured" },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>Make your workspace <em>yours</em>.</p>"
+    },
+    { "type": "header", "content": "View all" },
+    { "type": "text", "id": "view_all_label", "label": "Label", "default": "View all" },
+    { "type": "url", "id": "view_all_link", "label": "Link" },
+    { "type": "header", "content": "Source" },
+    { "type": "collection", "id": "collection", "label": "Collection" }
+  ],
+  "presets": [
+    { "name": "Bento — Featured" }
+  ]
+}
+{% endschema %}
