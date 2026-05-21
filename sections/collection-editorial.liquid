@@ -35,7 +35,7 @@
         <div class="ed-collection__tags">
           {%- for tag in coll.all_tags limit: 6 -%}
             {%- if current_tags contains tag -%}
-              <a href="{{ coll.url }}" class="ed-collection__tag is-active">{{ tag }} ×</a>
+              <a href="{{ coll.url }}" class="ed-collection__tag is-active">{{ tag }} x</a>
             {%- else -%}
               <a href="{{ coll.url }}/{{ tag | handle }}" class="ed-collection__tag">{{ tag }}</a>
             {%- endif -%}
@@ -49,10 +49,10 @@
       <select id="ed-sort-{{ section.id }}" name="sort_by" onchange="this.form.submit()">
         <option value="manual" {% if sort_by == 'manual' %}selected{% endif %}>Featured</option>
         <option value="best-selling" {% if sort_by == 'best-selling' %}selected{% endif %}>Best selling</option>
-        <option value="title-ascending" {% if sort_by == 'title-ascending' %}selected{% endif %}>A–Z</option>
-        <option value="title-descending" {% if sort_by == 'title-descending' %}selected{% endif %}>Z–A</option>
-        <option value="price-ascending" {% if sort_by == 'price-ascending' %}selected{% endif %}>Price: Low → High</option>
-        <option value="price-descending" {% if sort_by == 'price-descending' %}selected{% endif %}>Price: High → Low</option>
+        <option value="title-ascending" {% if sort_by == 'title-ascending' %}selected{% endif %}>A-Z</option>
+        <option value="title-descending" {% if sort_by == 'title-descending' %}selected{% endif %}>Z-A</option>
+        <option value="price-ascending" {% if sort_by == 'price-ascending' %}selected{% endif %}>Price: Low to High</option>
+        <option value="price-descending" {% if sort_by == 'price-descending' %}selected{% endif %}>Price: High to Low</option>
         <option value="created-descending" {% if sort_by == 'created-descending' %}selected{% endif %}>Newest</option>
       </select>
     </form>
@@ -102,13 +102,13 @@
     {%- if paginate.pages > 1 -%}
       <nav class="ed-collection__pagination" aria-label="Pagination">
         {%- if paginate.previous -%}
-          <a href="{{ paginate.previous.url }}" class="ed-btn ed-btn--ghost">← Previous</a>
+          <a href="{{ paginate.previous.url }}" class="ed-btn ed-btn--ghost">&lt;- Previous</a>
         {%- endif -%}
         <span class="ed-collection__pagination-info">
           Page {{ paginate.current_page }} / {{ paginate.pages }}
         </span>
         {%- if paginate.next -%}
-          <a href="{{ paginate.next.url }}" class="ed-btn ed-btn--ghost">Next →</a>
+          <a href="{{ paginate.next.url }}" class="ed-btn ed-btn--ghost">Next -&gt;</a>
         {%- endif -%}
       </nav>
     {%- endif -%}
@@ -394,7 +394,7 @@
 
 {% schema %}
 {
-  "name": "Collection — Editorial",
+  "name": "Collection - Editorial",
   "tag": "section",
   "class": "section-ed-collection",
   "settings": [
@@ -402,7 +402,7 @@
     { "type": "text", "id": "index_label", "label": "Index label", "default": "Collection" }
   ],
   "presets": [
-    { "name": "Collection — Editorial" }
+    { "name": "Collection - Editorial" }
   ],
   "enabled_on": {
     "templates": ["collection"]
