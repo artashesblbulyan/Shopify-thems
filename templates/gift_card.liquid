@@ -110,6 +110,7 @@
       .ed-gift-card-page {
         min-height: 100svh;
         margin: 0;
+        padding: 0 !important;
         background: var(--ed-bg);
         color: var(--ed-fg);
         font-family: var(--ed-font-body);
@@ -131,10 +132,11 @@
         z-index: 2;
         color: var(--ed-fg);
         text-decoration: none;
-        font-family: var(--ed-font-display);
-        font-style: italic;
+        font-family: var(--ed-font-body);
+        font-style: normal;
+        font-weight: 850;
         font-size: 28px;
-        letter-spacing: -0.03em;
+        letter-spacing: 0;
       }
 
       .ed-gift-card__brand img {
@@ -150,14 +152,19 @@
       }
 
       .ed-gift-card__title {
-        font-family: var(--ed-font-display);
-        font-weight: 400;
-        font-size: clamp(64px, 11vw, 170px);
-        line-height: 0.88;
-        letter-spacing: -0.045em;
+        font-family: var(--ed-font-body);
+        font-weight: 900;
+        font-size: clamp(64px, 9vw, 132px);
+        line-height: 0.92;
+        letter-spacing: 0;
         margin: 0;
         color: var(--ed-fg);
         text-wrap: balance;
+      }
+
+      .ed-gift-card__title em {
+        font-family: var(--ed-font-display);
+        font-weight: 400;
       }
 
       .ed-gift-card__copy {
@@ -176,6 +183,12 @@
           var(--ed-card);
         padding: 28px;
         box-shadow: var(--ed-shadow-card);
+        transition: transform 0.34s var(--ed-ease), border-color 0.34s var(--ed-ease), box-shadow 0.34s var(--ed-ease);
+      }
+
+      .ed-gift-card__panel:hover {
+        transform: translateY(-2px);
+        border-color: var(--ed-line-strong);
       }
 
       .ed-gift-card__visual {
@@ -205,11 +218,12 @@
       }
 
       .ed-gift-card__balance h2 {
-        font-family: var(--ed-font-display);
-        font-style: italic;
-        font-weight: 400;
+        font-family: var(--ed-font-body);
+        font-style: normal;
+        font-weight: 900;
         font-size: clamp(42px, 7vw, 78px);
         line-height: 0.9;
+        letter-spacing: 0;
         margin: 0;
       }
 
@@ -294,6 +308,61 @@
 
         .ed-gift-card__panel {
           padding: 20px;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .ed-gift-card {
+          padding: 82px 14px 22px;
+          gap: 24px;
+        }
+
+        .ed-gift-card__brand {
+          top: 16px;
+          left: 16px;
+          max-width: calc(100vw - 32px);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          font-size: 22px;
+        }
+
+        .ed-gift-card__hero {
+          gap: 14px;
+        }
+
+        .ed-gift-card__title {
+          font-size: 48px;
+          line-height: 0.98;
+        }
+
+        .ed-gift-card__copy {
+          font-size: 14px;
+        }
+
+        .ed-gift-card__panel {
+          padding: 16px;
+          border-radius: 10px;
+        }
+
+        .ed-gift-card__visual {
+          aspect-ratio: 1;
+          margin-bottom: 20px;
+        }
+
+        .ed-gift-card__balance {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .ed-gift-card__balance h2 {
+          font-size: 42px;
+        }
+
+        .ed-gift-card__code {
+          font-size: 20px;
+          line-height: 1.25;
         }
       }
     </style>

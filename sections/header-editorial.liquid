@@ -79,6 +79,10 @@
       {%- endfor -%}
     </nav>
     <div class="ed-mobile-menu__foot">
+      <button class="ed-mobile-menu__mode ed-mode-toggle" type="button" data-ed-mode-toggle aria-label="Toggle day / night mode">
+        <span data-ed-mode-label>Night</span>
+        <span class="ed-mode-toggle__dot" aria-hidden="true"></span>
+      </button>
       {%- if shop.customer_accounts_enabled -%}
         <a href="{{ routes.account_url }}">Account</a>
       {%- endif -%}
@@ -152,7 +156,7 @@
     font-family: var(--ed-font-display);
     font-style: italic;
     font-size: 28px;
-    letter-spacing: -0.03em;
+    letter-spacing: 0;
     color: var(--ed-fg);
     text-decoration: none;
     line-height: 1;
@@ -279,7 +283,7 @@
     font-family: var(--ed-font-display);
     font-style: italic;
     font-size: 28px;
-    letter-spacing: -0.03em;
+    letter-spacing: 0;
     color: var(--ed-fg);
     text-decoration: none;
   }
@@ -309,7 +313,7 @@
     text-decoration: none;
     font-family: var(--ed-font-display);
     font-size: 32px;
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
     transition: padding 0.3s var(--ed-ease);
   }
   .ed-mobile-menu__link:hover {
@@ -332,11 +336,17 @@
   .ed-mobile-menu__foot {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
     padding-top: 24px;
     border-top: 1px solid var(--ed-line);
     font-size: 12px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
+  }
+  .ed-mobile-menu__mode {
+    min-height: 38px;
   }
   .ed-mobile-menu__foot a {
     color: var(--ed-fg);
