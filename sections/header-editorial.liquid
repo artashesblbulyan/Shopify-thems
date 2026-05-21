@@ -13,7 +13,14 @@
 
   <div class="ed-header__bar">
     <div class="ed-header__left">
-      <button class="ed-header__menu-btn" type="button" aria-label="Open menu" data-ed-menu-open>
+      <button
+        class="ed-header__menu-btn"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="ed-mobile-menu-{{ section.id }}"
+        data-ed-menu-open
+      >
         <span></span><span></span><span></span>
       </button>
       <nav class="ed-header__nav" aria-label="Primary">
@@ -59,7 +66,7 @@
   </div>
 </header>
 
-<aside class="ed-mobile-menu" data-ed-menu role="dialog" aria-modal="true" aria-label="Menu">
+<aside class="ed-mobile-menu" id="ed-mobile-menu-{{ section.id }}" data-ed-menu role="dialog" aria-modal="true" aria-label="Menu">
   <div class="ed-mobile-menu__overlay" data-ed-menu-close></div>
   <div class="ed-mobile-menu__panel">
     <div class="ed-mobile-menu__head">
@@ -368,19 +375,39 @@
   (function () {
     var menu = document.querySelector('[data-ed-menu]');
     if (!menu) return;
+    var openButton = document.querySelector('[data-ed-menu-open]');
+    var closeButton = menu.querySelector('.ed-mobile-menu__close');
+    var lastFocus = null;
+
+    function openMenu() {
+      lastFocus = document.activeElement;
+      menu.setAttribute('data-ed-open', '');
+      if (openButton) openButton.setAttribute('aria-expanded', 'true');
+      document.documentElement.style.overflow = 'hidden';
+      window.requestAnimationFrame(function () {
+        if (closeButton) closeButton.focus({ preventScroll: true });
+      });
+    }
+
+    function closeMenu() {
+      menu.removeAttribute('data-ed-open');
+      if (openButton) openButton.setAttribute('aria-expanded', 'false');
+      document.documentElement.style.overflow = '';
+      if (lastFocus && typeof lastFocus.focus === 'function') {
+        lastFocus.focus({ preventScroll: true });
+      }
+    }
+
     document.addEventListener('click', function (e) {
       if (e.target.closest('[data-ed-menu-open]')) {
-        menu.setAttribute('data-ed-open', '');
-        document.documentElement.style.overflow = 'hidden';
-      } else if (e.target.closest('[data-ed-menu-close]')) {
-        menu.removeAttribute('data-ed-open');
-        document.documentElement.style.overflow = '';
+        openMenu();
+      } else if (e.target.closest('[data-ed-menu-close]') || e.target.closest('.ed-mobile-menu__link')) {
+        closeMenu();
       }
     });
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && menu.hasAttribute('data-ed-open')) {
-        menu.removeAttribute('data-ed-open');
-        document.documentElement.style.overflow = '';
+        closeMenu();
       }
     });
   })();

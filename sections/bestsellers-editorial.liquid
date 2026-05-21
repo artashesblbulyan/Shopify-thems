@@ -80,7 +80,7 @@
               <form method="post" action="{{ routes.cart_add_url }}" class="ed-bestsellers__form">
                 <input type="hidden" name="id" value="{{ card_variant.id }}">
                 <input type="hidden" name="quantity" value="1">
-                <button type="submit" class="ed-bestsellers__quick">
+                <button type="submit" class="ed-bestsellers__quick" aria-label="Quick add {{ product.title | escape }}">
                   Quick add
                 </button>
               </form>

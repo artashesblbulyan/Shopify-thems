@@ -52,20 +52,20 @@
         <div class="ed-contact__row">
           <label>
             <span>Name</span>
-            <input type="text" name="contact[name]" required>
+            <input type="text" name="contact[name]" autocomplete="name" required aria-required="true">
           </label>
           <label>
             <span>Email</span>
-            <input type="email" name="contact[email]" required>
+            <input type="email" name="contact[email]" autocomplete="email" required aria-required="true">
           </label>
         </div>
         <label>
           <span>Subject</span>
-          <input type="text" name="contact[subject]">
+          <input type="text" name="contact[subject]" autocomplete="off">
         </label>
         <label>
           <span>Message</span>
-          <textarea name="contact[body]" rows="5" required></textarea>
+          <textarea name="contact[body]" rows="5" autocomplete="off" required aria-required="true"></textarea>
         </label>
         <button type="submit" class="ed-btn ed-btn--solid ed-contact__submit">
           Send message <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>

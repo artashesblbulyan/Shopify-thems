@@ -43,17 +43,18 @@
               </div>
               <div class="ed-cart__item-bottom">
                 <div class="ed-cart__qty">
-                  <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity={{ decrease_quantity }}" data-ed-cart-step="-1" data-line="{{ forloop.index }}" data-key="{{ item.key }}" data-qty="{{ decrease_quantity }}" aria-label="Decrease">-</a>
+                  <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity={{ decrease_quantity }}" data-ed-cart-step="-1" data-line="{{ forloop.index }}" data-key="{{ item.key }}" data-qty="{{ decrease_quantity }}" aria-label="Decrease quantity for {{ item.product.title | escape }}">-</a>
                   <input
                     type="number"
                     name="updates[{{ item.key }}]"
                     value="{{ item.quantity }}"
                     min="0"
-                    aria-label="Quantity"
+                    inputmode="numeric"
+                    aria-label="Quantity for {{ item.product.title | escape }}"
                   >
-                  <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity={{ increase_quantity }}" data-ed-cart-step="1" data-line="{{ forloop.index }}" data-key="{{ item.key }}" data-qty="{{ increase_quantity }}" aria-label="Increase">+</a>
+                  <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity={{ increase_quantity }}" data-ed-cart-step="1" data-line="{{ forloop.index }}" data-key="{{ item.key }}" data-qty="{{ increase_quantity }}" aria-label="Increase quantity for {{ item.product.title | escape }}">+</a>
                 </div>
-                <a href="{{ item.url_to_remove }}" class="ed-cart__item-remove">Remove</a>
+                <a href="{{ item.url_to_remove }}" class="ed-cart__item-remove" aria-label="Remove {{ item.product.title | escape }}">Remove</a>
               </div>
             </div>
           </article>
@@ -80,7 +81,7 @@
         </div>
         <p class="ed-cart__summary-note">Shipping &amp; taxes calculated at checkout.</p>
 
-        <textarea name="note" placeholder="Add a note (optional)" class="ed-cart__note">{{ cart.note }}</textarea>
+        <textarea name="note" placeholder="Add a note (optional)" aria-label="Cart note" class="ed-cart__note">{{ cart.note }}</textarea>
 
         <button type="submit" name="update" class="ed-btn ed-btn--ghost ed-cart__update">Update bag</button>
         <button type="submit" name="checkout" class="ed-btn ed-btn--solid ed-cart__checkout">

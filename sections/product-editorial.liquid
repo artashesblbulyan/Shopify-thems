@@ -104,9 +104,9 @@
       <div class="ed-product__quantity">
         <label for="ed-qty-{{ section.id }}">Quantity</label>
         <div class="ed-product__qty-control">
-          <button type="button" data-ed-qty-step="-1" aria-label="Decrease">-</button>
-          <input id="ed-qty-{{ section.id }}" type="number" name="quantity" value="1" min="1">
-          <button type="button" data-ed-qty-step="1" aria-label="Increase">+</button>
+          <button type="button" data-ed-qty-step="-1" aria-label="Decrease quantity for {{ p.title | escape }}">-</button>
+          <input id="ed-qty-{{ section.id }}" type="number" name="quantity" value="1" min="1" inputmode="numeric" aria-label="Quantity for {{ p.title | escape }}">
+          <button type="button" data-ed-qty-step="1" aria-label="Increase quantity for {{ p.title | escape }}">+</button>
         </div>
       </div>
 

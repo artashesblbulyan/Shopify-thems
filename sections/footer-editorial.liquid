@@ -7,13 +7,13 @@
     <h2 class="ed-display ed-footer__cta-title">{{ section.settings.cta_heading }}</h2>
     <div class="ed-footer__cta-actions">
       {%- if section.settings.cta_primary_label != blank -%}
-        <a class="ed-btn ed-btn--solid" href="{{ section.settings.cta_primary_link | default: '#' }}">
+        <a class="ed-btn ed-btn--solid" href="{{ section.settings.cta_primary_link | default: routes.all_products_collection_url }}">
           {{ section.settings.cta_primary_label }}
           <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
         </a>
       {%- endif -%}
       {%- if section.settings.cta_secondary_label != blank -%}
-        <a class="ed-btn ed-btn--ghost" href="{{ section.settings.cta_secondary_link | default: '#' }}">
+        <a class="ed-btn ed-btn--ghost" href="{{ section.settings.cta_secondary_link | default: routes.root_url }}">
           {{ section.settings.cta_secondary_label }}
         </a>
       {%- endif -%}
@@ -26,24 +26,27 @@
         {{ section.settings.logo_text | default: shop.name }}
       </a>
       <p class="ed-footer__tagline">{{ section.settings.tagline }}</p>
-      <form
-        class="ed-footer__subscribe"
-        method="post"
-        action="/contact#newsletter"
-        accept-charset="UTF-8"
-      >
-        <input type="hidden" name="form_type" value="customer">
-        <input type="hidden" name="utf8" value="1">
+      {%- form 'customer', id: 'ed-footer-newsletter', class: 'ed-footer__subscribe-form' -%}
         <input type="hidden" name="contact[tags]" value="newsletter">
-        <input
-          type="email"
-          name="contact[email]"
-          placeholder="your@email.com"
-          aria-label="Email"
-          required
-        >
-        <button type="submit">Join <span aria-hidden="true">-&gt;</span></button>
-      </form>
+        <div class="ed-footer__subscribe">
+          <input
+            type="email"
+            name="contact[email]"
+            placeholder="your@email.com"
+            aria-label="Email"
+            autocomplete="email"
+            required
+          >
+          <button type="submit">Join <span aria-hidden="true">-&gt;</span></button>
+        </div>
+        {%- if form.posted_successfully? -%}
+          <p class="ed-footer__subscribe-message" role="status">Thanks. You are on the list.</p>
+        {%- elsif form.errors -%}
+          <div class="ed-footer__subscribe-message ed-footer__subscribe-message--error">
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+      {%- endform -%}
     </div>
 
     {%- for block in section.blocks -%}
@@ -169,6 +172,9 @@
     margin: 0 0 22px;
     max-width: 22em;
   }
+  .ed-footer__subscribe-form {
+    max-width: 360px;
+  }
   .ed-footer__subscribe {
     display: flex;
     align-items: center;
@@ -176,7 +182,6 @@
     border-radius: var(--ed-pill);
     padding: 6px 6px 6px 16px;
     transition: border-color 0.25s var(--ed-ease);
-    max-width: 360px;
   }
   .ed-footer__subscribe:focus-within {
     border-color: var(--ed-fg);
@@ -210,6 +215,20 @@
     transition: background 0.25s var(--ed-ease);
   }
   .ed-footer__subscribe button:hover { background: var(--ed-accent); color: #0a0a0a; }
+  .ed-footer__subscribe-message {
+    margin: 10px 0 0;
+    font-family: var(--ed-font-body);
+    font-size: 12px;
+    line-height: 1.4;
+    color: color-mix(in srgb, var(--ed-bg) 70%, transparent);
+  }
+  .ed-footer__subscribe-message--error {
+    color: #ffb4b4;
+  }
+  .ed-footer__subscribe-message ul {
+    margin: 0;
+    padding-left: 18px;
+  }
 
   .ed-footer__meta {
     display: flex;
@@ -240,6 +259,7 @@
     .ed-footer { padding: 60px 20px 24px; }
     .ed-footer__cta { margin-bottom: 48px; padding-bottom: 48px; gap: 24px; }
     .ed-footer__grid { grid-template-columns: 1fr; gap: 32px; }
+    .ed-footer__subscribe-form { max-width: 100%; }
     .ed-footer__meta { flex-direction: column; gap: 12px; align-items: flex-start; }
   }
 {% endstylesheet %}

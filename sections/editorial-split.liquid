@@ -12,7 +12,7 @@
     {%- endif -%}
     {%- if section.settings.cta_label != blank -%}
       <div class="ed-split__cta">
-        <a class="ed-btn ed-btn--solid" href="{{ section.settings.cta_link | default: '#' }}">
+        <a class="ed-btn ed-btn--solid" href="{{ section.settings.cta_link | default: routes.all_products_collection_url }}">
           {{ section.settings.cta_label }}
           <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
         </a>

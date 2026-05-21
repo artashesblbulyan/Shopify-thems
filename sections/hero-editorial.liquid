@@ -41,13 +41,13 @@
     {%- endif -%}
     <div class="ed-hero__cta">
       {%- if section.settings.primary_cta_label != blank -%}
-        <a class="ed-btn ed-btn--solid" href="{{ section.settings.primary_cta_link | default: '#' }}">
+        <a class="ed-btn ed-btn--solid" href="{{ section.settings.primary_cta_link | default: routes.all_products_collection_url }}">
           {{ section.settings.primary_cta_label }}
           <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
         </a>
       {%- endif -%}
       {%- if section.settings.secondary_cta_label != blank -%}
-        <a class="ed-btn ed-btn--ghost" href="{{ section.settings.secondary_cta_link | default: '#' }}">
+        <a class="ed-btn ed-btn--ghost" href="{{ section.settings.secondary_cta_link | default: routes.search_url }}">
           {{ section.settings.secondary_cta_label }}
         </a>
       {%- endif -%}
@@ -63,7 +63,7 @@
 
   <a href="#ed-after-hero-{{ sid }}" class="ed-hero__scroll ed-reveal" aria-label="Scroll down">
     <span class="ed-hero__scroll-label">Scroll</span>
-    <span class="ed-hero__scroll-arrow">↓</span>
+    <span class="ed-hero__scroll-arrow">&darr;</span>
   </a>
 </section>
 <span id="ed-after-hero-{{ sid }}"></span>
