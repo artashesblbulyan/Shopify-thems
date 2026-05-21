@@ -28,6 +28,12 @@
   </button>
 </div>
 
+<div class="ed-cart-toast" data-ed-cart-toast role="status" aria-live="polite" aria-atomic="true">
+  <span class="ed-cart-toast__dot" aria-hidden="true"></span>
+  <span data-ed-cart-toast-message>Added to cart.</span>
+  <a href="{{ routes.cart_url }}">View cart</a>
+</div>
+
 {% comment %}
   Floating fallback toggle, only visible on pages without the editorial header
   (since the editorial header already includes its own toggle).
@@ -131,6 +137,129 @@
       if (!topButton) return;
       event.preventDefault();
       window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
+    });
+
+    // Editorial AJAX add-to-cart feedback for custom product cards and product page.
+    var cartToast = document.querySelector('[data-ed-cart-toast]');
+    var cartToastMessage = cartToast && cartToast.querySelector('[data-ed-cart-toast-message]');
+    var cartToastTimer = null;
+
+    function showCartToast(message) {
+      if (!cartToast) return;
+      if (cartToastMessage) cartToastMessage.textContent = message || 'Added to cart.';
+      window.clearTimeout(cartToastTimer);
+      cartToast.classList.add('is-visible');
+      cartToastTimer = window.setTimeout(function () {
+        cartToast.classList.remove('is-visible');
+      }, 3200);
+    }
+
+    function updateCartCount(count) {
+      document.querySelectorAll('[data-ed-cart-count]').forEach(function (el) {
+        el.textContent = count;
+      });
+    }
+
+    function refreshCartCount() {
+      return fetch('{{ routes.cart_url }}.js', {
+        headers: { Accept: 'application/json' }
+      }).then(function (response) {
+        if (!response.ok) throw new Error('Cart refresh failed.');
+        return response.json();
+      }).then(function (cart) {
+        updateCartCount(cart.item_count || 0);
+        return cart;
+      });
+    }
+
+    function cartAddEndpoint(form) {
+      var action = form.getAttribute('action') || '{{ routes.cart_add_url }}';
+      action = action.replace(/\/$/, '');
+      return action.indexOf('.js') === -1 ? action + '.js' : action;
+    }
+
+    function getCartButton(form) {
+      return form.querySelector('[data-ed-add-button], .ed-bestsellers__quick, button[type="submit"]');
+    }
+
+    function setCartButtonLabel(button, label) {
+      if (!button) return;
+      var labelNode = button.querySelector('[data-ed-add-label]');
+      if (labelNode) {
+        labelNode.textContent = label;
+      } else {
+        button.textContent = label;
+      }
+    }
+
+    function restoreCartButton(button) {
+      if (!button) return;
+      button.classList.remove('is-loading', 'is-added', 'is-error');
+      button.disabled = button.dataset.edWasDisabled === 'true';
+      if (button.dataset.edOriginalLabel) {
+        setCartButtonLabel(button, button.dataset.edOriginalLabel);
+      }
+      delete button.dataset.edOriginalLabel;
+      delete button.dataset.edWasDisabled;
+    }
+
+    document.addEventListener('submit', function (event) {
+      var form = event.target;
+      if (!form || !(form.matches('.ed-bestsellers__form') || form.matches('[data-ed-product-form]'))) return;
+      if (!window.fetch || !window.FormData) return;
+
+      event.preventDefault();
+
+      if (form.dataset.edAjaxBusy === 'true') return;
+      form.dataset.edAjaxBusy = 'true';
+
+      var button = getCartButton(form);
+      var labelNode = button && (button.querySelector('[data-ed-add-label]') || button);
+      if (button) {
+        button.dataset.edOriginalLabel = labelNode ? labelNode.textContent.trim() : '';
+        button.dataset.edWasDisabled = button.disabled ? 'true' : 'false';
+        button.disabled = true;
+        button.classList.remove('is-added', 'is-error');
+        button.classList.add('is-loading');
+        setCartButtonLabel(button, 'Adding...');
+      }
+
+      fetch(cartAddEndpoint(form), {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: new FormData(form)
+      }).then(function (response) {
+        if (response.ok) return response.json();
+        return response.json().then(function (data) {
+          throw new Error(data.description || data.message || 'Could not add to cart.');
+        });
+      }).then(function (item) {
+        return refreshCartCount().then(function () {
+          return item;
+        });
+      }).then(function (item) {
+        if (button) {
+          button.classList.remove('is-loading', 'is-error');
+          button.classList.add('is-added');
+          setCartButtonLabel(button, 'Added');
+        }
+        showCartToast(((item && item.title) || 'Item') + ' added to cart.');
+        window.setTimeout(function () {
+          restoreCartButton(button);
+        }, 1300);
+      }).catch(function (error) {
+        if (button) {
+          button.classList.remove('is-loading', 'is-added');
+          button.classList.add('is-error');
+          setCartButtonLabel(button, 'Try again');
+          window.setTimeout(function () {
+            restoreCartButton(button);
+          }, 1800);
+        }
+        showCartToast(error.message || 'Could not add to cart.');
+      }).finally(function () {
+        form.dataset.edAjaxBusy = 'false';
+      });
     });
 
     // Scroll reveal - IntersectionObserver, runs after DOM is ready
