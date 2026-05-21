@@ -6,6 +6,28 @@
 <div class="ed-scroll-progress" data-ed-scroll-progress aria-hidden="true"></div>
 <div class="ed-page-transition" data-ed-page-transition aria-hidden="true"></div>
 
+<div class="ed-smart-actions" data-ed-smart-actions aria-label="Quick actions">
+  <a class="ed-smart-actions__btn" href="{{ routes.search_url }}" aria-label="Search">
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <circle cx="9" cy="9" r="5.5"></circle>
+      <path d="M13.5 13.5L17 17"></path>
+    </svg>
+  </a>
+  <a class="ed-smart-actions__btn ed-smart-actions__cart" href="{{ routes.cart_url }}" aria-label="Cart">
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M5.2 6.5h9.6l-.8 9H6z"></path>
+      <path d="M7.4 6.5a2.6 2.6 0 0 1 5.2 0"></path>
+    </svg>
+    <span data-ed-cart-count>{{ cart.item_count }}</span>
+  </a>
+  <button class="ed-smart-actions__btn" type="button" data-ed-back-top aria-label="Back to top">
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M10 16V4"></path>
+      <path d="M5.5 8.5L10 4l4.5 4.5"></path>
+    </svg>
+  </button>
+</div>
+
 {% comment %}
   Floating fallback toggle, only visible on pages without the editorial header
   (since the editorial header already includes its own toggle).
@@ -88,6 +110,7 @@
     function updateLiveMotion() {
       var y = window.scrollY || document.documentElement.scrollTop || 0;
       html.classList.toggle('ed-has-scrolled', y > 14);
+      html.classList.toggle('ed-show-smart-actions', y > 360);
       if (!reducedMotion) {
         html.style.setProperty('--ed-hero-img-parallax', (-Math.min(34, y * 0.035)).toFixed(2) + 'px');
         html.style.setProperty('--ed-scroll-ratio', Math.min(1, y / 520).toFixed(3));
@@ -102,6 +125,13 @@
     window.addEventListener('scroll', requestLiveMotion, { passive: true });
     window.addEventListener('resize', requestLiveMotion);
     requestLiveMotion();
+
+    document.addEventListener('click', function (event) {
+      var topButton = event.target.closest && event.target.closest('[data-ed-back-top]');
+      if (!topButton) return;
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
+    });
 
     // Scroll reveal - IntersectionObserver, runs after DOM is ready
     function bindReveal() {

@@ -3923,3 +3923,200 @@ html.ed-has-scrolled .ed-header {
     transition: none !important;
   }
 }
+
+/* ============================================================
+   Smart action layer
+   Mobile-first quick actions and stronger interaction feedback.
+   ============================================================ */
+
+.ed-smart-actions {
+  position: fixed;
+  right: 18px;
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate3d(0, 14px, 0) scale(0.96);
+  pointer-events: none;
+  transition:
+    opacity 0.28s var(--ed-ease),
+    visibility 0.28s var(--ed-ease),
+    transform 0.34s var(--ed-ease-spring);
+}
+
+html.ed-show-smart-actions .ed-smart-actions {
+  opacity: 1;
+  visibility: visible;
+  transform: translate3d(0, 0, 0) scale(1);
+  pointer-events: auto;
+}
+
+.ed-smart-actions__btn {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ed-line-strong);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--ed-card) 84%, transparent);
+  color: var(--ed-fg);
+  box-shadow: 0 16px 42px rgba(16, 19, 18, 0.12);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    transform 0.25s var(--ed-ease),
+    background 0.25s var(--ed-ease),
+    color 0.25s var(--ed-ease),
+    border-color 0.25s var(--ed-ease);
+}
+
+.ed-smart-actions__btn svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ed-smart-actions__btn:hover {
+  transform: translateY(-3px);
+  background: var(--ed-fg);
+  color: var(--ed-bg);
+  border-color: var(--ed-fg);
+}
+
+.ed-smart-actions__btn:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.ed-smart-actions__cart span {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  border-radius: var(--ed-pill);
+  background: var(--ed-accent);
+  color: var(--ed-ink);
+  font-family: var(--ed-font-body);
+  font-size: 10px;
+  font-weight: 900;
+  border: 1px solid var(--ed-bg);
+}
+
+.ed-bestsellers__media,
+.ed-bento__img,
+.ed-collection__card-img,
+.ed-search__card-img,
+.ed-list-collections__media,
+.ed-product__gallery-main,
+.ed-cart__item-img {
+  isolation: isolate;
+}
+
+.ed-bestsellers__media::after,
+.ed-bento__img::after,
+.ed-collection__card-img::after,
+.ed-search__card-img::after,
+.ed-list-collections__media::after {
+  border-radius: inherit;
+}
+
+.ed-contact__form input:user-invalid,
+.ed-contact__form textarea:user-invalid,
+.ed-footer__subscribe input[type="email"]:user-invalid,
+.ed-search__form input[type="search"]:user-invalid,
+.ed-cart__note:user-invalid {
+  border-color: color-mix(in srgb, #ff4d4d 72%, var(--ed-line)) !important;
+  box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.11);
+}
+
+.ed-contact__form input:user-valid,
+.ed-contact__form textarea:user-valid,
+.ed-footer__subscribe input[type="email"]:user-valid {
+  border-color: color-mix(in srgb, var(--ed-accent) 66%, var(--ed-line)) !important;
+}
+
+.ed-btn,
+.ed-bestsellers__quick,
+.ed-bestsellers__details,
+.ed-product__variant,
+.ed-product__thumb,
+.ed-cart__qty a,
+.ed-header__icon,
+.ed-header__cart,
+.ed-mode-toggle,
+.ed-smart-actions__btn {
+  will-change: transform;
+}
+
+.ed-btn:focus-visible,
+.ed-bestsellers__quick:focus-visible,
+.ed-bestsellers__details:focus-visible,
+.ed-product__variant:focus-within,
+.ed-product__thumb:focus-visible,
+.ed-cart__qty a:focus-visible,
+.ed-header__icon:focus-visible,
+.ed-header__cart:focus-visible,
+.ed-mode-toggle:focus-visible,
+.ed-smart-actions__btn:focus-visible {
+  outline: 2px solid var(--ed-accent);
+  outline-offset: 3px;
+}
+
+@media (max-width: 720px) {
+  .ed-smart-actions {
+    left: 50%;
+    right: auto;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    flex-direction: row;
+    padding: 6px;
+    border: 1px solid var(--ed-line);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--ed-card) 76%, transparent);
+    box-shadow: 0 18px 54px rgba(16, 19, 18, 0.18);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    transform: translate3d(-50%, 18px, 0) scale(0.96);
+  }
+
+  html.ed-show-smart-actions .ed-smart-actions {
+    transform: translate3d(-50%, 0, 0) scale(1);
+  }
+
+  .ed-smart-actions__btn {
+    width: 46px;
+    height: 44px;
+    border-radius: 12px;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .ed-smart-actions__btn:hover {
+    transform: none;
+  }
+
+  .ed-product__add {
+    bottom: calc(72px + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ed-smart-actions,
+  .ed-smart-actions__btn {
+    transition: none !important;
+  }
+}
