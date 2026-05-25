@@ -4,6 +4,7 @@
 {%- enddoc -%}
 
 <div class="ed-scroll-progress" data-ed-scroll-progress aria-hidden="true"></div>
+<div class="ed-site-aura" data-ed-site-aura aria-hidden="true"></div>
 <div class="ed-page-transition" data-ed-page-transition aria-hidden="true"></div>
 
 <div class="ed-smart-actions" data-ed-smart-actions aria-label="Quick actions">
@@ -138,6 +139,39 @@
     window.addEventListener('scroll', requestLiveMotion, { passive: true });
     window.addEventListener('resize', requestLiveMotion);
     requestLiveMotion();
+
+    // Cinematic page state: section focus and pointer-driven lighting.
+    function bindPageMotion() {
+      var sections = document.querySelectorAll('.ed-section');
+      sections.forEach(function (section, index) {
+        section.style.setProperty('--ed-section-index', index);
+      });
+
+      if ('IntersectionObserver' in window) {
+        var sceneObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            entry.target.classList.toggle('ed-section-in-view', entry.isIntersecting);
+          });
+        }, { threshold: 0.18, rootMargin: '-8% 0px -18% 0px' });
+        sections.forEach(function (section) { sceneObserver.observe(section); });
+      } else {
+        sections.forEach(function (section) { section.classList.add('ed-section-in-view'); });
+      }
+
+      if (reducedMotion || !window.matchMedia || !window.matchMedia('(pointer: fine)').matches) return;
+      var pointerTicking = false;
+      function updatePointer(event) {
+        if (pointerTicking) return;
+        pointerTicking = true;
+        requestAnimationFrame(function () {
+          html.style.setProperty('--ed-pointer-x', event.clientX + 'px');
+          html.style.setProperty('--ed-pointer-y', event.clientY + 'px');
+          pointerTicking = false;
+        });
+      }
+      window.addEventListener('pointermove', updatePointer, { passive: true });
+    }
+    onReady(bindPageMotion);
 
     document.addEventListener('click', function (event) {
       var topButton = event.target.closest && event.target.closest('[data-ed-back-top]');
