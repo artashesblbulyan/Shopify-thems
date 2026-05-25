@@ -40,7 +40,7 @@
     </a>
 
     <div class="ed-header__right">
-      <button class="ed-mode-toggle ed-header__mode" type="button" data-ed-mode-toggle aria-label="Toggle day / night mode">
+      <button class="ed-mode-toggle ed-header__mode" type="button" data-ed-mode-toggle aria-label="Switch to night mode" aria-pressed="false">
         <span data-ed-mode-label>Night</span>
         <span class="ed-mode-toggle__dot" aria-hidden="true"></span>
       </button>
@@ -66,7 +66,7 @@
   </div>
 </header>
 
-<aside class="ed-mobile-menu" id="ed-mobile-menu-{{ section.id }}" data-ed-menu role="dialog" aria-modal="true" aria-label="Menu">
+<aside class="ed-mobile-menu" id="ed-mobile-menu-{{ section.id }}" data-ed-menu role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true">
   <div class="ed-mobile-menu__overlay" data-ed-menu-close></div>
   <div class="ed-mobile-menu__panel">
     <div class="ed-mobile-menu__head">
@@ -86,7 +86,7 @@
       {%- endfor -%}
     </nav>
     <div class="ed-mobile-menu__foot">
-      <button class="ed-mobile-menu__mode ed-mode-toggle" type="button" data-ed-mode-toggle aria-label="Toggle day / night mode">
+      <button class="ed-mobile-menu__mode ed-mode-toggle" type="button" data-ed-mode-toggle aria-label="Switch to night mode" aria-pressed="false">
         <span data-ed-mode-label>Night</span>
         <span class="ed-mode-toggle__dot" aria-hidden="true"></span>
       </button>
@@ -377,20 +377,30 @@
     if (!menu) return;
     var openButton = document.querySelector('[data-ed-menu-open]');
     var closeButton = menu.querySelector('.ed-mobile-menu__close');
+    var focusableSelector = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
     var lastFocus = null;
+
+    function focusableElements() {
+      return Array.prototype.slice.call(menu.querySelectorAll(focusableSelector)).filter(function (el) {
+        return el.offsetParent !== null || el === document.activeElement;
+      });
+    }
 
     function openMenu() {
       lastFocus = document.activeElement;
       menu.setAttribute('data-ed-open', '');
+      menu.setAttribute('aria-hidden', 'false');
       if (openButton) openButton.setAttribute('aria-expanded', 'true');
       document.documentElement.style.overflow = 'hidden';
       window.requestAnimationFrame(function () {
-        if (closeButton) closeButton.focus({ preventScroll: true });
+        var firstFocusable = closeButton || focusableElements()[0];
+        if (firstFocusable) firstFocusable.focus({ preventScroll: true });
       });
     }
 
     function closeMenu() {
       menu.removeAttribute('data-ed-open');
+      menu.setAttribute('aria-hidden', 'true');
       if (openButton) openButton.setAttribute('aria-expanded', 'false');
       document.documentElement.style.overflow = '';
       if (lastFocus && typeof lastFocus.focus === 'function') {
@@ -406,8 +416,25 @@
       }
     });
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && menu.hasAttribute('data-ed-open')) {
+      if (!menu.hasAttribute('data-ed-open')) return;
+
+      if (e.key === 'Escape') {
         closeMenu();
+        return;
+      }
+
+      if (e.key !== 'Tab') return;
+      var items = focusableElements();
+      if (!items.length) return;
+      var first = items[0];
+      var last = items[items.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
       }
     });
   })();

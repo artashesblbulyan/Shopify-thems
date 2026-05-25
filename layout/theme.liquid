@@ -14,7 +14,7 @@
       >
     {%- endif -%}
 
-    {% comment %} This a way to wait for main content to load when navigating to a new page so that the view transitions can work consistently {% endcomment %}
+    {% comment %} This is a way to wait for main content to load when navigating to a new page so that the view transitions can work consistently {% endcomment %}
     {% if settings.transition_to_main_product or settings.page_transition_enabled %}
       <link
         rel="expect"
@@ -31,7 +31,7 @@
     {%- render 'theme-styles-variables' -%}
     {%- render 'color-schemes' -%}
 
-    <link rel="stylesheet" href="{{ 'editorial.css' | asset_url }}">
+    {{ 'editorial.css' | asset_url | stylesheet_tag: preload: true }}
     <script>
       // Set ed-mode early to avoid flash
       (function () {
@@ -59,8 +59,8 @@
 
     <script>
       // Inline header height calculation to prevent layout shift
-      // Note: Updates in calculateHeaderGroupHeight() and updateTransparentHeaderOffset()utilities.js should be kept in sync with this function
-      (function setHeaderHeighCustomProperties() {
+      // Note: Updates in calculateHeaderGroupHeight() and updateTransparentHeaderOffset() in utilities.js should be kept in sync with this function
+      (function setHeaderHeightCustomProperties() {
         /*
          * Header calculation functions for maintaining CSS variables
          * Mimic calculateHeaderGroupHeight() in utilities.js
