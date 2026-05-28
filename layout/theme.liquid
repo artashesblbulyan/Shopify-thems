@@ -33,14 +33,13 @@
 
     {{ 'editorial.css' | asset_url | stylesheet_tag: preload: true }}
     <script>
-      // Set ed-mode early to avoid flash
+      // Keep the editorial theme in day mode after removing the mode toggle.
       (function () {
         try {
-          var mode = localStorage.getItem('ed-mode') || 'day';
-          document.documentElement.dataset.edMode = mode;
+          localStorage.removeItem('ed-mode');
         } catch (e) {
-          document.documentElement.dataset.edMode = 'day';
         }
+        document.documentElement.dataset.edMode = 'day';
       })();
     </script>
 

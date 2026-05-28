@@ -34,23 +34,6 @@
   <a href="{{ routes.cart_url }}">View cart</a>
 </div>
 
-{% comment %}
-  Floating fallback toggle, only visible on pages without the editorial header
-  (since the editorial header already includes its own toggle).
-{% endcomment %}
-<button
-  type="button"
-  class="ed-mode-floating"
-  data-ed-mode-toggle
-  data-ed-mode-floating
-  aria-label="Switch to night mode"
-  aria-pressed="false"
-  hidden
->
-  <span data-ed-mode-label>Night</span>
-  <span class="ed-mode-floating__dot" aria-hidden="true"></span>
-</button>
-
 <script>
   (function () {
     var html = document.documentElement;
@@ -63,40 +46,6 @@
         fn();
       }
     }
-
-    // Show floating toggle only when there is no editorial header toggle on the page
-    document.addEventListener('DOMContentLoaded', function () {
-      var floating = document.querySelector('[data-ed-mode-floating]');
-      var headerToggle = document.querySelector('.ed-header__mode');
-      if (floating && !headerToggle) {
-        floating.hidden = false;
-      }
-    });
-
-    // Sync labels
-    function syncModeControls() {
-      var isNight = html.dataset.edMode === 'night';
-      var currentLabel = isNight ? 'Night' : 'Day';
-      var nextLabel = isNight ? 'Switch to day mode' : 'Switch to night mode';
-      document.querySelectorAll('[data-ed-mode-label]').forEach(function (el) {
-        el.textContent = currentLabel;
-      });
-      document.querySelectorAll('[data-ed-mode-toggle]').forEach(function (el) {
-        el.setAttribute('aria-pressed', isNight ? 'true' : 'false');
-        el.setAttribute('aria-label', nextLabel);
-      });
-    }
-    syncModeControls();
-
-    // Toggle handler
-    document.addEventListener('click', function (e) {
-      var btn = e.target.closest('[data-ed-mode-toggle]');
-      if (!btn) return;
-      var next = html.dataset.edMode === 'night' ? 'day' : 'night';
-      html.dataset.edMode = next;
-      try { localStorage.setItem('ed-mode', next); } catch (e) {}
-      syncModeControls();
-    });
 
     // Scroll progress
     var bar = document.querySelector('[data-ed-scroll-progress]');

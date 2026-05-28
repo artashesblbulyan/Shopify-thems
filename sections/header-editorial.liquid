@@ -49,10 +49,6 @@
     </a>
 
     <div class="ed-header__right">
-      <button class="ed-mode-toggle ed-header__mode" type="button" data-ed-mode-toggle aria-label="Switch to night mode" aria-pressed="false">
-        <span data-ed-mode-label>Night</span>
-        <span class="ed-mode-toggle__dot" aria-hidden="true"></span>
-      </button>
       {%- if section.settings.show_search -%}
         <a class="ed-header__icon" href="{{ routes.search_url }}" aria-label="Search">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -95,10 +91,6 @@
       {%- endfor -%}
     </nav>
     <div class="ed-mobile-menu__foot">
-      <button class="ed-mobile-menu__mode ed-mode-toggle" type="button" data-ed-mode-toggle aria-label="Switch to night mode" aria-pressed="false">
-        <span data-ed-mode-label>Night</span>
-        <span class="ed-mode-toggle__dot" aria-hidden="true"></span>
-      </button>
       {%- if shop.customer_accounts_enabled -%}
         <a href="{{ routes.account_url }}">Account</a>
       {%- endif -%}
