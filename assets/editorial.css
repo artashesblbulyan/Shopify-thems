@@ -7977,7 +7977,7 @@ html[data-ed-mode] .ed-collection__grid {
    and scoped so it cannot remain stuck over collection pages.
    ============================================================ */
 
-html[data-ed-mode] .ed-page-transition {
+.ed-page-transition {
   display: block !important;
   visibility: hidden !important;
   opacity: 1 !important;
@@ -7990,9 +7990,14 @@ html[data-ed-mode] .ed-page-transition {
   will-change: auto;
 }
 
-html[data-ed-mode] .ed-page-transition::before,
-html[data-ed-mode] .ed-page-transition::after {
-  content: "" !important;
+.ed-page-transition::before,
+.ed-page-transition::after {
+  display: none !important;
+  content: none !important;
+}
+
+.ed-page-transition__panel,
+.ed-page-transition__stripe {
   position: absolute !important;
   display: block !important;
   visibility: hidden !important;
@@ -8002,7 +8007,7 @@ html[data-ed-mode] .ed-page-transition::after {
   will-change: transform, opacity;
 }
 
-html[data-ed-mode] .ed-page-transition::before {
+.ed-page-transition__panel {
   inset: -12vh auto -12vh 0 !important;
   width: 96vw !important;
   background: #0d0f14 !important;
@@ -8010,7 +8015,7 @@ html[data-ed-mode] .ed-page-transition::before {
   transform-origin: right center !important;
 }
 
-html[data-ed-mode] .ed-page-transition::after {
+.ed-page-transition__stripe {
   top: -12vh !important;
   left: 66vw !important;
   width: clamp(22px, 2.2vw, 42px) !important;
@@ -8023,27 +8028,27 @@ html[data-ed-mode] .ed-page-transition::after {
   transform-origin: center !important;
 }
 
-html[data-ed-mode] .ed-page-transition.is-active,
-html.ed-page-leaving[data-ed-mode] .ed-page-transition {
+.ed-page-transition.is-active,
+html.ed-page-leaving .ed-page-transition {
   visibility: visible !important;
   transition: visibility 0s !important;
 }
 
-html[data-ed-mode] .ed-page-transition.is-active::before,
-html[data-ed-mode] .ed-page-transition.is-active::after,
-html.ed-page-leaving[data-ed-mode] .ed-page-transition::before,
-html.ed-page-leaving[data-ed-mode] .ed-page-transition::after {
+.ed-page-transition.is-active .ed-page-transition__panel,
+.ed-page-transition.is-active .ed-page-transition__stripe,
+html.ed-page-leaving .ed-page-transition__panel,
+html.ed-page-leaving .ed-page-transition__stripe {
   visibility: visible !important;
   transition: none !important;
 }
 
-html[data-ed-mode] .ed-page-transition.is-active::before,
-html.ed-page-leaving[data-ed-mode] .ed-page-transition::before {
+.ed-page-transition.is-active .ed-page-transition__panel,
+html.ed-page-leaving .ed-page-transition__panel {
   animation: ed-fast-black-sweep 0.52s var(--ed-ease) both !important;
 }
 
-html[data-ed-mode] .ed-page-transition.is-active::after,
-html.ed-page-leaving[data-ed-mode] .ed-page-transition::after {
+.ed-page-transition.is-active .ed-page-transition__stripe,
+html.ed-page-leaving .ed-page-transition__stripe {
   animation: ed-fast-accent-sweep 0.52s var(--ed-ease) 0.025s both !important;
 }
 

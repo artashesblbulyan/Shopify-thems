@@ -5,7 +5,10 @@
 
 <div class="ed-scroll-progress" data-ed-scroll-progress aria-hidden="true"></div>
 <div class="ed-site-aura" data-ed-site-aura aria-hidden="true"></div>
-<div class="ed-page-transition" data-ed-page-transition aria-hidden="true"></div>
+<div class="ed-page-transition" data-ed-page-transition aria-hidden="true">
+  <span class="ed-page-transition__panel"></span>
+  <span class="ed-page-transition__stripe"></span>
+</div>
 
 <div class="ed-smart-actions" data-ed-smart-actions aria-label="Quick actions">
   <a class="ed-smart-actions__btn" href="{{ routes.search_url }}" aria-label="Search">
@@ -404,9 +407,10 @@
     var pageNavTimer = null;
     var pageTransitionCleanupTimer = null;
     var pageTransition = document.querySelector('[data-ed-page-transition]');
+    var pageTransitionStartedAt = 0;
+    var pageTransitionMinDuration = 260;
 
     function shouldAnimateLink(link) {
-      if (reducedMotion || html.classList.contains('shopify-design-mode')) return false;
       if (!link || link.target || link.hasAttribute('download')) return false;
       if (link.closest('[data-no-page-transition], .shopify-payment-button')) return false;
 
@@ -427,42 +431,71 @@
       return true;
     }
 
+    function resetPageTransition() {
+      window.clearTimeout(pageTransitionCleanupTimer);
+      if (pageTransition) pageTransition.classList.remove('is-active');
+      html.classList.remove('ed-page-leaving');
+      pageTransitionStartedAt = 0;
+    }
+
+    function startPageTransition() {
+      html.classList.remove('ed-page-ready');
+      html.classList.add('ed-page-leaving');
+      window.clearTimeout(pageNavTimer);
+      window.clearTimeout(pageTransitionCleanupTimer);
+
+      if (!pageTransition) return;
+
+      pageTransition.classList.remove('is-active');
+      void pageTransition.offsetWidth;
+      pageTransitionStartedAt = Date.now();
+
+      requestAnimationFrame(function () {
+        pageTransition.classList.add('is-active');
+        pageTransitionCleanupTimer = window.setTimeout(function () {
+          resetPageTransition();
+        }, 720);
+      });
+    }
+
+    document.addEventListener('pointerdown', function (event) {
+      if ((event.button && event.button !== 0) || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      var link = event.target.closest && event.target.closest('a[href]');
+      if (!shouldAnimateLink(link)) return;
+      startPageTransition();
+    }, true);
+
     document.addEventListener('click', function (event) {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       var link = event.target.closest && event.target.closest('a[href]');
       if (!shouldAnimateLink(link)) return;
 
       event.preventDefault();
-      html.classList.remove('ed-page-ready');
-      html.classList.add('ed-page-leaving');
+      if (!pageTransitionStartedAt) startPageTransition();
+
+      var elapsed = pageTransitionStartedAt ? Date.now() - pageTransitionStartedAt : 0;
+      var wait = Math.max(80, pageTransitionMinDuration - elapsed);
       window.clearTimeout(pageNavTimer);
-      window.clearTimeout(pageTransitionCleanupTimer);
-
-      if (!pageTransition) {
+      pageNavTimer = window.setTimeout(function () {
         window.location.assign(link.href);
-        return;
-      }
+      }, wait);
+    }, true);
 
-      pageTransition.classList.remove('is-active');
-      void pageTransition.offsetWidth;
+    document.addEventListener('pointerup', function () {
+      if (!pageTransitionStartedAt) return;
+      window.clearTimeout(pageTransitionCleanupTimer);
+      pageTransitionCleanupTimer = window.setTimeout(function () {
+        if (!pageNavTimer) resetPageTransition();
+      }, 720);
+    }, true);
 
-      requestAnimationFrame(function () {
-        pageTransition.classList.add('is-active');
-        pageTransitionCleanupTimer = window.setTimeout(function () {
-          pageTransition.classList.remove('is-active');
-          html.classList.remove('ed-page-leaving');
-        }, 640);
-        pageNavTimer = window.setTimeout(function () {
-          window.location.assign(link.href);
-        }, 260);
-      });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') resetPageTransition();
     });
 
     window.addEventListener('pageshow', function () {
       window.clearTimeout(pageNavTimer);
-      window.clearTimeout(pageTransitionCleanupTimer);
-      if (pageTransition) pageTransition.classList.remove('is-active');
-      html.classList.remove('ed-page-leaving');
+      resetPageTransition();
       requestAnimationFrame(function () {
         html.classList.add('ed-page-ready');
       });
@@ -470,8 +503,7 @@
 
     window.addEventListener('pagehide', function () {
       window.clearTimeout(pageNavTimer);
-      window.clearTimeout(pageTransitionCleanupTimer);
-      if (pageTransition) pageTransition.classList.remove('is-active');
+      resetPageTransition();
     });
   })();
 </script>
