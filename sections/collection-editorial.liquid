@@ -31,11 +31,19 @@
       {%- if coll.all_tags.size > 0 -%}
         <span class="ed-eyebrow">Filter</span>
         <div class="ed-collection__tags">
+          <a href="{{ coll.url }}" class="ed-collection__tag ed-collection__tag--all{% unless current_tags.size > 0 %} is-active{% endunless %}">
+            <span>All</span>
+          </a>
           {%- for tag in coll.all_tags limit: 6 -%}
             {%- if current_tags contains tag -%}
-              <a href="{{ coll.url }}" class="ed-collection__tag is-active">{{ tag }} x</a>
+              <a href="{{ coll.url }}" class="ed-collection__tag is-active">
+                <span>{{ tag }}</span>
+                <span class="ed-collection__tag-close" aria-hidden="true">&times;</span>
+              </a>
             {%- else -%}
-              <a href="{{ coll.url }}/{{ tag | handle }}" class="ed-collection__tag">{{ tag }}</a>
+              <a href="{{ coll.url }}/{{ tag | handle }}" class="ed-collection__tag">
+                <span>{{ tag }}</span>
+              </a>
             {%- endif -%}
           {%- endfor -%}
         </div>
@@ -44,15 +52,17 @@
 
     <form class="ed-collection__sort" method="get">
       <label for="ed-sort-{{ section.id }}" class="ed-eyebrow">Sort</label>
-      <select id="ed-sort-{{ section.id }}" name="sort_by" onchange="this.form.submit()">
-        <option value="manual" {% if sort_by == 'manual' %}selected{% endif %}>Featured</option>
-        <option value="best-selling" {% if sort_by == 'best-selling' %}selected{% endif %}>Best selling</option>
-        <option value="title-ascending" {% if sort_by == 'title-ascending' %}selected{% endif %}>A-Z</option>
-        <option value="title-descending" {% if sort_by == 'title-descending' %}selected{% endif %}>Z-A</option>
-        <option value="price-ascending" {% if sort_by == 'price-ascending' %}selected{% endif %}>Price: Low to High</option>
-        <option value="price-descending" {% if sort_by == 'price-descending' %}selected{% endif %}>Price: High to Low</option>
-        <option value="created-descending" {% if sort_by == 'created-descending' %}selected{% endif %}>Newest</option>
-      </select>
+      <div class="ed-collection__sort-control">
+        <select id="ed-sort-{{ section.id }}" name="sort_by" onchange="this.form.submit()">
+          <option value="manual" {% if sort_by == 'manual' %}selected{% endif %}>Featured</option>
+          <option value="best-selling" {% if sort_by == 'best-selling' %}selected{% endif %}>Best selling</option>
+          <option value="title-ascending" {% if sort_by == 'title-ascending' %}selected{% endif %}>A-Z</option>
+          <option value="title-descending" {% if sort_by == 'title-descending' %}selected{% endif %}>Z-A</option>
+          <option value="price-ascending" {% if sort_by == 'price-ascending' %}selected{% endif %}>Price: Low to High</option>
+          <option value="price-descending" {% if sort_by == 'price-descending' %}selected{% endif %}>Price: High to Low</option>
+          <option value="created-descending" {% if sort_by == 'created-descending' %}selected{% endif %}>Newest</option>
+        </select>
+      </div>
     </form>
   </div>
 
