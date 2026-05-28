@@ -1,0 +1,448 @@
+{%- liquid
+  assign collection = collections[section.settings.collection]
+  assign products = collection.products | slice: 0, section.settings.product_limit
+  assign hero_image = section.settings.image | default: collection.image
+  if hero_image == blank and products.first != blank
+    assign hero_image = products.first.featured_image
+  endif
+  assign shop_url = section.settings.cta_link | default: collection.url | default: routes.all_products_collection_url
+-%}
+
+<section class="sf-pendant-modern ed-section" id="sf-pendant-modern-{{ section.id }}">
+  <div class="sf-pendant-modern__inner">
+    <div class="sf-pendant-modern__copy ed-reveal ed-reveal--lr">
+      <div class="ed-eyebrow">{{ section.settings.index_number }} / {{ section.settings.index_label }}</div>
+      <h2 class="ed-display sf-pendant-modern__title">{{ section.settings.heading }}</h2>
+      {%- if section.settings.description != blank -%}
+        <p class="sf-pendant-modern__desc">{{ section.settings.description }}</p>
+      {%- endif -%}
+      <div class="sf-pendant-modern__actions">
+        {%- if section.settings.cta_label != blank -%}
+          <a class="ed-btn ed-btn--solid" href="{{ shop_url }}">
+            {{ section.settings.cta_label }}
+            <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
+          </a>
+        {%- endif -%}
+        <div class="sf-pendant-modern__meta">
+          <span>{{ section.settings.meta_left }}</span>
+          <span>{{ section.settings.meta_right }}</span>
+        </div>
+      </div>
+    </div>
+
+    <a class="sf-pendant-modern__stage ed-reveal" href="{{ shop_url }}" aria-label="{{ section.settings.cta_label | default: collection.title | escape }}">
+      {%- if hero_image != blank -%}
+        {{ hero_image | image_url: width: 1800 | image_tag:
+          loading: 'lazy',
+          widths: '700, 1000, 1400, 1800',
+          sizes: '(max-width: 900px) 100vw, 58vw',
+          alt: hero_image.alt | default: collection.title,
+          class: 'sf-pendant-modern__hero'
+        }}
+      {%- else -%}
+        <div class="sf-pendant-modern__fallback" aria-hidden="true">
+          <span class="sf-pendant-modern__wire"></span>
+          <span class="sf-pendant-modern__shade"></span>
+          <span class="sf-pendant-modern__glow"></span>
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.badge != blank -%}
+        <span class="sf-pendant-modern__badge">{{ section.settings.badge }}</span>
+      {%- endif -%}
+      <span class="sf-pendant-modern__index" aria-hidden="true">{{ section.settings.index_number }}</span>
+    </a>
+  </div>
+
+  {%- if products.size > 0 -%}
+    <div class="sf-pendant-modern__strip ed-reveal-stagger">
+      {%- for product in products -%}
+        {%- liquid
+          assign card_image = product.featured_image | default: hero_image
+          assign card_index = forloop.index | prepend: '0' | slice: -2, 2
+        -%}
+        <a class="sf-pendant-modern__product" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+          <div class="sf-pendant-modern__thumb">
+            {%- if card_image != blank -%}
+              {{ card_image | image_url: width: 500 | image_tag:
+                loading: 'lazy',
+                widths: '180, 320, 500',
+                sizes: '(max-width: 720px) 34vw, 140px',
+                alt: card_image.alt | default: product.title,
+                class: 'sf-pendant-modern__thumb-img'
+              }}
+            {%- else -%}
+              <div class="sf-pendant-modern__thumb-fallback" aria-hidden="true"></div>
+            {%- endif -%}
+            <span>{{ card_index }}</span>
+          </div>
+          <div class="sf-pendant-modern__product-copy">
+            <strong>{{ product.title }}</strong>
+            <em>{{ product.price | money }}</em>
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .sf-pendant-modern {
+    padding: clamp(56px, 7vw, 92px) 32px;
+    border-block: 1px solid var(--ed-line);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--ed-card) 64%, transparent), transparent 58%),
+      var(--ed-bg);
+  }
+
+  .sf-pendant-modern__inner {
+    display: grid;
+    width: min(100%, 1580px);
+    margin: 0 auto;
+    grid-template-columns: minmax(320px, 0.42fr) minmax(0, 0.58fr);
+    gap: 20px;
+    align-items: stretch;
+  }
+
+  .sf-pendant-modern__copy {
+    display: flex;
+    min-height: 520px;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 34px;
+    padding: clamp(30px, 4vw, 48px);
+    border: 1px solid color-mix(in srgb, var(--ed-line) 82%, transparent);
+    border-radius: var(--ed-radius-card);
+    background: #10100e;
+    color: #fffaf0;
+  }
+
+  .sf-pendant-modern__copy .ed-eyebrow {
+    color: rgba(255, 250, 240, 0.66);
+    border-color: rgba(255, 250, 240, 0.14);
+    background: rgba(255, 250, 240, 0.06);
+  }
+
+  .sf-pendant-modern__title {
+    max-width: 9ch;
+    margin-top: 18px;
+    font-size: clamp(54px, 7.5vw, 104px);
+    line-height: 0.88;
+    color: #fffaf0;
+    text-wrap: balance;
+  }
+
+  .sf-pendant-modern__desc {
+    max-width: 31em;
+    margin: 0;
+    color: rgba(255, 250, 240, 0.72);
+    font-family: var(--ed-font-display);
+    font-size: clamp(19px, 1.55vw, 23px);
+    font-style: italic;
+    line-height: 1.36;
+  }
+
+  .sf-pendant-modern__actions {
+    display: grid;
+    gap: 24px;
+  }
+
+  .sf-pendant-modern__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 250, 240, 0.14);
+    color: rgba(255, 250, 240, 0.56);
+    font-family: var(--ed-font-body);
+    font-size: 10px;
+    font-weight: 780;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .sf-pendant-modern__stage {
+    position: relative;
+    display: block;
+    min-height: 520px;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--ed-line) 78%, transparent);
+    border-radius: var(--ed-radius-card);
+    background: #1a1712;
+    color: #fffaf0;
+    isolation: isolate;
+  }
+
+  .sf-pendant-modern__stage::after {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    content: "";
+    background:
+      linear-gradient(180deg, rgba(12, 10, 8, 0.02), rgba(12, 10, 8, 0.18) 56%, rgba(12, 10, 8, 0.62)),
+      linear-gradient(90deg, rgba(12, 10, 8, 0.24), transparent 46%);
+    pointer-events: none;
+  }
+
+  .sf-pendant-modern__hero {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    object-position: center center;
+    transition: transform 1.2s var(--ed-ease), filter 0.5s var(--ed-ease);
+  }
+
+  .sf-pendant-modern__stage:hover .sf-pendant-modern__hero {
+    transform: scale(1.04);
+    filter: saturate(1.04);
+  }
+
+  .sf-pendant-modern__badge {
+    position: absolute;
+    top: 22px;
+    left: 22px;
+    z-index: 2;
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 250, 240, 0.18);
+    border-radius: var(--ed-pill);
+    background: rgba(16, 16, 14, 0.5);
+    color: rgba(255, 250, 240, 0.84);
+    font-family: var(--ed-font-body);
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    backdrop-filter: blur(12px);
+  }
+
+  .sf-pendant-modern__index {
+    position: absolute;
+    right: 24px;
+    bottom: 20px;
+    z-index: 2;
+    color: rgba(255, 250, 240, 0.13);
+    font-family: var(--ed-font-display);
+    font-size: clamp(86px, 12vw, 170px);
+    font-style: italic;
+    line-height: 0.8;
+    pointer-events: none;
+  }
+
+  .sf-pendant-modern__fallback,
+  .sf-pendant-modern__thumb-fallback {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(circle at 52% 48%, rgba(255, 225, 147, 0.78), transparent 25%),
+      linear-gradient(135deg, #24201a, #090807);
+  }
+
+  .sf-pendant-modern__wire {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 1px;
+    height: 45%;
+    transform: translateX(-50%);
+    background: rgba(255, 250, 240, 0.4);
+  }
+
+  .sf-pendant-modern__shade {
+    position: absolute;
+    top: 39%;
+    left: 50%;
+    width: min(34%, 170px);
+    min-width: 92px;
+    aspect-ratio: 1.85;
+    transform: translateX(-50%);
+    border: 1px solid rgba(255, 250, 240, 0.18);
+    border-radius: 999px 999px 22px 22px;
+    background: rgba(255, 250, 240, 0.12);
+  }
+
+  .sf-pendant-modern__glow {
+    width: min(44%, 250px);
+    aspect-ratio: 1;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(255, 225, 147, 0.95), rgba(255, 225, 147, 0.1) 60%, transparent 72%);
+    filter: blur(2px);
+  }
+
+  .sf-pendant-modern__strip {
+    display: grid;
+    width: min(100%, 1580px);
+    margin: 16px auto 0;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .sf-pendant-modern__product {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 12px;
+    padding: 10px;
+    border: 1px solid var(--ed-line);
+    border-radius: var(--ed-radius-card);
+    background: color-mix(in srgb, var(--ed-card) 90%, transparent);
+    color: var(--ed-fg);
+    text-decoration: none;
+    transition: transform 0.3s var(--ed-ease), border-color 0.25s var(--ed-ease);
+  }
+
+  .sf-pendant-modern__product:hover {
+    transform: translateY(-3px);
+    border-color: var(--ed-line-strong);
+  }
+
+  .sf-pendant-modern__thumb {
+    position: relative;
+    min-height: 92px;
+    overflow: hidden;
+    border-radius: 6px;
+    background: var(--ed-card-hover);
+  }
+
+  .sf-pendant-modern__thumb-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+  }
+
+  .sf-pendant-modern__thumb span {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 4px 7px;
+    border-radius: var(--ed-pill);
+    background: color-mix(in srgb, var(--ed-bg) 82%, transparent);
+    color: var(--ed-fg);
+    font-family: var(--ed-font-body);
+    font-size: 9px;
+    font-weight: 850;
+  }
+
+  .sf-pendant-modern__product-copy {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 2px 0;
+  }
+
+  .sf-pendant-modern__product-copy strong {
+    overflow: hidden;
+    color: var(--ed-fg);
+    font-family: var(--ed-font-body);
+    font-size: 13px;
+    font-weight: 820;
+    line-height: 1.22;
+    text-overflow: ellipsis;
+  }
+
+  .sf-pendant-modern__product-copy em {
+    color: var(--ed-muted);
+    font-family: var(--ed-font-body);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 760;
+  }
+
+  @media (max-width: 1180px) {
+    .sf-pendant-modern__inner {
+      grid-template-columns: 1fr;
+    }
+
+    .sf-pendant-modern__copy,
+    .sf-pendant-modern__stage {
+      min-height: 420px;
+    }
+
+    .sf-pendant-modern__strip {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 720px) {
+    .sf-pendant-modern {
+      padding: 48px 20px;
+    }
+
+    .sf-pendant-modern__copy {
+      min-height: 0;
+    }
+
+    .sf-pendant-modern__stage {
+      min-height: 360px;
+    }
+
+    .sf-pendant-modern__title {
+      font-size: clamp(44px, 16vw, 70px);
+    }
+
+    .sf-pendant-modern__meta {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .sf-pendant-modern__strip {
+      grid-template-columns: 1fr;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Pendant modern feature",
+  "tag": "section",
+  "class": "section-sf-pendant-modern",
+  "settings": [
+    { "type": "header", "content": "Heading" },
+    { "type": "text", "id": "index_number", "label": "Index number", "default": "03" },
+    { "type": "text", "id": "index_label", "label": "Index label", "default": "Pendant lamps" },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>Pendant lamps</p>"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Sculptural ceiling lights for dining tables, entries, and quiet corners that need a warmer focal point."
+    },
+    { "type": "text", "id": "cta_label", "label": "CTA label", "default": "Shop pendants" },
+    { "type": "url", "id": "cta_link", "label": "CTA link" },
+    { "type": "text", "id": "meta_left", "label": "Meta left", "default": "Warm room edits" },
+    { "type": "text", "id": "meta_right", "label": "Meta right", "default": "Curated online" },
+    { "type": "header", "content": "Source" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    {
+      "type": "range",
+      "id": "product_limit",
+      "label": "Products",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 4
+    },
+    { "type": "header", "content": "Visual" },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "badge", "label": "Badge", "default": "Pendant edit" }
+  ],
+  "presets": [
+    { "name": "Pendant modern feature" }
+  ]
+}
+{% endschema %}

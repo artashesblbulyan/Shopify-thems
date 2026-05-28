@@ -47,19 +47,20 @@
       }
     },
     "bento_pendant": {
-      "type": "editorial-split",
+      "type": "pendant-modern",
       "settings": {
         "index_number": "03",
         "index_label": "Pendant lamps",
         "heading": "<p>Pendant lamps</p>",
-        "quote": "Sculptural ceiling lights for dining tables, entries, and quiet corners that need a warmer focal point.",
+        "description": "Sculptural ceiling lights for dining tables, entries, and quiet corners that need a warmer focal point.",
         "cta_label": "Shop pendants",
         "cta_link": "shopify://collections/pendant-lamp",
         "meta_left": "Warm room edits",
         "meta_right": "Curated online",
+        "collection": "pendant-lamp",
+        "product_limit": 4,
         "image": "shopify://shop_images/888.png",
-        "badge": "Pendant edit",
-        "reverse": false
+        "badge": "Pendant edit"
       }
     },
     "split_story": {
