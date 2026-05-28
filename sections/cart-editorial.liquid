@@ -1,4 +1,4 @@
-<section class="ed-cart ed-section">
+<section class="ed-cart ed-section" data-ed-cart-section data-section-id="{{ section.id }}" data-cart-url="{{ routes.cart_url }}">
   <header class="ed-cart__head ed-reveal-stagger">
     <div class="ed-cart__index">
       <span>01</span>
@@ -19,9 +19,7 @@
     <form action="{{ routes.cart_url }}" method="post" novalidate class="ed-cart__form" id="cart-form">
       <div class="ed-cart__items ed-reveal-stagger">
         {%- for item in cart.items -%}
-          {%- assign decrease_quantity = item.quantity | minus: 1 -%}
-          {%- assign increase_quantity = item.quantity | plus: 1 -%}
-          <article class="ed-cart__item">
+          <article class="ed-cart__item" data-ed-cart-line="{{ forloop.index }}">
             <a class="ed-cart__item-img" href="{{ item.url }}">
               {%- if item.image -%}
                 {{ item.image | image_url: width: 320 | image_tag:
@@ -43,18 +41,21 @@
               </div>
               <div class="ed-cart__item-bottom">
                 <div class="ed-cart__qty">
-                  <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity={{ decrease_quantity }}" data-ed-cart-step="-1" data-line="{{ forloop.index }}" data-key="{{ item.key }}" data-qty="{{ decrease_quantity }}" aria-label="Decrease quantity for {{ item.product.title | escape }}">-</a>
+                  <button type="button" data-ed-cart-qty-button data-ed-cart-step="-1" data-line="{{ forloop.index }}" data-key="{{ item.key }}" aria-label="Decrease quantity for {{ item.product.title | escape }}">-</button>
                   <input
                     type="number"
                     name="updates[{{ item.key }}]"
                     value="{{ item.quantity }}"
                     min="0"
                     inputmode="numeric"
+                    data-ed-cart-qty-input
+                    data-line="{{ forloop.index }}"
+                    data-key="{{ item.key }}"
                     aria-label="Quantity for {{ item.product.title | escape }}"
                   >
-                  <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity={{ increase_quantity }}" data-ed-cart-step="1" data-line="{{ forloop.index }}" data-key="{{ item.key }}" data-qty="{{ increase_quantity }}" aria-label="Increase quantity for {{ item.product.title | escape }}">+</a>
+                  <button type="button" data-ed-cart-qty-button data-ed-cart-step="1" data-line="{{ forloop.index }}" data-key="{{ item.key }}" aria-label="Increase quantity for {{ item.product.title | escape }}">+</button>
                 </div>
-                <a href="{{ item.url_to_remove }}" class="ed-cart__item-remove" aria-label="Remove {{ item.product.title | escape }}">Remove</a>
+                <a href="{{ item.url_to_remove }}" class="ed-cart__item-remove" data-ed-cart-remove data-line="{{ forloop.index }}" aria-label="Remove {{ item.product.title | escape }}">Remove</a>
               </div>
             </div>
           </article>
@@ -218,26 +219,44 @@
     border-radius: var(--ed-pill);
     padding: 4px;
   }
-  .ed-cart__qty a {
+  .ed-cart__qty :is(a, button) {
     width: 28px; height: 28px;
+    padding: 0;
+    border: 0;
     border-radius: 50%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    background: transparent;
     color: var(--ed-fg);
+    font: inherit;
+    line-height: 1;
     text-decoration: none;
+    cursor: pointer;
     transition: background 0.2s var(--ed-ease);
   }
-  .ed-cart__qty a:hover { background: color-mix(in srgb, var(--ed-fg) 10%, transparent); }
+  .ed-cart__qty :is(a, button):hover { background: color-mix(in srgb, var(--ed-fg) 10%, transparent); }
+  .ed-cart__qty :is(a, button):disabled { cursor: progress; opacity: 0.55; }
   .ed-cart__qty input {
     width: 36px;
+    min-width: 36px;
+    min-height: 28px;
     text-align: center;
     background: transparent;
     border: none;
     color: var(--ed-fg);
-    font: inherit;
+    font-family: var(--ed-font-body);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0;
+    font-variant-numeric: tabular-nums;
     appearance: textfield;
     -moz-appearance: textfield;
+  }
+  .ed-cart__qty input:focus {
+    outline: none;
   }
   .ed-cart__qty input::-webkit-outer-spin-button,
   .ed-cart__qty input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
@@ -342,6 +361,15 @@
     color: var(--ed-muted);
   }
 
+  .ed-cart.is-updating {
+    cursor: progress;
+  }
+
+  .ed-cart.is-updating .ed-cart__items,
+  .ed-cart.is-updating .ed-cart__summary {
+    opacity: 0.72;
+  }
+
   @media (max-width: 900px) {
     .ed-cart__form { grid-template-columns: 1fr; gap: 32px; }
     .ed-cart__summary { position: static; }
@@ -351,6 +379,141 @@
     .ed-cart__item-price { font-size: 18px; }
   }
 {% endstylesheet %}
+
+<script>
+  (function () {
+    if (window.__edCartAjaxBound) return;
+    window.__edCartAjaxBound = true;
+
+    function changeEndpoint() {
+      return '{{ routes.cart_change_url }}.js';
+    }
+
+    function showCartToast(message) {
+      var toast = document.querySelector('[data-ed-cart-toast]');
+      if (!toast) return;
+      var text = toast.querySelector('[data-ed-cart-toast-message]');
+      if (text) text.textContent = message || 'Bag updated.';
+      window.clearTimeout(window.__edCartToastTimer);
+      toast.classList.add('is-visible');
+      window.__edCartToastTimer = window.setTimeout(function () {
+        toast.classList.remove('is-visible');
+      }, 2600);
+    }
+
+    function updateCartCount(count) {
+      document.querySelectorAll('[data-ed-cart-count]').forEach(function (el) {
+        el.textContent = count;
+      });
+    }
+
+    function setBusy(section, busy) {
+      if (!section) return;
+      section.classList.toggle('is-updating', busy);
+      section.dataset.edCartBusy = busy ? 'true' : 'false';
+      section.querySelectorAll('[data-ed-cart-qty-button], [data-ed-cart-qty-input]').forEach(function (el) {
+        el.disabled = busy;
+      });
+    }
+
+    function refreshCartSection(section) {
+      var noteValue = '';
+      var note = section.querySelector('.ed-cart__note');
+      var hasNote = Boolean(note);
+      if (note) noteValue = note.value;
+
+      var url = (section.dataset.cartUrl || '{{ routes.cart_url }}') + '?section_id=' + encodeURIComponent(section.dataset.sectionId);
+      return fetch(url, { headers: { Accept: 'text/html' } })
+        .then(function (response) {
+          if (!response.ok) throw new Error('Cart section refresh failed.');
+          return response.text();
+        })
+        .then(function (html) {
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          var nextSection = doc.querySelector('[data-ed-cart-section]');
+          if (!nextSection) throw new Error('Cart section not found.');
+          var nextNote = nextSection.querySelector('.ed-cart__note');
+          if (nextNote && hasNote) nextNote.value = noteValue;
+          nextSection.classList.add('ed-section-in-view');
+          nextSection.querySelectorAll('.ed-reveal, .ed-reveal-stagger').forEach(function (el) {
+            el.classList.add('is-in');
+          });
+          section.replaceWith(nextSection);
+        });
+    }
+
+    function updateLine(section, line, quantity, input) {
+      if (!section || section.dataset.edCartBusy === 'true') return;
+
+      var previousQuantity = input ? input.value : '';
+      quantity = Math.max(0, parseInt(quantity, 10) || 0);
+      if (input) input.value = quantity;
+
+      setBusy(section, true);
+
+      fetch(changeEndpoint(), {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          line: Number(line),
+          quantity: quantity
+        })
+      })
+        .then(function (response) {
+          if (response.ok) return response.json();
+          return response.json().then(function (data) {
+            throw new Error(data.description || data.message || 'Could not update cart.');
+          });
+        })
+        .then(function (cart) {
+          updateCartCount(cart.item_count || 0);
+          return refreshCartSection(section).then(function () {
+            showCartToast('Bag updated.');
+          });
+        })
+        .catch(function (error) {
+          if (input) input.value = previousQuantity;
+          setBusy(section, false);
+          showCartToast(error.message || 'Could not update cart.');
+        });
+    }
+
+    document.addEventListener('click', function (event) {
+      var remove = event.target.closest && event.target.closest('[data-ed-cart-remove]');
+      if (remove) {
+        var removeSection = remove.closest('[data-ed-cart-section]');
+        if (!removeSection) return;
+        event.preventDefault();
+        updateLine(removeSection, remove.dataset.line, 0);
+        return;
+      }
+
+      var button = event.target.closest && event.target.closest('[data-ed-cart-qty-button]');
+      if (!button) return;
+
+      var section = button.closest('[data-ed-cart-section]');
+      var qty = button.closest('.ed-cart__qty');
+      var input = qty && qty.querySelector('[data-ed-cart-qty-input]');
+      if (!section || !input) return;
+
+      event.preventDefault();
+      var current = parseInt(input.value, 10) || 0;
+      var step = parseInt(button.dataset.edCartStep, 10) || 0;
+      updateLine(section, button.dataset.line, current + step, input);
+    });
+
+    document.addEventListener('change', function (event) {
+      var input = event.target.closest && event.target.closest('[data-ed-cart-qty-input]');
+      if (!input) return;
+
+      var section = input.closest('[data-ed-cart-section]');
+      updateLine(section, input.dataset.line, input.value, input);
+    });
+  })();
+</script>
 
 {% schema %}
 {
