@@ -1,9 +1,13 @@
 {%- liquid
   assign img = section.settings.image
   assign reverse = section.settings.reverse
+  assign compact = false
+  if section.settings.index_number == '03' or section.settings.index_number == '04'
+    assign compact = true
+  endif
 -%}
 
-<section class="ed-split ed-section {% if reverse %}ed-split--reverse{% endif %}" id="ed-split-{{ section.id }}">
+<section class="ed-split ed-section{% if reverse %} ed-split--reverse{% endif %}{% if compact %} ed-split--compact{% endif %}" id="ed-split-{{ section.id }}">
   <div class="ed-split__left ed-reveal ed-reveal--lr">
     <div class="ed-eyebrow">{{ section.settings.index_number }} / {{ section.settings.index_label }}</div>
     <h2 class="ed-display ed-split__title">{{ section.settings.heading }}</h2>
@@ -187,6 +191,34 @@
     pointer-events: none;
     font-feature-settings: "tnum";
   }
+  .ed-split.ed-split--compact {
+    min-height: clamp(540px, 72vh, 720px);
+  }
+  .ed-split.ed-split--compact .ed-split__left {
+    gap: 30px;
+    padding: clamp(58px, 6vw, 76px) 56px;
+  }
+  .ed-split.ed-split--compact .ed-split__title {
+    font-size: clamp(48px, 6.4vw, 92px);
+    line-height: 0.94;
+  }
+  .ed-split.ed-split--compact .ed-split__quote {
+    max-width: 25em;
+    font-size: clamp(18px, 1.45vw, 21px);
+    line-height: 1.42;
+  }
+  .ed-split.ed-split--compact .ed-split__meta {
+    padding-top: 20px;
+  }
+  .ed-split.ed-split--compact .ed-split__badge {
+    top: 24px;
+    left: 24px;
+  }
+  .ed-split.ed-split--compact .ed-split__index {
+    right: 32px;
+    bottom: 24px;
+    font-size: clamp(72px, 9vw, 140px);
+  }
   @media (max-width: 1100px) {
     .ed-split, .ed-split--reverse {
       grid-template-columns: 1fr;
@@ -201,6 +233,14 @@
     .ed-split__right, .ed-split--reverse .ed-split__right {
       min-height: 60vh;
       order: 2;
+    }
+    .ed-split.ed-split--compact .ed-split__left,
+    .ed-split.ed-split--compact.ed-split--reverse .ed-split__left {
+      padding: 56px 24px;
+    }
+    .ed-split.ed-split--compact .ed-split__right,
+    .ed-split.ed-split--compact.ed-split--reverse .ed-split__right {
+      min-height: clamp(360px, 54vh, 560px);
     }
   }
 {% endstylesheet %}
