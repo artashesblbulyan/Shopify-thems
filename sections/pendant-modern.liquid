@@ -1,10 +1,6 @@
 {%- liquid
   assign collection = collections[section.settings.collection]
-  assign products = collection.products | slice: 0, section.settings.product_limit
   assign hero_image = section.settings.image | default: collection.image
-  if hero_image == blank and products.first != blank
-    assign hero_image = products.first.featured_image
-  endif
   assign shop_url = section.settings.cta_link | default: collection.url | default: routes.all_products_collection_url
 -%}
 
@@ -54,36 +50,6 @@
     </a>
   </div>
 
-  {%- if products.size > 0 -%}
-    <div class="sf-pendant-modern__strip ed-reveal-stagger">
-      {%- for product in products -%}
-        {%- liquid
-          assign card_image = product.featured_image | default: hero_image
-          assign card_index = forloop.index | prepend: '0' | slice: -2, 2
-        -%}
-        <a class="sf-pendant-modern__product" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
-          <div class="sf-pendant-modern__thumb">
-            {%- if card_image != blank -%}
-              {{ card_image | image_url: width: 500 | image_tag:
-                loading: 'lazy',
-                widths: '180, 320, 500',
-                sizes: '(max-width: 720px) 34vw, 140px',
-                alt: card_image.alt | default: product.title,
-                class: 'sf-pendant-modern__thumb-img'
-              }}
-            {%- else -%}
-              <div class="sf-pendant-modern__thumb-fallback" aria-hidden="true"></div>
-            {%- endif -%}
-            <span>{{ card_index }}</span>
-          </div>
-          <div class="sf-pendant-modern__product-copy">
-            <strong>{{ product.title }}</strong>
-            <em>{{ product.price | money }}</em>
-          </div>
-        </a>
-      {%- endfor -%}
-    </div>
-  {%- endif -%}
 </section>
 
 {% stylesheet %}
@@ -233,8 +199,7 @@
     pointer-events: none;
   }
 
-  .sf-pendant-modern__fallback,
-  .sf-pendant-modern__thumb-fallback {
+  .sf-pendant-modern__fallback {
     position: absolute;
     inset: 0;
     display: grid;
@@ -275,89 +240,6 @@
     filter: blur(2px);
   }
 
-  .sf-pendant-modern__strip {
-    display: grid;
-    width: min(100%, 1580px);
-    margin: 16px auto 0;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 12px;
-  }
-
-  .sf-pendant-modern__product {
-    display: grid;
-    min-width: 0;
-    grid-template-columns: 92px minmax(0, 1fr);
-    gap: 12px;
-    padding: 10px;
-    border: 1px solid var(--ed-line);
-    border-radius: var(--ed-radius-card);
-    background: color-mix(in srgb, var(--ed-card) 90%, transparent);
-    color: var(--ed-fg);
-    text-decoration: none;
-    transition: transform 0.3s var(--ed-ease), border-color 0.25s var(--ed-ease);
-  }
-
-  .sf-pendant-modern__product:hover {
-    transform: translateY(-3px);
-    border-color: var(--ed-line-strong);
-  }
-
-  .sf-pendant-modern__thumb {
-    position: relative;
-    min-height: 92px;
-    overflow: hidden;
-    border-radius: 6px;
-    background: var(--ed-card-hover);
-  }
-
-  .sf-pendant-modern__thumb-img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    max-width: none;
-    object-fit: cover;
-  }
-
-  .sf-pendant-modern__thumb span {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    padding: 4px 7px;
-    border-radius: var(--ed-pill);
-    background: color-mix(in srgb, var(--ed-bg) 82%, transparent);
-    color: var(--ed-fg);
-    font-family: var(--ed-font-body);
-    font-size: 9px;
-    font-weight: 850;
-  }
-
-  .sf-pendant-modern__product-copy {
-    display: flex;
-    min-width: 0;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 10px;
-    padding: 2px 0;
-  }
-
-  .sf-pendant-modern__product-copy strong {
-    overflow: hidden;
-    color: var(--ed-fg);
-    font-family: var(--ed-font-body);
-    font-size: 13px;
-    font-weight: 820;
-    line-height: 1.22;
-    text-overflow: ellipsis;
-  }
-
-  .sf-pendant-modern__product-copy em {
-    color: var(--ed-muted);
-    font-family: var(--ed-font-body);
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 760;
-  }
-
   @media (max-width: 1180px) {
     .sf-pendant-modern__inner {
       grid-template-columns: 1fr;
@@ -368,9 +250,6 @@
       min-height: 420px;
     }
 
-    .sf-pendant-modern__strip {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
   }
 
   @media (max-width: 720px) {
@@ -395,9 +274,6 @@
       align-items: flex-start;
     }
 
-    .sf-pendant-modern__strip {
-      grid-template-columns: 1fr;
-    }
   }
 {% endstylesheet %}
 
@@ -428,15 +304,6 @@
     { "type": "text", "id": "meta_right", "label": "Meta right", "default": "Curated online" },
     { "type": "header", "content": "Source" },
     { "type": "collection", "id": "collection", "label": "Collection" },
-    {
-      "type": "range",
-      "id": "product_limit",
-      "label": "Products",
-      "min": 2,
-      "max": 4,
-      "step": 1,
-      "default": 4
-    },
     { "type": "header", "content": "Visual" },
     { "type": "image_picker", "id": "image", "label": "Image" },
     { "type": "text", "id": "badge", "label": "Badge", "default": "Pendant edit" }

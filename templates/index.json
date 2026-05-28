@@ -58,7 +58,6 @@
         "meta_left": "Warm room edits",
         "meta_right": "Curated online",
         "collection": "pendant-lamp",
-        "product_limit": 4,
         "image": "shopify://shop_images/888.png",
         "badge": "Pendant edit"
       }
@@ -80,15 +79,18 @@
       }
     },
     "bento_night": {
-      "type": "bento-grid",
+      "type": "pendant-modern",
       "settings": {
         "index_number": "05",
         "index_label": "Night lamps",
         "heading": "<p>Night lamps</p>",
-        "description": "",
-        "view_all_label": "Shop night lamps",
-        "view_all_link": "shopify://collections/night-lamp",
-        "collection": "night-lamp"
+        "description": "Low, warm light for bedside tables, shelves, and late evenings that need a softer glow.",
+        "cta_label": "Shop night lamps",
+        "cta_link": "shopify://collections/night-lamp",
+        "meta_left": "Soft room edits",
+        "meta_right": "Curated online",
+        "collection": "night-lamp",
+        "badge": "Night edit"
       }
     },
     "split_light": {
