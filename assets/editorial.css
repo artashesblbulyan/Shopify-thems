@@ -7973,24 +7973,67 @@ html[data-ed-mode] .ed-collection__grid {
 
 /* ============================================================
    Page transition fix
-   Disables the custom wipe overlay so navigation stays fast and
-   no diagonal transition layer can remain over collection pages.
+   Replaces the heavy diagonal wipe with a fast fade/progress
+   transition that cannot remain stuck over collection pages.
    ============================================================ */
 
-html[data-ed-mode] .ed-page-transition,
-html[data-ed-mode] .ed-page-transition::after {
-  display: none !important;
-  opacity: 0 !important;
+html[data-ed-mode] .ed-page-transition {
+  display: block !important;
   visibility: hidden !important;
-  animation: none !important;
-  transition: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  background: color-mix(in srgb, var(--ed-bg) 76%, transparent) !important;
   transform: none !important;
+  transition:
+    opacity 0.12s var(--ed-ease),
+    visibility 0s linear 0.12s !important;
+  will-change: opacity;
 }
 
-html[data-ed-mode] #MainContent,
-html.ed-page-leaving #MainContent {
-  opacity: 1 !important;
-  transform: none !important;
+html[data-ed-mode] .ed-page-transition::after {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 3px !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  background: linear-gradient(90deg, var(--ed-accent), color-mix(in srgb, var(--ed-accent) 32%, var(--ed-fg))) !important;
+  transform: scaleX(0) !important;
+  transform-origin: left center !important;
   animation: none !important;
-  transition: none !important;
+  transition:
+    opacity 0.1s var(--ed-ease),
+    transform 0.14s var(--ed-ease) !important;
+}
+
+html.ed-page-leaving[data-ed-mode] .ed-page-transition {
+  visibility: visible !important;
+  opacity: 1 !important;
+  transition:
+    opacity 0.1s var(--ed-ease),
+    visibility 0s !important;
+}
+
+html.ed-page-leaving[data-ed-mode] .ed-page-transition::after {
+  visibility: visible !important;
+  opacity: 1 !important;
+  transform: scaleX(1) !important;
+}
+
+html[data-ed-mode] #MainContent {
+  animation: ed-main-enter 0.28s var(--ed-ease) both !important;
+}
+
+html.ed-page-leaving[data-ed-mode] #MainContent {
+  opacity: 0.96 !important;
+  transform: translate3d(0, -2px, 0) !important;
+  animation: none !important;
+  transition:
+    opacity 0.1s var(--ed-ease),
+    transform 0.1s var(--ed-ease) !important;
 }
