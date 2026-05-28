@@ -361,6 +361,12 @@
     function bindFilterSheet() {
       var sheet = document.querySelector('[data-ed-mfilter-sheet]');
       if (!sheet) return;
+      // #MainContent has a transform, which traps position:fixed descendants
+      // (the sheet would render at the bottom of the page instead of the
+      // viewport). Portal the sheet to <body> so fixed positioning works.
+      if (sheet.parentNode !== document.body) {
+        document.body.appendChild(sheet);
+      }
       function openSheet() {
         sheet.setAttribute('data-ed-open', '');
         sheet.setAttribute('aria-hidden', 'false');
