@@ -8683,6 +8683,18 @@ html {
   .ed-mfilter-group + .ed-mfilter-group {
     border-top: 1px solid var(--ed-line);
   }
+  /* Show only the section matching the trigger that opened the sheet */
+  .ed-mfilter-sheet[data-ed-view="filter"] .ed-mfilter-group--sort {
+    display: none;
+  }
+  .ed-mfilter-sheet[data-ed-view="sort"] .ed-mfilter-group--filter {
+    display: none;
+  }
+  /* The visible group no longer needs a top divider */
+  .ed-mfilter-group--filter,
+  .ed-mfilter-group--sort {
+    border-top: none !important;
+  }
   .ed-mfilter-group__label {
     font-family: var(--ed-font-body);
     font-size: 11px;

@@ -71,7 +71,7 @@
   {%- assign sort_values = 'manual,best-selling,title-ascending,title-descending,price-ascending,price-descending,created-descending' | split: ',' -%}
 
   <div class="ed-mfilter-bar">
-    <button type="button" class="ed-mfilter-trigger" data-ed-mfilter-open aria-haspopup="dialog">
+    <button type="button" class="ed-mfilter-trigger" data-ed-mfilter-open="filter" aria-haspopup="dialog">
       <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
         <path d="M2 4h14M4.5 9h9M7 14h4" stroke-linecap="round"/>
       </svg>
@@ -80,7 +80,7 @@
         <span class="ed-mfilter-trigger__count">{{ current_tags.size }}</span>
       {%- endif -%}
     </button>
-    <button type="button" class="ed-mfilter-trigger" data-ed-mfilter-open aria-haspopup="dialog">
+    <button type="button" class="ed-mfilter-trigger" data-ed-mfilter-open="sort" aria-haspopup="dialog">
       <span>Sort</span>
       <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
         <path d="M6 4v10M6 14l-3-3M12 14V4M12 4l3 3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -93,13 +93,13 @@
     <div class="ed-mfilter-sheet__panel" role="dialog" aria-modal="true" aria-label="Filter and sort">
       <span class="ed-mfilter-sheet__handle" aria-hidden="true"></span>
       <div class="ed-mfilter-sheet__head">
-        <h2 class="ed-mfilter-sheet__title">Filter &amp; sort</h2>
+        <h2 class="ed-mfilter-sheet__title" data-ed-mfilter-title>Filter</h2>
         <button type="button" class="ed-mfilter-sheet__close" data-ed-mfilter-close aria-label="Close">&times;</button>
       </div>
 
       <div class="ed-mfilter-sheet__body">
         {%- if coll.all_tags.size > 0 -%}
-          <div class="ed-mfilter-group">
+          <div class="ed-mfilter-group ed-mfilter-group--filter">
             <div class="ed-mfilter-group__label">Filter</div>
             <div class="ed-mfilter-options">
               <a href="{{ coll.url }}" class="ed-mfilter-opt{% unless current_tags.size > 0 %} is-active{% endunless %}">
@@ -122,7 +122,7 @@
           </div>
         {%- endif -%}
 
-        <div class="ed-mfilter-group">
+        <div class="ed-mfilter-group ed-mfilter-group--sort">
           <div class="ed-mfilter-group__label">Sort by</div>
           <div class="ed-mfilter-options">
             {%- for value in sort_values -%}

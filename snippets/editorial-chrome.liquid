@@ -367,7 +367,11 @@
       if (sheet.parentNode !== document.body) {
         document.body.appendChild(sheet);
       }
-      function openSheet() {
+      var titleEl = sheet.querySelector('[data-ed-mfilter-title]');
+      function openSheet(view) {
+        var v = view === 'sort' ? 'sort' : 'filter';
+        sheet.setAttribute('data-ed-view', v);
+        if (titleEl) titleEl.textContent = v === 'sort' ? 'Sort by' : 'Filter';
         sheet.setAttribute('data-ed-open', '');
         sheet.setAttribute('aria-hidden', 'false');
         html.style.overflow = 'hidden';
@@ -378,9 +382,10 @@
         html.style.overflow = '';
       }
       document.addEventListener('click', function (e) {
-        if (e.target.closest('[data-ed-mfilter-open]')) {
+        var trigger = e.target.closest('[data-ed-mfilter-open]');
+        if (trigger) {
           e.preventDefault();
-          openSheet();
+          openSheet(trigger.getAttribute('data-ed-mfilter-open'));
         } else if (e.target.closest('[data-ed-mfilter-close]')) {
           closeSheet();
         }
