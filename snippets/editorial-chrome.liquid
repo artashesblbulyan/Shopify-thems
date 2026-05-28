@@ -402,6 +402,7 @@
 
     // Fast page transition for internal navigation.
     var pageNavTimer = null;
+    var pageTransitionCleanupTimer = null;
 
     function shouldAnimateLink(link) {
       if (reducedMotion || html.classList.contains('shopify-design-mode')) return false;
@@ -434,13 +435,18 @@
       html.classList.remove('ed-page-ready');
       html.classList.add('ed-page-leaving');
       window.clearTimeout(pageNavTimer);
+      window.clearTimeout(pageTransitionCleanupTimer);
+      pageTransitionCleanupTimer = window.setTimeout(function () {
+        html.classList.remove('ed-page-leaving');
+      }, 420);
       pageNavTimer = window.setTimeout(function () {
         window.location.assign(link.href);
-      }, 140);
+      }, 90);
     });
 
     window.addEventListener('pageshow', function () {
       window.clearTimeout(pageNavTimer);
+      window.clearTimeout(pageTransitionCleanupTimer);
       html.classList.remove('ed-page-leaving');
       requestAnimationFrame(function () {
         html.classList.add('ed-page-ready');
@@ -449,6 +455,7 @@
 
     window.addEventListener('pagehide', function () {
       window.clearTimeout(pageNavTimer);
+      window.clearTimeout(pageTransitionCleanupTimer);
     });
   })();
 </script>
