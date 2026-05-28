@@ -8539,3 +8539,188 @@ html[data-ed-mode] .content-for-layout {
 html {
   scroll-padding-top: var(--ed-header-h, 116px);
 }
+
+/* ============================================================
+   Mobile filter — compact bar + bottom sheet
+   Desktop keeps the toolbar; phones get two triggers that open
+   a slide-up sheet with filter + sort options.
+   ============================================================ */
+.ed-mfilter-bar,
+.ed-mfilter-sheet {
+  display: none;
+}
+
+@media (max-width: 749px) {
+  html[data-ed-mode] .ed-collection__toolbar {
+    display: none !important;
+  }
+
+  .ed-mfilter-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 0 0 22px;
+  }
+  .ed-mfilter-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 0 18px;
+    border: 1px solid var(--ed-line-strong);
+    border-radius: 14px;
+    background: var(--ed-card);
+    color: var(--ed-fg);
+    font-family: var(--ed-font-body);
+    font-size: 13px;
+    font-weight: 650;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+  }
+  .ed-mfilter-trigger svg {
+    width: 16px;
+    height: 16px;
+  }
+  .ed-mfilter-trigger__count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--ed-accent);
+    color: #0a0a0a;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .ed-mfilter-sheet {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 100001;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .ed-mfilter-sheet[data-ed-open] {
+    visibility: visible;
+    pointer-events: auto;
+  }
+  .ed-mfilter-sheet__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.3s var(--ed-ease);
+  }
+  .ed-mfilter-sheet[data-ed-open] .ed-mfilter-sheet__overlay {
+    opacity: 1;
+  }
+  .ed-mfilter-sheet__panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: 86vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--ed-bg);
+    color: var(--ed-fg);
+    border-top: 1px solid var(--ed-line);
+    border-radius: 22px 22px 0 0;
+    transform: translateY(100%);
+    transition: transform 0.4s var(--ed-ease);
+    padding: 10px 18px calc(18px + env(safe-area-inset-bottom));
+  }
+  .ed-mfilter-sheet[data-ed-open] .ed-mfilter-sheet__panel {
+    transform: translateY(0);
+  }
+  .ed-mfilter-sheet__handle {
+    width: 40px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--ed-line-strong);
+    margin: 4px auto 10px;
+  }
+  .ed-mfilter-sheet__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--ed-line);
+  }
+  .ed-mfilter-sheet__title {
+    font-family: var(--ed-font-display);
+    font-weight: 400;
+    font-size: 26px;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .ed-mfilter-sheet__close {
+    width: 38px;
+    height: 38px;
+    border: none;
+    background: transparent;
+    color: var(--ed-fg);
+    font-size: 30px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .ed-mfilter-sheet__body {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 6px 0 14px;
+    flex: 1;
+  }
+  .ed-mfilter-group {
+    padding: 14px 0;
+  }
+  .ed-mfilter-group + .ed-mfilter-group {
+    border-top: 1px solid var(--ed-line);
+  }
+  .ed-mfilter-group__label {
+    font-family: var(--ed-font-body);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ed-muted);
+    margin-bottom: 8px;
+  }
+  .ed-mfilter-options {
+    display: flex;
+    flex-direction: column;
+  }
+  .ed-mfilter-opt {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 50px;
+    padding: 13px 4px;
+    color: var(--ed-fg);
+    text-decoration: none;
+    font-family: var(--ed-font-body);
+    font-size: 16px;
+    border-bottom: 1px solid color-mix(in srgb, var(--ed-line) 60%, transparent);
+  }
+  .ed-mfilter-opt:last-child {
+    border-bottom: none;
+  }
+  .ed-mfilter-opt.is-active {
+    font-weight: 700;
+  }
+  .ed-mfilter-opt__check {
+    color: var(--ed-accent);
+    font-size: 16px;
+  }
+  .ed-mfilter-sheet__foot {
+    padding-top: 12px;
+    border-top: 1px solid var(--ed-line);
+  }
+  .ed-mfilter-sheet__done {
+    width: 100%;
+    justify-content: center;
+  }
+}

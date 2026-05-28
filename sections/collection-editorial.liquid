@@ -66,6 +66,82 @@
     </form>
   </div>
 
+  {%- comment -%} Mobile compact filter bar + bottom sheet {%- endcomment -%}
+  {%- assign sort_labels = 'Featured,Best selling,A-Z,Z-A,Price: Low to High,Price: High to Low,Newest' | split: ',' -%}
+  {%- assign sort_values = 'manual,best-selling,title-ascending,title-descending,price-ascending,price-descending,created-descending' | split: ',' -%}
+
+  <div class="ed-mfilter-bar">
+    <button type="button" class="ed-mfilter-trigger" data-ed-mfilter-open aria-haspopup="dialog">
+      <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <path d="M2 4h14M4.5 9h9M7 14h4" stroke-linecap="round"/>
+      </svg>
+      <span>Filter</span>
+      {%- if current_tags.size > 0 -%}
+        <span class="ed-mfilter-trigger__count">{{ current_tags.size }}</span>
+      {%- endif -%}
+    </button>
+    <button type="button" class="ed-mfilter-trigger" data-ed-mfilter-open aria-haspopup="dialog">
+      <span>Sort</span>
+      <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <path d="M6 4v10M6 14l-3-3M12 14V4M12 4l3 3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="ed-mfilter-sheet" data-ed-mfilter-sheet aria-hidden="true">
+    <div class="ed-mfilter-sheet__overlay" data-ed-mfilter-close></div>
+    <div class="ed-mfilter-sheet__panel" role="dialog" aria-modal="true" aria-label="Filter and sort">
+      <span class="ed-mfilter-sheet__handle" aria-hidden="true"></span>
+      <div class="ed-mfilter-sheet__head">
+        <h2 class="ed-mfilter-sheet__title">Filter &amp; sort</h2>
+        <button type="button" class="ed-mfilter-sheet__close" data-ed-mfilter-close aria-label="Close">&times;</button>
+      </div>
+
+      <div class="ed-mfilter-sheet__body">
+        {%- if coll.all_tags.size > 0 -%}
+          <div class="ed-mfilter-group">
+            <div class="ed-mfilter-group__label">Filter</div>
+            <div class="ed-mfilter-options">
+              <a href="{{ coll.url }}" class="ed-mfilter-opt{% unless current_tags.size > 0 %} is-active{% endunless %}">
+                <span>All products</span>
+                {%- unless current_tags.size > 0 -%}<span class="ed-mfilter-opt__check" aria-hidden="true">&check;</span>{%- endunless -%}
+              </a>
+              {%- for tag in coll.all_tags limit: 16 -%}
+                {%- if current_tags contains tag -%}
+                  <a href="{{ coll.url }}" class="ed-mfilter-opt is-active">
+                    <span>{{ tag }}</span>
+                    <span class="ed-mfilter-opt__check" aria-hidden="true">&check;</span>
+                  </a>
+                {%- else -%}
+                  <a href="{{ coll.url }}/{{ tag | handle }}" class="ed-mfilter-opt">
+                    <span>{{ tag }}</span>
+                  </a>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endif -%}
+
+        <div class="ed-mfilter-group">
+          <div class="ed-mfilter-group__label">Sort by</div>
+          <div class="ed-mfilter-options">
+            {%- for value in sort_values -%}
+              {%- assign label = sort_labels[forloop.index0] -%}
+              <a href="{{ request.path }}?sort_by={{ value }}" class="ed-mfilter-opt{% if sort_by == value %} is-active{% endif %}">
+                <span>{{ label }}</span>
+                {%- if sort_by == value -%}<span class="ed-mfilter-opt__check" aria-hidden="true">&check;</span>{%- endif -%}
+              </a>
+            {%- endfor -%}
+          </div>
+        </div>
+      </div>
+
+      <div class="ed-mfilter-sheet__foot">
+        <button type="button" class="ed-btn ed-btn--solid ed-mfilter-sheet__done" data-ed-mfilter-close>Done</button>
+      </div>
+    </div>
+  </div>
+
   {%- if coll.products.size > 0 -%}
     <div class="ed-collection__grid ed-reveal-stagger">
       {%- for product in coll.products -%}
@@ -124,6 +200,30 @@
     <p class="ed-collection__empty">No products in this collection yet.</p>
   {%- endif -%}
 </section>
+
+<script>
+  (function () {
+    var sheet = document.querySelector('[data-ed-mfilter-sheet]');
+    if (!sheet) return;
+    function open() {
+      sheet.setAttribute('data-ed-open', '');
+      sheet.setAttribute('aria-hidden', 'false');
+      document.documentElement.style.overflow = 'hidden';
+    }
+    function close() {
+      sheet.removeAttribute('data-ed-open');
+      sheet.setAttribute('aria-hidden', 'true');
+      document.documentElement.style.overflow = '';
+    }
+    document.addEventListener('click', function (e) {
+      if (e.target.closest('[data-ed-mfilter-open]')) { open(); }
+      else if (e.target.closest('[data-ed-mfilter-close]')) { close(); }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && sheet.hasAttribute('data-ed-open')) close();
+    });
+  })();
+</script>
 
 {%- endpaginate -%}
 
