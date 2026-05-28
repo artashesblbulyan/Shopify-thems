@@ -7970,3 +7970,27 @@ html[data-ed-mode] .ed-collection__grid {
     width: 100% !important;
   }
 }
+
+/* ============================================================
+   Page transition fix
+   Disables the custom wipe overlay so navigation stays fast and
+   no diagonal transition layer can remain over collection pages.
+   ============================================================ */
+
+html[data-ed-mode] .ed-page-transition,
+html[data-ed-mode] .ed-page-transition::after {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+}
+
+html[data-ed-mode] #MainContent,
+html.ed-page-leaving #MainContent {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+  transition: none !important;
+}
