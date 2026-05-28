@@ -7972,125 +7972,69 @@ html[data-ed-mode] .ed-collection__grid {
 }
 
 /* ============================================================
-   Page transition fix
-   Keeps the black/accent diagonal transition, but makes it fast
-   and scoped so it cannot remain stuck over collection pages.
+   Legacy top page transition
+   Restores the original top curtain animation and overrides the
+   later diagonal experiments.
    ============================================================ */
 
 .ed-page-transition {
-  display: block !important;
-  visibility: hidden !important;
-  opacity: 1 !important;
+  position: fixed !important;
+  inset: 0 !important;
   z-index: 2147482000 !important;
+  display: block !important;
+  visibility: visible !important;
   pointer-events: none !important;
   overflow: hidden !important;
-  background: transparent !important;
-  transform: none !important;
-  transition: visibility 0s linear 0.64s !important;
-  will-change: auto;
+  background:
+    linear-gradient(180deg, #0d0f14 0%, #0d0f14 calc(100% - 5px), var(--ed-accent) calc(100% - 5px), var(--ed-accent) 100%) !important;
+  transform: translate3d(0, 0, 0) !important;
+  transform-origin: center top !important;
+  transition: transform 0.72s var(--ed-ease) !important;
+  will-change: transform;
 }
 
 .ed-page-transition::before,
 .ed-page-transition::after {
-  display: none !important;
-  content: none !important;
-}
-
-.ed-page-transition__panel,
-.ed-page-transition__stripe {
+  content: "" !important;
   position: absolute !important;
+  inset: 0 !important;
   display: block !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  animation: none !important;
-  transition: none !important;
-  will-change: transform, opacity;
+  visibility: visible !important;
+  opacity: 0.72 !important;
+  background:
+    linear-gradient(110deg, transparent 0 42%, rgba(255, 255, 255, 0.11) 50%, transparent 58% 100%) !important;
+  transform: translate3d(-72%, 0, 0) !important;
+  animation: ed-transition-sheen 0.82s var(--ed-ease) both !important;
 }
 
-.ed-page-transition__panel {
-  inset: -12vh auto -12vh 0 !important;
-  width: 96vw !important;
-  background: #0d0f14 !important;
-  transform: translate3d(-52vw, 0, 0) skewX(-8deg) !important;
-  transform-origin: right center !important;
+html.ed-page-ready .ed-page-transition {
+  transform: translate3d(0, -101%, 0) !important;
 }
 
-.ed-page-transition__stripe {
-  top: -12vh !important;
-  left: 66vw !important;
-  width: clamp(22px, 2.2vw, 42px) !important;
-  height: 124vh !important;
-  background: var(--ed-accent) !important;
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--ed-accent) 36%, transparent),
-    0 0 30px color-mix(in srgb, var(--ed-accent) 34%, transparent) !important;
-  transform: translate3d(-120vw, 0, 0) skewX(-8deg) !important;
-  transform-origin: center !important;
-}
-
-.ed-page-transition.is-active,
 html.ed-page-leaving .ed-page-transition {
-  visibility: visible !important;
-  transition: visibility 0s !important;
+  transform: translate3d(0, 0, 0) !important;
+  transition-duration: 0.32s !important;
 }
 
-.ed-page-transition.is-active .ed-page-transition__panel,
-.ed-page-transition.is-active .ed-page-transition__stripe,
-html.ed-page-leaving .ed-page-transition__panel,
-html.ed-page-leaving .ed-page-transition__stripe {
-  visibility: visible !important;
-  transition: none !important;
-}
-
-.ed-page-transition.is-active .ed-page-transition__panel,
-html.ed-page-leaving .ed-page-transition__panel {
-  animation: ed-fast-black-sweep 0.52s var(--ed-ease) both !important;
-}
-
-.ed-page-transition.is-active .ed-page-transition__stripe,
-html.ed-page-leaving .ed-page-transition__stripe {
-  animation: ed-fast-accent-sweep 0.52s var(--ed-ease) 0.025s both !important;
-}
-
-@keyframes ed-fast-black-sweep {
-  0% {
-    opacity: 1;
-    transform: translate3d(-52vw, 0, 0) skewX(-8deg);
-  }
-  52% {
-    opacity: 1;
-    transform: translate3d(-4vw, 0, 0) skewX(-8deg);
-  }
-  100% {
-    opacity: 0;
-    transform: translate3d(116vw, 0, 0) skewX(-8deg);
-  }
-}
-
-@keyframes ed-fast-accent-sweep {
-  0% {
-    opacity: 1;
-    transform: translate3d(-44vw, 0, 0) skewX(-8deg);
-  }
-  60% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) skewX(-8deg);
-  }
-  100% {
-    opacity: 0;
-    transform: translate3d(62vw, 0, 0) skewX(-8deg);
-  }
+html.ed-page-leaving .ed-page-transition::before,
+html.ed-page-leaving .ed-page-transition::after {
+  animation-duration: 0.34s !important;
 }
 
 html[data-ed-mode] #MainContent {
-  animation: ed-main-enter 0.28s var(--ed-ease) both !important;
+  animation: ed-main-enter 0.46s var(--ed-ease) both !important;
+  transform-origin: center top;
 }
 
 html.ed-page-leaving[data-ed-mode] #MainContent {
-  opacity: 0.96 !important;
-  transform: translate3d(0, -2px, 0) !important;
-  animation: none !important;
+  opacity: 0.001 !important;
+  transform: translate3d(0, -8px, 0) scale(0.996) !important;
   transition:
-    opacity 0.1s var(--ed-ease),
-    transform 0.1s var(--ed-ease) !important;
+    opacity 0.24s var(--ed-ease),
+    transform 0.24s var(--ed-ease) !important;
+}
+
+@keyframes ed-transition-sheen {
+  from { transform: translate3d(-72%, 0, 0); }
+  to { transform: translate3d(72%, 0, 0); }
 }
