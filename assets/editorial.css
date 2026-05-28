@@ -7782,3 +7782,191 @@ html[data-ed-mode] .ed-hero__desc {
     font-size: clamp(44px, 14vw, 72px) !important;
   }
 }
+
+/* ============================================================
+   Collection page correction
+   Tightens the catalog header and makes filter/sort controls feel
+   like a usable toolbar instead of a large empty intro panel.
+   ============================================================ */
+
+html[data-ed-mode] .ed-collection {
+  width: min(calc(100% - 32px), 1580px) !important;
+  max-width: 1580px !important;
+  padding: clamp(42px, 4.5vw, 76px) clamp(18px, 3vw, 48px) clamp(72px, 7vw, 112px) !important;
+}
+
+html[data-ed-mode] .ed-collection__head {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: end !important;
+  gap: 14px 32px !important;
+  max-width: none !important;
+  margin: 0 0 18px !important;
+  padding: 0 0 22px !important;
+  border-bottom: 1px solid var(--ed-line) !important;
+}
+
+html[data-ed-mode] .ed-collection__head::after {
+  bottom: -1px !important;
+  width: 72px !important;
+  height: 2px !important;
+  background: var(--ed-accent) !important;
+}
+
+html[data-ed-mode] .ed-collection__index {
+  grid-column: 1 / -1 !important;
+  margin: 0 !important;
+}
+
+html[data-ed-mode] .ed-collection__title {
+  grid-column: 1 !important;
+  margin: 0 !important;
+  color: var(--ed-fg) !important;
+  font-family: var(--ed-font-body) !important;
+  font-style: normal !important;
+  font-weight: 900 !important;
+  font-size: clamp(42px, 5vw, 86px) !important;
+  line-height: 0.98 !important;
+  letter-spacing: 0 !important;
+}
+
+html[data-ed-mode] .ed-collection__title em {
+  font-family: inherit !important;
+  font-style: normal !important;
+  font-weight: inherit !important;
+}
+
+html[data-ed-mode] .ed-collection__desc {
+  grid-column: 1 !important;
+  max-width: 56ch !important;
+  margin: 0 !important;
+}
+
+html[data-ed-mode] .ed-collection__meta {
+  grid-column: 2 !important;
+  grid-row: 2 / span 2 !important;
+  align-self: end !important;
+  justify-content: flex-end !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  text-align: right !important;
+  white-space: nowrap !important;
+}
+
+html[data-ed-mode] .ed-collection__toolbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 18px !important;
+  margin: 0 0 clamp(26px, 3vw, 42px) !important;
+  padding: 12px 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--ed-line) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html[data-ed-mode] .ed-collection__filter-summary {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-width: 0 !important;
+}
+
+html[data-ed-mode] .ed-collection__tags {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+}
+
+html[data-ed-mode] .ed-collection__tag {
+  min-height: 34px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 0 12px !important;
+  border-radius: var(--ed-pill) !important;
+  background: transparent !important;
+  border-color: var(--ed-line) !important;
+  color: var(--ed-muted) !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+}
+
+html[data-ed-mode] .ed-collection__tag:hover,
+html[data-ed-mode] .ed-collection__tag.is-active {
+  background: var(--ed-fg) !important;
+  border-color: var(--ed-fg) !important;
+  color: var(--ed-bg) !important;
+}
+
+html[data-ed-mode] .ed-collection__sort {
+  flex: 0 0 auto !important;
+  margin-left: auto !important;
+}
+
+html[data-ed-mode] .ed-collection__sort select {
+  min-width: 180px !important;
+  min-height: 42px !important;
+  border-radius: 10px !important;
+  background: color-mix(in srgb, var(--ed-card) 82%, transparent) !important;
+}
+
+html[data-ed-mode] .ed-collection__grid {
+  margin-top: 0 !important;
+}
+
+@media (max-width: 900px) {
+  html[data-ed-mode] .ed-collection {
+    width: 100% !important;
+    padding: 34px 16px 78px !important;
+  }
+
+  html[data-ed-mode] .ed-collection__head {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    margin-bottom: 14px !important;
+  }
+
+  html[data-ed-mode] .ed-collection__title {
+    font-size: clamp(38px, 13vw, 62px) !important;
+  }
+
+  html[data-ed-mode] .ed-collection__meta {
+    white-space: normal !important;
+    text-align: left !important;
+  }
+
+  html[data-ed-mode] .ed-collection__toolbar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+    padding: 12px 0 16px !important;
+  }
+
+  html[data-ed-mode] .ed-collection__filter-summary {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  html[data-ed-mode] .ed-collection__tags {
+    flex-wrap: nowrap !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    padding-bottom: 2px !important;
+    scrollbar-width: none;
+  }
+
+  html[data-ed-mode] .ed-collection__tags::-webkit-scrollbar {
+    display: none;
+  }
+
+  html[data-ed-mode] .ed-collection__sort,
+  html[data-ed-mode] .ed-collection__sort select {
+    width: 100% !important;
+  }
+}

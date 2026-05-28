@@ -15,15 +15,13 @@
       <hr>
       <span>{{ section.settings.index_label | default: 'Collection' }}</span>
     </div>
-    <h1 class="ed-display ed-collection__title">
-      <em>{{ coll.title }}</em>
-    </h1>
+    <h1 class="ed-display ed-collection__title">{{ coll.title }}</h1>
     {%- if coll.description != blank -%}
       <p class="ed-collection__desc">{{ coll.description | strip_html | truncatewords: 36 }}</p>
     {%- endif -%}
     <div class="ed-collection__meta">
       <span>{{ coll.products_count }} {{ coll.products_count | pluralize: 'piece', 'pieces' }}</span>
-      <span>·</span>
+      <span>/</span>
       <span>Page {{ paginate.current_page }} of {{ paginate.pages | default: 1 }}</span>
     </div>
   </header>
