@@ -357,5 +357,33 @@
     }
     onReady(bindCardTilt);
 
+    // Mobile collection filter bottom sheet
+    function bindFilterSheet() {
+      var sheet = document.querySelector('[data-ed-mfilter-sheet]');
+      if (!sheet) return;
+      function openSheet() {
+        sheet.setAttribute('data-ed-open', '');
+        sheet.setAttribute('aria-hidden', 'false');
+        html.style.overflow = 'hidden';
+      }
+      function closeSheet() {
+        sheet.removeAttribute('data-ed-open');
+        sheet.setAttribute('aria-hidden', 'true');
+        html.style.overflow = '';
+      }
+      document.addEventListener('click', function (e) {
+        if (e.target.closest('[data-ed-mfilter-open]')) {
+          e.preventDefault();
+          openSheet();
+        } else if (e.target.closest('[data-ed-mfilter-close]')) {
+          closeSheet();
+        }
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && sheet.hasAttribute('data-ed-open')) closeSheet();
+      });
+    }
+    onReady(bindFilterSheet);
+
   })();
 </script>

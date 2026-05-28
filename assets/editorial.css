@@ -8637,6 +8637,9 @@ html {
   .ed-mfilter-sheet[data-ed-open] .ed-mfilter-sheet__panel {
     transform: translateY(0);
   }
+  .ed-mfilter-sheet__panel {
+    z-index: 1;
+  }
   .ed-mfilter-sheet__handle {
     width: 40px;
     height: 4px;
