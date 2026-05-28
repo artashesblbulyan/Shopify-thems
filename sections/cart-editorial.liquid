@@ -3,7 +3,7 @@
   data-ed-cart-section
   data-section-id="{{ section.id }}"
   data-cart-url="{{ routes.cart_url }}"
-  data-cart-change-url="{{ routes.cart_change_url }}"
+  data-cart-change-url="{{ routes.cart_change_url | escape }}"
 >
   <header class="ed-cart__head ed-reveal-stagger">
     <div class="ed-cart__index">
@@ -47,7 +47,7 @@
               </div>
               <div class="ed-cart__item-bottom">
                 <div class="ed-cart__qty">
-                  <button type="button" data-ed-cart-qty-button data-ed-cart-step="-1" data-line="{{ forloop.index }}" data-key="{{ item.key }}" aria-label="Decrease quantity for {{ item.product.title | escape }}">-</button>
+                  <button type="button" data-ed-cart-qty-button data-ed-cart-step="-1" data-line="{{ forloop.index }}" data-key="{{ item.key | escape }}" aria-label="Decrease quantity for {{ item.product.title | escape }}">-</button>
                   <input
                     type="number"
                     name="updates[{{ item.key }}]"
@@ -56,12 +56,12 @@
                     inputmode="numeric"
                     data-ed-cart-qty-input
                     data-line="{{ forloop.index }}"
-                    data-key="{{ item.key }}"
+                    data-key="{{ item.key | escape }}"
                     aria-label="Quantity for {{ item.product.title | escape }}"
                   >
-                  <button type="button" data-ed-cart-qty-button data-ed-cart-step="1" data-line="{{ forloop.index }}" data-key="{{ item.key }}" aria-label="Increase quantity for {{ item.product.title | escape }}">+</button>
+                  <button type="button" data-ed-cart-qty-button data-ed-cart-step="1" data-line="{{ forloop.index }}" data-key="{{ item.key | escape }}" aria-label="Increase quantity for {{ item.product.title | escape }}">+</button>
                 </div>
-                <a href="{{ item.url_to_remove }}" class="ed-cart__item-remove" data-ed-cart-remove data-line="{{ forloop.index }}" data-key="{{ item.key }}" aria-label="Remove {{ item.product.title | escape }}">Remove</a>
+                <a href="{{ item.url_to_remove }}" class="ed-cart__item-remove" data-ed-cart-remove data-line="{{ forloop.index }}" data-key="{{ item.key | escape }}" aria-label="Remove {{ item.product.title | escape }}">Remove</a>
               </div>
             </div>
           </article>

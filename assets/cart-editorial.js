@@ -72,14 +72,67 @@
       });
   }
 
-  function payloadFor(itemKey, line, quantity) {
-    var payload = { quantity: quantity };
-    if (itemKey) {
-      payload.id = itemKey;
-    } else {
-      payload.line = Number(line);
+  function serializePayload(payload) {
+    var body = new URLSearchParams();
+    Object.keys(payload).forEach(function (key) {
+      body.append(key, payload[key]);
+    });
+    return body.toString();
+  }
+
+  function responseError(response) {
+    return response.text().then(function (text) {
+      var message = 'Could not update cart.';
+      if (text) {
+        try {
+          var data = JSON.parse(text);
+          message = data.description || data.message || message;
+        } catch (error) {
+          message = text;
+        }
+      }
+      throw new Error(message);
+    });
+  }
+
+  function postCartChange(section, payload) {
+    return fetch(endpoint(section.dataset.cartChangeUrl), {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+      },
+      body: serializePayload(payload),
+    }).then(function (response) {
+      if (response.ok) return response.json();
+      return responseError(response);
+    });
+  }
+
+  function changeCartItem(section, itemKey, line, quantity) {
+    var attempts = [];
+
+    if (line) {
+      attempts.push({
+        line: String(line),
+        quantity: String(quantity),
+      });
     }
-    return payload;
+
+    if (itemKey) {
+      attempts.push({
+        id: itemKey,
+        quantity: String(quantity),
+      });
+    }
+
+    if (!attempts.length) return Promise.reject(new Error('Cart line was not found.'));
+
+    return postCartChange(section, attempts[0]).catch(function (firstError) {
+      if (!attempts[1]) throw firstError;
+      return postCartChange(section, attempts[1]);
+    });
   }
 
   function updateItem(section, itemKey, line, quantity, input) {
@@ -91,21 +144,7 @@
 
     setBusy(section, true);
 
-    fetch(endpoint(section.dataset.cartChangeUrl), {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payloadFor(itemKey, line, nextQuantity)),
-    })
-      .then(function (response) {
-        if (response.ok) return response.json();
-        return response.json().then(function (data) {
-          throw new Error(data.description || data.message || 'Could not update cart.');
-        });
-      })
+    changeCartItem(section, itemKey, line, nextQuantity)
       .then(function (cart) {
         updateCartCount(cart.item_count || 0);
         return refreshCartSection(section);
