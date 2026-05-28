@@ -1,272 +1,363 @@
 {%- liquid
   assign collection = collections[section.settings.collection]
   assign products = collection.products | slice: 0, 6
-  assign size_pattern = 'tall,wide,sq,lg,lg,lg' | split: ','
+  assign intro_text = section.settings.description | default: collection.description
+  assign shop_url = section.settings.view_all_link | default: collection.url | default: routes.all_products_collection_url
+  assign featured_product = products.first
+  assign featured_image = featured_product.featured_image | default: collection.image
 -%}
 
-<section class="ed-bento ed-section" id="ed-bento-{{ section.id }}">
-  <header class="ed-bento__head ed-reveal-stagger">
-    <div class="ed-bento__intro">
+<section class="sf-spotlight ed-section" id="sf-spotlight-{{ section.id }}">
+  <div class="sf-spotlight__frame">
+    <div class="sf-spotlight__panel">
       <div class="ed-eyebrow">{{ section.settings.index_number }} / {{ section.settings.index_label }}</div>
-      <h2 class="ed-display ed-bento__title">{{ section.settings.heading }}</h2>
-    </div>
+      <h2 class="ed-display sf-spotlight__title">{{ section.settings.heading }}</h2>
 
-    <div class="ed-bento__aside">
+      {%- if intro_text != blank -%}
+        <p class="sf-spotlight__desc">{{ intro_text | strip_html | truncatewords: 30 }}</p>
+      {%- endif -%}
+
+      <div class="sf-spotlight__meta">
+        {%- if collection != blank -%}
+          <span>{{ collection.products_count }} {{ collection.products_count | pluralize: 'piece', 'pieces' }}</span>
+          <span>{{ collection.title }}</span>
+        {%- else -%}
+          <span>Curated edit</span>
+          <span>Lighting</span>
+        {%- endif -%}
+      </div>
+
       {%- if section.settings.view_all_label != blank -%}
-        <a class="ed-btn ed-btn--ghost ed-bento__link" href="{{ section.settings.view_all_link | default: collection.url }}">
+        <a class="ed-btn ed-btn--ghost sf-spotlight__button" href="{{ shop_url }}">
           {{ section.settings.view_all_label }}
           <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
         </a>
       {%- endif -%}
     </div>
-  </header>
 
-  {%- if products.size > 0 -%}
-    <div class="ed-bento__grid ed-reveal-stagger">
-      {%- for product in products -%}
-        {%- liquid
-          assign size_class = size_pattern[forloop.index0] | default: 'lg'
-          assign hover_image = product.images[1]
-          assign badge_text = blank
-          if product.compare_at_price > product.price
-            assign badge_text = 'Sale'
-          elsif product.available == false
-            assign badge_text = 'Sold out'
-          endif
-        -%}
-        <a class="ed-bento__card ed-bento__card--{{ size_class }} ed-bento__card--v{{ forloop.index | modulo: 4 | plus: 1 }}{% if hover_image != blank %} ed-has-hover-image{% endif %}"
-           href="{{ product.url }}"
-           aria-label="{{ product.title | escape }}">
-          <div class="ed-bento__img">
-            {%- if product.featured_image -%}
-              {{ product.featured_image | image_url: width: 1000 | image_tag:
+    {%- if products.size > 0 -%}
+      <div class="sf-spotlight__products">
+        <a class="sf-spotlight__hero-card" href="{{ featured_product.url }}" aria-label="{{ featured_product.title | escape }}">
+          <div class="sf-spotlight__hero-media">
+            {%- if featured_image != blank -%}
+              {{ featured_image | image_url: width: 1400 | image_tag:
                 loading: 'lazy',
-                widths: '400, 600, 900, 1000',
-                sizes: '(max-width: 900px) 50vw, 33vw',
-                alt: product.featured_image.alt | default: product.title,
-                class: 'ed-bento__photo ed-bento__photo--primary'
+                widths: '600, 900, 1200, 1400',
+                sizes: '(max-width: 900px) 100vw, 38vw',
+                alt: featured_image.alt | default: featured_product.title,
+                class: 'sf-spotlight__hero-photo'
               }}
-            {%- endif -%}
-            {%- if hover_image != blank -%}
-              <span
-                class="ed-bento__hover-image"
-                style="--ed-hover-image: url('{{ hover_image | image_url: width: 1000 }}');"
-                aria-hidden="true"
-              ></span>
-            {%- endif -%}
-            {%- if badge_text != blank -%}
-              <span class="ed-bento__badge">{{ badge_text }}</span>
+            {%- else -%}
+              <div class="sf-spotlight__fallback" aria-hidden="true">
+                <span class="sf-spotlight__wire"></span>
+                <span class="sf-spotlight__shade"></span>
+                <span class="sf-spotlight__glow"></span>
+              </div>
             {%- endif -%}
           </div>
-          <div class="ed-bento__meta">
-            <div class="ed-bento__info">
-              <div class="ed-bento__title-line">{{ product.title }}</div>
-              <div class="ed-bento__price-row">
-                <span class="ed-bento__price">{{ product.price | money }}</span>
-                {%- if product.compare_at_price > product.price -%}
-                  <span class="ed-bento__price-old">{{ product.compare_at_price | money }}</span>
-                {%- endif -%}
-              </div>
-            </div>
-            <div class="ed-bento__hover-cta">
-              <span>View product</span>
-              <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
+
+          <div class="sf-spotlight__hero-copy">
+            <span class="sf-spotlight__label">Featured</span>
+            <h3>{{ featured_product.title }}</h3>
+            <div>
+              <span class="sf-spotlight__price">{{ featured_product.price | money }}</span>
+              {%- if featured_product.compare_at_price > featured_product.price -%}
+                <span class="sf-spotlight__compare">{{ featured_product.compare_at_price | money }}</span>
+              {%- endif -%}
             </div>
           </div>
         </a>
-      {%- endfor -%}
-    </div>
-  {%- else -%}
-    <p class="ed-bento__empty">Select a collection in the theme editor to populate this section.</p>
-  {%- endif -%}
+
+        <div class="sf-spotlight__rail">
+          {%- for product in products offset: 1 limit: 5 -%}
+            {%- liquid
+              assign card_image = product.featured_image | default: collection.image
+              assign card_number = forloop.index | plus: 1 | prepend: '0' | slice: -2, 2
+              assign badge_text = blank
+              if product.compare_at_price > product.price
+                assign badge_text = 'Sale'
+              elsif product.available == false
+                assign badge_text = 'Sold out'
+              endif
+            -%}
+            <a class="sf-spotlight__item" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+              <div class="sf-spotlight__thumb">
+                {%- if card_image != blank -%}
+                  {{ card_image | image_url: width: 700 | image_tag:
+                    loading: 'lazy',
+                    widths: '240, 420, 700',
+                    sizes: '(max-width: 720px) 34vw, 180px',
+                    alt: card_image.alt | default: product.title,
+                    class: 'sf-spotlight__thumb-photo'
+                  }}
+                {%- else -%}
+                  <div class="sf-spotlight__fallback sf-spotlight__fallback--small" aria-hidden="true">
+                    <span class="sf-spotlight__wire"></span>
+                    <span class="sf-spotlight__shade"></span>
+                    <span class="sf-spotlight__glow"></span>
+                  </div>
+                {%- endif -%}
+                <span class="sf-spotlight__number">{{ card_number }}</span>
+                {%- if badge_text != blank -%}
+                  <span class="sf-spotlight__badge">{{ badge_text }}</span>
+                {%- endif -%}
+              </div>
+
+              <div class="sf-spotlight__item-copy">
+                <h3>{{ product.title }}</h3>
+                <div class="sf-spotlight__item-row">
+                  <span class="sf-spotlight__price">{{ product.price | money }}</span>
+                  <span class="sf-spotlight__arrow" aria-hidden="true">-&gt;</span>
+                </div>
+              </div>
+            </a>
+          {%- endfor -%}
+
+          <a class="sf-spotlight__collection-link" href="{{ shop_url }}">
+            <span>View the full edit</span>
+            <strong>{{ section.settings.view_all_label | default: 'Shop collection' }}</strong>
+          </a>
+        </div>
+      </div>
+    {%- else -%}
+      <div class="sf-spotlight__empty">
+        <span>{{ section.settings.index_label }}</span>
+        <p>Select a collection with products to populate this section.</p>
+      </div>
+    {%- endif -%}
+  </div>
 </section>
 
 {% stylesheet %}
-  .ed-bento {
-    padding: 88px 32px;
+  .sf-spotlight {
+    padding: clamp(48px, 6vw, 78px) 32px;
   }
-  .ed-bento__head {
+
+  .sf-spotlight__frame {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
-    align-items: end;
-    gap: 28px;
-    margin-bottom: 34px;
+    width: min(100%, 1588px);
+    margin: 0 auto;
+    grid-template-columns: minmax(300px, 0.36fr) minmax(0, 0.64fr);
+    gap: 18px;
+    align-items: stretch;
   }
-  .ed-bento__intro {
-    min-width: 0;
+
+  .sf-spotlight__panel {
+    display: flex;
+    min-height: 540px;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: clamp(24px, 3vw, 42px);
+    border: 1px solid var(--ed-line);
+    border-radius: var(--ed-radius-card);
+    background:
+      linear-gradient(145deg, color-mix(in srgb, var(--ed-card) 94%, transparent), color-mix(in srgb, var(--ed-card-hover) 54%, transparent)),
+      var(--ed-card);
   }
-  .ed-bento__title {
-    font-size: clamp(46px, 7vw, 112px);
-    line-height: 0.88;
-    max-width: 12.5ch;
-    margin-top: 14px;
+
+  .sf-spotlight__title {
+    margin-top: 18px;
+    font-size: clamp(46px, 6vw, 88px);
+    line-height: 0.9;
     text-wrap: balance;
   }
-  .ed-bento__aside {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 14px;
-  }
-  .ed-bento__desc {
-    margin: 0;
+
+  .sf-spotlight__desc {
     max-width: 34em;
+    margin: 22px 0 0;
     color: var(--ed-muted);
     font-family: var(--ed-font-body);
     font-size: 14px;
     line-height: 1.55;
   }
-  .ed-bento__summary {
+
+  .sf-spotlight__meta {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    margin-top: auto;
+    padding-top: 28px;
     color: var(--ed-muted);
     font-family: var(--ed-font-body);
     font-size: 10px;
-    font-weight: 750;
+    font-weight: 780;
     letter-spacing: 0.13em;
     text-transform: uppercase;
   }
-  .ed-bento__summary span {
-    padding: 6px 10px;
+
+  .sf-spotlight__meta span {
+    padding: 7px 10px;
     border: 1px solid var(--ed-line);
     border-radius: var(--ed-pill);
-    background: color-mix(in srgb, var(--ed-card) 72%, transparent);
+    background: color-mix(in srgb, var(--ed-bg) 42%, transparent);
   }
-  .ed-bento__link {
-    position: relative;
+
+  .sf-spotlight__button {
     width: max-content;
-    color: var(--ed-fg);
-    text-decoration: none;
+    margin-top: 18px;
   }
-  .ed-bento__link::after {
-    display: none;
-  }
-  .ed-bento__link:hover::after {
-    display: none;
-  }
-  .ed-bento__grid {
+
+  .sf-spotlight__products {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    grid-auto-rows: auto;
-    gap: 12px;
+    min-width: 0;
+    grid-template-columns: minmax(280px, 0.95fr) minmax(280px, 1.05fr);
+    gap: 14px;
   }
-  .ed-bento__card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    background: transparent;
-    border-radius: 0;
-    overflow: visible;
-    transition: transform 0.45s var(--ed-ease), background 0.3s var(--ed-ease),
-      box-shadow 0.45s var(--ed-ease);
-    isolation: isolate;
+
+  .sf-spotlight__hero-card,
+  .sf-spotlight__item,
+  .sf-spotlight__collection-link {
+    color: inherit;
     text-decoration: none;
-    color: var(--ed-fg);
-    box-shadow: none;
-  }
-  .ed-bento__card:hover {
-    transform: translateY(-4px);
-    box-shadow: none;
-  }
-  .ed-bento__card--tall,
-  .ed-bento__card--wide,
-  .ed-bento__card--sq,
-  .ed-bento__card--lg {
-    grid-column: span 1;
-    grid-row: span 1;
   }
 
-  .ed-bento__img {
+  .sf-spotlight__hero-card {
     position: relative;
-    aspect-ratio: 1;
+    min-height: 540px;
     overflow: hidden;
-    border: 1px solid var(--ed-line);
+    border: 1px solid color-mix(in srgb, var(--ed-line) 70%, transparent);
     border-radius: var(--ed-radius-card);
-    margin-bottom: 12px;
-    background:
-      radial-gradient(ellipse 55% 45% at 60% 35%, rgba(253,198,86,0.4) 0%, transparent 65%),
-      linear-gradient(160deg, #2a2520, #0c0a08);
+    background: #15120e;
+    color: #fffaf0;
+    isolation: isolate;
   }
-  .ed-bento__card--v2 .ed-bento__img { background: radial-gradient(ellipse 60% 50% at 30% 65%, rgba(231,166,58,0.28) 0%, transparent 60%), linear-gradient(135deg, #1c1712, #0c0a08); }
-  .ed-bento__card--v3 .ed-bento__img { background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.18) 0%, transparent 50%), linear-gradient(180deg, #1c1c1c, #050505); }
-  .ed-bento__card--v4 .ed-bento__img { background: radial-gradient(ellipse 40% 60% at 50% 40%, rgba(253,198,86,0.5) 0%, transparent 55%), linear-gradient(135deg, #2d251a, #0c0a08); }
 
-  .ed-bento__photo {
-    position: absolute;
-    inset: 0;
-    display: block;
-    width: 100%;
-    height: 100%;
-    max-width: none;
-    object-fit: cover;
-    transition: opacity 0.42s var(--ed-ease), transform 0.7s var(--ed-ease), filter 0.4s var(--ed-ease);
-    filter: brightness(0.85) saturate(0.95);
-  }
-  .ed-bento__photo--primary {
-    opacity: 1;
-    visibility: visible;
-    transform: scale(1);
-    z-index: 0;
-  }
-  .ed-bento__hover-image {
+  .sf-spotlight__hero-card::after {
     position: absolute;
     inset: 0;
     z-index: 1;
-    display: block;
-    background-image: var(--ed-hover-image);
-    background-size: cover;
-    background-position: center;
-    opacity: 0;
-    visibility: hidden;
-    transform: scale(1.035);
-    filter: brightness(0.85) saturate(0.95);
-    transition: opacity 0.42s var(--ed-ease), visibility 0.42s var(--ed-ease), transform 0.7s var(--ed-ease), filter 0.4s var(--ed-ease);
-    pointer-events: none;
-  }
-  .ed-bento__card:not(.ed-has-hover-image):hover .ed-bento__photo {
-    transform: scale(1.07);
-    filter: brightness(1) saturate(1.05);
-  }
-  .ed-bento__card.ed-has-hover-image:hover .ed-bento__photo--primary {
-    opacity: 1 !important;
-    visibility: visible;
-    transform: scale(1.02);
-    z-index: 0;
-  }
-  .ed-bento__card.ed-has-hover-image:hover .ed-bento__hover-image {
-    opacity: 1;
-    visibility: visible;
-    transform: scale(1.08);
-    filter: brightness(1) saturate(1.05);
-  }
-  html[data-ed-mode="day"] .ed-bento__img {
+    content: "";
     background:
-      radial-gradient(ellipse 55% 45% at 60% 35%, rgba(253,198,86,0.6) 0%, transparent 65%),
-      linear-gradient(160deg, #b8aea0, #d4cfc4);
-  }
-  html[data-ed-mode="day"] .ed-bento__photo {
-    filter: brightness(1) saturate(1);
-  }
-  html[data-ed-mode="day"] .ed-bento__hover-image {
-    filter: brightness(1) saturate(1);
+      linear-gradient(180deg, rgba(8, 7, 5, 0.04) 0%, rgba(8, 7, 5, 0.12) 48%, rgba(8, 7, 5, 0.78) 100%),
+      linear-gradient(90deg, rgba(8, 7, 5, 0.32), transparent 48%);
+    pointer-events: none;
   }
 
-  .ed-bento__meta {
-    position: relative;
-    z-index: 2;
-    padding: 4px 4px 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    gap: 6px;
-    height: auto;
-    pointer-events: none;
-  }
-  .ed-bento__card-idx,
-  .ed-bento__badge {
+  .sf-spotlight__hero-media,
+  .sf-spotlight__hero-photo {
     position: absolute;
-    top: 12px;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .sf-spotlight__hero-photo,
+  .sf-spotlight__thumb-photo {
+    display: block;
+    max-width: none;
+    object-fit: cover;
+    transition: transform 0.65s var(--ed-ease), filter 0.35s var(--ed-ease);
+  }
+
+  .sf-spotlight__hero-photo {
+    filter: saturate(0.92) contrast(0.98);
+  }
+
+  .sf-spotlight__hero-card:hover .sf-spotlight__hero-photo,
+  .sf-spotlight__item:hover .sf-spotlight__thumb-photo {
+    transform: scale(1.055);
+    filter: saturate(1.04) contrast(1.02);
+  }
+
+  .sf-spotlight__hero-copy {
+    position: absolute;
+    right: 22px;
+    bottom: 22px;
+    left: 22px;
+    z-index: 2;
+    display: grid;
+    gap: 10px;
+  }
+
+  .sf-spotlight__label {
+    color: rgba(255, 250, 240, 0.68);
+    font-family: var(--ed-font-body);
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .sf-spotlight__hero-copy h3 {
+    max-width: 12ch;
+    margin: 0;
+    font-family: var(--ed-font-display);
+    font-size: clamp(34px, 4vw, 58px);
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: 0;
+  }
+
+  .sf-spotlight__price {
+    font-family: var(--ed-font-body);
+    font-size: 15px;
+    font-weight: 850;
+    white-space: nowrap;
+  }
+
+  .sf-spotlight__compare {
+    margin-left: 8px;
+    color: color-mix(in srgb, currentColor 55%, transparent);
+    font-family: var(--ed-font-body);
+    font-size: 12px;
+    text-decoration: line-through;
+  }
+
+  .sf-spotlight__rail {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .sf-spotlight__item {
+    display: grid;
+    min-width: 0;
+    min-height: 166px;
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: 12px;
+    padding: 10px;
+    border: 1px solid var(--ed-line);
+    border-radius: var(--ed-radius-card);
+    background: color-mix(in srgb, var(--ed-card) 92%, transparent);
+    transition: transform 0.32s var(--ed-ease), border-color 0.24s var(--ed-ease), background 0.24s var(--ed-ease);
+  }
+
+  .sf-spotlight__item:first-child {
+    grid-column: span 2;
+    grid-template-columns: minmax(180px, 0.42fr) minmax(0, 1fr);
+    min-height: 202px;
+  }
+
+  .sf-spotlight__item:hover {
+    transform: translateY(-3px);
+    border-color: var(--ed-line-strong);
+    background: color-mix(in srgb, var(--ed-card-hover) 64%, var(--ed-card));
+  }
+
+  .sf-spotlight__thumb {
+    position: relative;
+    min-height: 146px;
+    overflow: hidden;
+    border-radius: 6px;
+    background:
+      radial-gradient(circle at 52% 42%, rgba(255, 219, 138, 0.5), transparent 32%),
+      color-mix(in srgb, var(--ed-card-hover) 82%, var(--ed-bg));
+  }
+
+  .sf-spotlight__item:first-child .sf-spotlight__thumb {
+    min-height: 182px;
+  }
+
+  .sf-spotlight__thumb-photo {
+    width: 100%;
+    height: 100%;
+    filter: saturate(0.95);
+  }
+
+  .sf-spotlight__number,
+  .sf-spotlight__badge {
+    position: absolute;
     z-index: 2;
     border-radius: var(--ed-pill);
     font-family: var(--ed-font-body);
@@ -274,96 +365,208 @@
     font-weight: 850;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 6px 10px;
   }
-  .ed-bento__card-idx {
-    left: 12px;
-    background: color-mix(in srgb, var(--ed-bg) 78%, transparent);
-    color: var(--ed-fg);
+
+  .sf-spotlight__number {
+    top: 10px;
+    left: 10px;
+    padding: 5px 9px;
     border: 1px solid var(--ed-line);
+    background: color-mix(in srgb, var(--ed-bg) 84%, transparent);
+    color: var(--ed-fg);
     backdrop-filter: blur(10px);
-    font-feature-settings: "tnum";
   }
-  .ed-bento__badge {
-    right: 12px;
+
+  .sf-spotlight__badge {
+    right: 10px;
+    bottom: 10px;
+    padding: 6px 9px;
     background: var(--ed-accent);
-    color: var(--ed-ink);
+    color: #15120c;
   }
-  .ed-bento__info {
+
+  .sf-spotlight__item-copy {
     display: flex;
+    min-width: 0;
+    flex-direction: column;
     justify-content: space-between;
-    align-items: flex-start;
     gap: 12px;
+    padding: 4px 0;
   }
-  .ed-bento__title-line {
+
+  .sf-spotlight__item-copy h3 {
+    max-width: 22ch;
+    margin: 0;
     font-family: var(--ed-font-body);
     font-size: 14px;
-    font-weight: 750;
-    line-height: 1.25;
-    max-width: 22ch;
+    font-weight: 820;
+    line-height: 1.22;
+    text-wrap: balance;
   }
-  .ed-bento__price-row {
-    flex-shrink: 0;
+
+  .sf-spotlight__item:first-child .sf-spotlight__item-copy h3 {
+    font-family: var(--ed-font-display);
+    font-size: clamp(28px, 3vw, 42px);
+    font-weight: 400;
+    line-height: 0.98;
+  }
+
+  .sf-spotlight__item-row {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 2px;
-    text-align: right;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
   }
-  .ed-bento__price {
+
+  .sf-spotlight__arrow {
+    display: inline-grid;
+    width: 28px;
+    height: 28px;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 999px;
+    background: var(--ed-accent);
+    color: #15120c;
     font-family: var(--ed-font-body);
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 850;
-    letter-spacing: 0;
-    white-space: nowrap;
   }
-  .ed-bento__price-old {
-    font-family: var(--ed-font-body);
-    font-size: 12px;
+
+  .sf-spotlight__collection-link {
+    display: flex;
+    min-height: 112px;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 18px;
+    border: 1px solid var(--ed-line);
+    border-radius: var(--ed-radius-card);
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--ed-accent) 16%, var(--ed-card)), color-mix(in srgb, var(--ed-card-hover) 58%, var(--ed-card)));
+  }
+
+  .sf-spotlight__collection-link span {
     color: var(--ed-muted);
-    text-decoration: line-through;
+    font-family: var(--ed-font-body);
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
   }
-  .ed-bento__hover-cta {
-    display: none;
+
+  .sf-spotlight__collection-link strong {
+    font-family: var(--ed-font-display);
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 0.98;
   }
-  .ed-bento__card:hover .ed-bento__hover-cta {
-    display: none;
+
+  .sf-spotlight__fallback {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 52% 48%, rgba(255, 225, 147, 0.82), transparent 24%),
+      linear-gradient(140deg, color-mix(in srgb, var(--ed-card-hover) 54%, #8d8a78), color-mix(in srgb, var(--ed-bg) 78%, #f2c15f));
   }
-  .ed-bento__card:hover .ed-bento__info {
-    opacity: 1;
-    transform: none;
-    transition: opacity 0.3s var(--ed-ease), transform 0.3s var(--ed-ease);
+
+  .sf-spotlight__wire {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 1px;
+    height: 46%;
+    transform: translateX(-50%);
+    background: color-mix(in srgb, var(--ed-fg) 45%, transparent);
   }
-  .ed-bento__info {
-    transition: opacity 0.3s var(--ed-ease), transform 0.3s var(--ed-ease);
+
+  .sf-spotlight__shade {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    width: 34%;
+    min-width: 72px;
+    max-width: 150px;
+    aspect-ratio: 1.85;
+    transform: translateX(-50%);
+    border: 1px solid color-mix(in srgb, var(--ed-fg) 20%, transparent);
+    border-radius: 999px 999px 22px 22px;
+    background: color-mix(in srgb, var(--ed-card) 55%, transparent);
   }
-  .ed-bento__empty {
+
+  .sf-spotlight__glow {
+    width: 42%;
+    max-width: 230px;
+    aspect-ratio: 1;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(255, 225, 147, 0.92), rgba(255, 225, 147, 0.1) 60%, transparent 72%);
+    filter: blur(2px);
+  }
+
+  .sf-spotlight__empty {
+    display: grid;
+    min-height: 380px;
+    place-items: center;
+    border: 1px dashed var(--ed-line);
+    border-radius: var(--ed-radius-card);
     color: var(--ed-muted);
     font-family: var(--ed-font-body);
     text-align: center;
-    padding: 60px;
-    border: 1px dashed var(--ed-line);
-    border-radius: var(--ed-radius-card);
   }
-  @media (max-width: 1100px) {
-    .ed-bento__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: auto; }
-    .ed-bento__card--tall,
-    .ed-bento__card--wide,
-    .ed-bento__card--sq,
-    .ed-bento__card--lg {
-      grid-column: span 1;
-      grid-row: span 1;
+
+  @media (max-width: 1180px) {
+    .sf-spotlight__frame,
+    .sf-spotlight__products {
+      grid-template-columns: 1fr;
+    }
+
+    .sf-spotlight__panel,
+    .sf-spotlight__hero-card {
+      min-height: 420px;
     }
   }
+
   @media (max-width: 720px) {
-    .ed-bento { padding: 64px 20px; }
-    .ed-bento__head { grid-template-columns: 1fr; gap: 20px; margin-bottom: 26px; }
-    .ed-bento__title { font-size: clamp(42px, 16vw, 72px); }
-    .ed-bento__desc { font-size: 13px; }
-    .ed-bento__grid { grid-template-columns: 1fr 1fr; grid-auto-rows: auto; gap: 10px; }
-    .ed-bento__card--tall, .ed-bento__card--wide, .ed-bento__card--sq, .ed-bento__card--lg { grid-column: span 1; grid-row: span 1; }
-    .ed-bento__info { flex-direction: column; gap: 4px; }
-    .ed-bento__price-row { align-items: flex-start; text-align: left; }
+    .sf-spotlight {
+      padding: 48px 20px;
+    }
+
+    .sf-spotlight__panel {
+      min-height: 0;
+    }
+
+    .sf-spotlight__title {
+      font-size: clamp(42px, 15vw, 68px);
+    }
+
+    .sf-spotlight__hero-card {
+      min-height: 380px;
+    }
+
+    .sf-spotlight__rail {
+      grid-template-columns: 1fr;
+    }
+
+    .sf-spotlight__item,
+    .sf-spotlight__item:first-child {
+      grid-column: span 1;
+      grid-template-columns: 102px minmax(0, 1fr);
+      min-height: 128px;
+    }
+
+    .sf-spotlight__item:first-child .sf-spotlight__thumb,
+    .sf-spotlight__thumb {
+      min-height: 112px;
+    }
+
+    .sf-spotlight__item:first-child .sf-spotlight__item-copy h3,
+    .sf-spotlight__item-copy h3 {
+      font-family: var(--ed-font-body);
+      font-size: 14px;
+      font-weight: 820;
+      line-height: 1.22;
+    }
   }
 {% endstylesheet %}
 
