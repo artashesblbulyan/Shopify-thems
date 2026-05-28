@@ -447,10 +447,10 @@
       window.clearTimeout(pageTransitionCleanupTimer);
       pageTransitionCleanupTimer = window.setTimeout(function () {
         html.classList.remove('ed-page-leaving');
-      }, 560);
+      }, 360);
       pageNavTimer = window.setTimeout(function () {
         window.location.href = link.href;
-      }, 260);
+      }, 120);
     });
 
     window.addEventListener('pageshow', function () {

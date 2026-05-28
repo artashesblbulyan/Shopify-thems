@@ -7989,7 +7989,7 @@ html[data-ed-mode] .ed-collection__grid {
     linear-gradient(180deg, #0d0f14 0%, #0d0f14 calc(100% - 5px), var(--ed-accent) calc(100% - 5px), var(--ed-accent) 100%) !important;
   transform: translate3d(0, 0, 0) !important;
   transform-origin: center top !important;
-  transition: transform 0.72s var(--ed-ease) !important;
+  transition: transform 0.38s var(--ed-ease) !important;
   will-change: transform;
 }
 
@@ -8008,7 +8008,7 @@ html[data-ed-mode] .ed-collection__grid {
   background:
     linear-gradient(110deg, transparent 0 42%, rgba(255, 255, 255, 0.11) 50%, transparent 58% 100%) !important;
   transform: translate3d(-72%, 0, 0) !important;
-  animation: ed-transition-sheen 0.82s var(--ed-ease) both !important;
+  animation: ed-transition-sheen 0.42s var(--ed-ease) both !important;
 }
 
 .ed-page-transition::after {
@@ -8031,24 +8031,24 @@ html.ed-page-ready .ed-page-transition {
 
 html.ed-page-leaving .ed-page-transition {
   transform: translate3d(0, 0, 0) !important;
-  transition-duration: 0.32s !important;
+  transition-duration: 0.18s !important;
 }
 
 html.ed-page-leaving .ed-page-transition::before {
-  animation-duration: 0.34s !important;
+  animation-duration: 0.2s !important;
 }
 
 html[data-ed-mode] #MainContent {
-  animation: ed-main-enter 0.46s var(--ed-ease) both !important;
+  animation: ed-main-enter 0.28s var(--ed-ease) both !important;
   transform-origin: center top;
 }
 
 html.ed-page-leaving[data-ed-mode] #MainContent {
   opacity: 0.001 !important;
-  transform: translate3d(0, -8px, 0) scale(0.996) !important;
+  transform: translate3d(0, -4px, 0) scale(0.998) !important;
   transition:
-    opacity 0.24s var(--ed-ease),
-    transform 0.24s var(--ed-ease) !important;
+    opacity 0.12s var(--ed-ease),
+    transform 0.12s var(--ed-ease) !important;
 }
 
 @keyframes ed-transition-sheen {
