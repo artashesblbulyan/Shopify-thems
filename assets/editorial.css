@@ -7972,86 +7972,24 @@ html[data-ed-mode] .ed-collection__grid {
 }
 
 /* ============================================================
-   Legacy top page transition
-   Restores the original top curtain animation and overrides the
-   later diagonal experiments.
+   Page transition disabled
    ============================================================ */
 
-.ed-page-transition {
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 2147482000 !important;
-  display: block !important;
-  visibility: visible !important;
-  pointer-events: none !important;
-  overflow: hidden !important;
-  background:
-    linear-gradient(180deg, #0d0f14 0%, #0d0f14 calc(100% - 5px), var(--ed-accent) calc(100% - 5px), var(--ed-accent) 100%) !important;
-  transform: translate3d(0, 0, 0) !important;
-  transform-origin: center top !important;
-  transition: transform 0.38s var(--ed-ease) !important;
-  will-change: transform;
-}
-
+.ed-page-transition,
 .ed-page-transition::before,
 .ed-page-transition::after {
-  content: "" !important;
-  position: absolute !important;
-  display: block !important;
-  visibility: visible !important;
-  pointer-events: none !important;
-}
-
-.ed-page-transition::before {
-  inset: 0 !important;
-  opacity: 0.72 !important;
-  background:
-    linear-gradient(110deg, transparent 0 42%, rgba(255, 255, 255, 0.11) 50%, transparent 58% 100%) !important;
-  transform: translate3d(-72%, 0, 0) !important;
-  animation: ed-transition-sheen 0.42s var(--ed-ease) both !important;
-}
-
-.ed-page-transition::after {
-  top: -18vh !important;
-  left: 61vw !important;
-  width: clamp(22px, 2.6vw, 48px) !important;
-  height: 136vh !important;
-  opacity: 1 !important;
-  background: var(--ed-accent) !important;
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--ed-accent) 42%, transparent),
-    0 0 34px color-mix(in srgb, var(--ed-accent) 42%, transparent) !important;
-  transform: skewX(-10deg) !important;
+  display: none !important;
+  visibility: hidden !important;
+  content: none !important;
   animation: none !important;
+  transition: none !important;
 }
 
-html.ed-page-ready .ed-page-transition {
-  transform: translate3d(0, -101%, 0) !important;
-}
-
-html.ed-page-leaving .ed-page-transition {
-  transform: translate3d(0, 0, 0) !important;
-  transition-duration: 0.18s !important;
-}
-
-html.ed-page-leaving .ed-page-transition::before {
-  animation-duration: 0.2s !important;
-}
-
-html[data-ed-mode] #MainContent {
-  animation: ed-main-enter 0.28s var(--ed-ease) both !important;
-  transform-origin: center top;
-}
-
+html[data-ed-mode] #MainContent,
+html.ed-page-ready .ed-hero__visual,
 html.ed-page-leaving[data-ed-mode] #MainContent {
-  opacity: 0.001 !important;
-  transform: translate3d(0, -4px, 0) scale(0.998) !important;
-  transition:
-    opacity 0.12s var(--ed-ease),
-    transform 0.12s var(--ed-ease) !important;
-}
-
-@keyframes ed-transition-sheen {
-  from { transform: translate3d(-72%, 0, 0); }
-  to { transform: translate3d(72%, 0, 0); }
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
 }
