@@ -7,11 +7,15 @@
 <section class="sf-pendant-modern ed-section" id="sf-pendant-modern-{{ section.id }}">
   <div class="sf-pendant-modern__inner">
     <div class="sf-pendant-modern__copy ed-reveal ed-reveal--lr">
-      <div class="ed-eyebrow">{{ section.settings.index_number }} / {{ section.settings.index_label }}</div>
-      <h2 class="ed-display sf-pendant-modern__title">{{ section.settings.heading }}</h2>
+      <div>
+        <div class="ed-eyebrow">{{ section.settings.index_number }} / {{ section.settings.index_label }}</div>
+        <h2 class="ed-display sf-pendant-modern__title">{{ section.settings.heading }}</h2>
+      </div>
+
       {%- if section.settings.description != blank -%}
         <p class="sf-pendant-modern__desc">{{ section.settings.description }}</p>
       {%- endif -%}
+
       <div class="sf-pendant-modern__actions">
         {%- if section.settings.cta_label != blank -%}
           <a class="ed-btn ed-btn--solid" href="{{ shop_url }}">
@@ -31,7 +35,7 @@
         {{ hero_image | image_url: width: 1800 | image_tag:
           loading: 'lazy',
           widths: '700, 1000, 1400, 1800',
-          sizes: '(max-width: 900px) 100vw, 58vw',
+          sizes: '(max-width: 1100px) 100vw, 58vw',
           alt: hero_image.alt | default: collection.title,
           class: 'sf-pendant-modern__hero'
         }}
@@ -44,68 +48,68 @@
       {%- endif -%}
 
       {%- if section.settings.badge != blank -%}
-        <span class="sf-pendant-modern__badge">{{ section.settings.badge }}</span>
+        <span class="sf-pendant-modern__badge">
+          <span class="sf-pendant-modern__badge-dot"></span>{{ section.settings.badge }}
+        </span>
       {%- endif -%}
       <span class="sf-pendant-modern__index" aria-hidden="true">{{ section.settings.index_number }}</span>
     </a>
   </div>
-
 </section>
 
 {% stylesheet %}
   .sf-pendant-modern {
-    padding: clamp(56px, 7vw, 92px) 32px;
+    padding: 0;
+    overflow: hidden;
     border-block: 1px solid var(--ed-line);
-    background:
-      linear-gradient(180deg, color-mix(in srgb, var(--ed-card) 64%, transparent), transparent 58%),
-      var(--ed-bg);
+    background: var(--ed-bg);
   }
 
   .sf-pendant-modern__inner {
     display: grid;
-    width: min(100%, 1580px);
-    margin: 0 auto;
-    grid-template-columns: minmax(320px, 0.42fr) minmax(0, 0.58fr);
-    gap: 20px;
+    width: 100%;
+    min-height: clamp(540px, 72vh, 720px);
+    grid-template-columns: 5fr 7fr;
     align-items: stretch;
   }
 
   .sf-pendant-modern__copy {
     display: flex;
-    min-height: 520px;
+    min-width: 0;
     flex-direction: column;
     justify-content: space-between;
-    gap: 34px;
-    padding: clamp(30px, 4vw, 48px);
-    border: 1px solid color-mix(in srgb, var(--ed-line) 82%, transparent);
-    border-radius: var(--ed-radius-card);
-    background: #10100e;
+    gap: 30px;
+    padding: clamp(58px, 6vw, 76px) 56px;
+    border-right: 1px solid rgba(255, 250, 240, 0.12);
+    background:
+      radial-gradient(circle at 12% 12%, rgba(253, 198, 86, 0.12), transparent 34%),
+      linear-gradient(145deg, #14120f 0%, #090807 100%);
     color: #fffaf0;
   }
 
   .sf-pendant-modern__copy .ed-eyebrow {
-    color: rgba(255, 250, 240, 0.66);
     border-color: rgba(255, 250, 240, 0.14);
     background: rgba(255, 250, 240, 0.06);
+    color: rgba(255, 250, 240, 0.66);
   }
 
   .sf-pendant-modern__title {
     max-width: 9ch;
     margin-top: 18px;
-    font-size: clamp(54px, 7.5vw, 104px);
-    line-height: 0.88;
     color: #fffaf0;
+    font-size: clamp(48px, 6.4vw, 92px);
+    line-height: 0.94;
     text-wrap: balance;
   }
 
   .sf-pendant-modern__desc {
-    max-width: 31em;
+    max-width: 25em;
     margin: 0;
-    color: rgba(255, 250, 240, 0.72);
+    color: rgba(255, 250, 240, 0.74);
     font-family: var(--ed-font-display);
-    font-size: clamp(19px, 1.55vw, 23px);
+    font-size: clamp(18px, 1.45vw, 21px);
     font-style: italic;
-    line-height: 1.36;
+    line-height: 1.42;
   }
 
   .sf-pendant-modern__actions {
@@ -121,7 +125,7 @@
     border-top: 1px solid rgba(255, 250, 240, 0.14);
     color: rgba(255, 250, 240, 0.56);
     font-family: var(--ed-font-body);
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 780;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -130,22 +134,33 @@
   .sf-pendant-modern__stage {
     position: relative;
     display: block;
-    min-height: 520px;
+    min-width: 0;
     overflow: hidden;
-    border: 1px solid color-mix(in srgb, var(--ed-line) 78%, transparent);
-    border-radius: var(--ed-radius-card);
-    background: #1a1712;
+    background: linear-gradient(135deg, #2a2520 0%, #0c0a08 60%);
     color: #fffaf0;
     isolation: isolate;
+  }
+
+  .sf-pendant-modern__stage::before {
+    position: absolute;
+    top: 18%;
+    left: 22%;
+    z-index: 1;
+    width: 58%;
+    height: 62%;
+    content: "";
+    background: radial-gradient(ellipse at center, rgba(253, 198, 86, 0.36), transparent 62%);
+    filter: blur(42px);
+    pointer-events: none;
   }
 
   .sf-pendant-modern__stage::after {
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: 2;
     content: "";
     background:
-      linear-gradient(180deg, rgba(12, 10, 8, 0.02), rgba(12, 10, 8, 0.18) 56%, rgba(12, 10, 8, 0.62)),
+      linear-gradient(180deg, rgba(12, 10, 8, 0.02), rgba(12, 10, 8, 0.14) 56%, rgba(12, 10, 8, 0.56)),
       linear-gradient(90deg, rgba(12, 10, 8, 0.24), transparent 46%);
     pointer-events: none;
   }
@@ -170,30 +185,41 @@
 
   .sf-pendant-modern__badge {
     position: absolute;
-    top: 22px;
-    left: 22px;
-    z-index: 2;
-    padding: 8px 12px;
-    border: 1px solid rgba(255, 250, 240, 0.18);
+    top: 24px;
+    left: 24px;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border: 1px solid rgba(255, 250, 240, 0.15);
     border-radius: var(--ed-pill);
-    background: rgba(16, 16, 14, 0.5);
-    color: rgba(255, 250, 240, 0.84);
+    background: rgba(0, 0, 0, 0.45);
+    color: rgba(255, 250, 240, 0.86);
     font-family: var(--ed-font-body);
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 850;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(10px);
+  }
+
+  .sf-pendant-modern__badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ed-accent);
+    box-shadow: 0 0 8px var(--ed-accent);
   }
 
   .sf-pendant-modern__index {
     position: absolute;
-    right: 24px;
-    bottom: 20px;
-    z-index: 2;
-    color: rgba(255, 250, 240, 0.13);
+    right: 32px;
+    bottom: 24px;
+    z-index: 3;
+    color: rgba(255, 250, 240, 0.12);
     font-family: var(--ed-font-display);
-    font-size: clamp(86px, 12vw, 170px);
+    font-size: clamp(72px, 9vw, 140px);
     font-style: italic;
     line-height: 0.8;
     pointer-events: none;
@@ -240,31 +266,25 @@
     filter: blur(2px);
   }
 
-  @media (max-width: 1180px) {
+  @media (max-width: 1100px) {
     .sf-pendant-modern__inner {
       grid-template-columns: 1fr;
     }
 
-    .sf-pendant-modern__copy,
-    .sf-pendant-modern__stage {
-      min-height: 420px;
+    .sf-pendant-modern__copy {
+      order: 1;
+      padding: 56px 24px;
+      border-right: none;
+      border-bottom: 1px solid rgba(255, 250, 240, 0.12);
     }
 
+    .sf-pendant-modern__stage {
+      order: 2;
+      min-height: clamp(360px, 54vh, 560px);
+    }
   }
 
   @media (max-width: 720px) {
-    .sf-pendant-modern {
-      padding: 48px 20px;
-    }
-
-    .sf-pendant-modern__copy {
-      min-height: 0;
-    }
-
-    .sf-pendant-modern__stage {
-      min-height: 360px;
-    }
-
     .sf-pendant-modern__title {
       font-size: clamp(44px, 16vw, 70px);
     }
@@ -273,7 +293,6 @@
       flex-direction: column;
       align-items: flex-start;
     }
-
   }
 {% endstylesheet %}
 
