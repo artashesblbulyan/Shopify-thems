@@ -23,7 +23,7 @@
   --ed-pill: 999px;
   --ed-font-display: "Instrument Serif", "Times New Roman", serif;
   --ed-font-body: "Instrument Sans", system-ui, sans-serif;
-  --ed-font-nav: var(--font-subheading--family), "Poppins", "Aptos", "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --ed-font-nav: var(--font-heading--family), "Instrument Serif", "Times New Roman", Georgia, serif;
   --ed-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   --ed-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ed-shadow-card: 0 18px 48px rgba(22, 20, 16, 0.11);
@@ -8019,28 +8019,28 @@ html.ed-page-leaving[data-ed-mode] #MainContent {
 .ed-header__nav-link {
   min-height: 38px !important;
   padding: 0 14px !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
   line-height: 1 !important;
 }
 
 .ed-header__logo,
 .ed-mobile-menu__logo {
   font-size: clamp(26px, 1.9vw, 34px) !important;
-  font-weight: 700 !important;
+  font-weight: 400 !important;
   line-height: 0.95 !important;
 }
 
 .ed-header__announce-item {
-  font-size: 10px !important;
-  font-weight: 600 !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
   letter-spacing: 0 !important;
 }
 
 .ed-header__cart,
 .ed-mode-toggle {
-  font-size: 12px !important;
-  font-weight: 600 !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
   line-height: 1 !important;
 }
 
@@ -8050,7 +8050,7 @@ html.ed-page-leaving[data-ed-mode] #MainContent {
 
 .ed-mobile-menu__link {
   font-size: clamp(28px, 8vw, 42px) !important;
-  font-weight: 700 !important;
+  font-weight: 400 !important;
   line-height: 1 !important;
 }
 
