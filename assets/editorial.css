@@ -8488,3 +8488,26 @@ html[data-ed-mode] .ed-collection__tag {
     scroll-snap-align: start !important;
   }
 }
+
+/* ============================================================
+   Collection toolbar — never overlap the product grid
+   (was floating over the first row of cards)
+   ============================================================ */
+html[data-ed-mode] .ed-collection__toolbar {
+  position: relative !important;
+  top: auto !important;
+  bottom: auto !important;
+  z-index: auto !important;
+  margin-bottom: clamp(30px, 7vw, 48px) !important;
+  box-shadow: 0 8px 26px rgba(18, 15, 10, 0.06) !important;
+}
+html[data-ed-mode] .ed-collection__grid {
+  position: relative !important;
+  z-index: 0 !important;
+  margin-top: 0 !important;
+}
+@media (max-width: 749px) {
+  html[data-ed-mode] .ed-collection__toolbar {
+    margin-bottom: 24px !important;
+  }
+}
