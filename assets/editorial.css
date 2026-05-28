@@ -8511,3 +8511,27 @@ html[data-ed-mode] .ed-collection__grid {
     margin-bottom: 24px !important;
   }
 }
+
+/* ============================================================
+   Header — always pinned to the top of the viewport
+   Uses position:fixed (sticky was broken by the #header-group
+   wrapper height + body overflow-x). Content offsets by the
+   measured header height (--ed-header-h, set in editorial-chrome).
+   ============================================================ */
+html[data-ed-mode] .ed-header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  z-index: 1000 !important;
+}
+html[data-ed-mode] .content-for-layout {
+  padding-top: var(--ed-header-h, 116px) !important;
+}
+html {
+  scroll-padding-top: var(--ed-header-h, 116px);
+}

@@ -60,6 +60,22 @@
     window.addEventListener('resize', updateScroll);
     updateScroll();
 
+    // Fixed header: expose its height so content can offset beneath it
+    function setHeaderHeight() {
+      var header = document.querySelector('.ed-header');
+      if (!header) return;
+      var h = Math.round(header.getBoundingClientRect().height);
+      if (h > 0) html.style.setProperty('--ed-header-h', h + 'px');
+    }
+    setHeaderHeight();
+    window.addEventListener('resize', setHeaderHeight);
+    window.addEventListener('load', setHeaderHeight);
+    onReady(setHeaderHeight);
+    if (window.ResizeObserver) {
+      var headerEl = document.querySelector('.ed-header');
+      if (headerEl) new ResizeObserver(setHeaderHeight).observe(headerEl);
+    }
+
     // Subtle live scroll state: sticky header depth + hero image drift
     var motionTicking = false;
     function updateLiveMotion() {
