@@ -7981,11 +7981,12 @@ html[data-ed-mode] .ed-page-transition {
   display: block !important;
   visibility: hidden !important;
   opacity: 1 !important;
+  z-index: 2147482000 !important;
   pointer-events: none !important;
   overflow: hidden !important;
   background: transparent !important;
   transform: none !important;
-  transition: visibility 0s linear 0.54s !important;
+  transition: visibility 0s linear 0.64s !important;
   will-change: auto;
 }
 
@@ -8003,9 +8004,9 @@ html[data-ed-mode] .ed-page-transition::after {
 
 html[data-ed-mode] .ed-page-transition::before {
   inset: -12vh auto -12vh 0 !important;
-  width: 86vw !important;
+  width: 96vw !important;
   background: #0d0f14 !important;
-  transform: translate3d(-72vw, 0, 0) skewX(-8deg) !important;
+  transform: translate3d(-52vw, 0, 0) skewX(-8deg) !important;
   transform-origin: right center !important;
 }
 
@@ -8022,33 +8023,38 @@ html[data-ed-mode] .ed-page-transition::after {
   transform-origin: center !important;
 }
 
+html[data-ed-mode] .ed-page-transition.is-active,
 html.ed-page-leaving[data-ed-mode] .ed-page-transition {
   visibility: visible !important;
   transition: visibility 0s !important;
 }
 
+html[data-ed-mode] .ed-page-transition.is-active::before,
+html[data-ed-mode] .ed-page-transition.is-active::after,
 html.ed-page-leaving[data-ed-mode] .ed-page-transition::before,
 html.ed-page-leaving[data-ed-mode] .ed-page-transition::after {
   visibility: visible !important;
   transition: none !important;
 }
 
+html[data-ed-mode] .ed-page-transition.is-active::before,
 html.ed-page-leaving[data-ed-mode] .ed-page-transition::before {
-  animation: ed-fast-black-sweep 0.44s var(--ed-ease) both !important;
+  animation: ed-fast-black-sweep 0.52s var(--ed-ease) both !important;
 }
 
+html[data-ed-mode] .ed-page-transition.is-active::after,
 html.ed-page-leaving[data-ed-mode] .ed-page-transition::after {
-  animation: ed-fast-accent-sweep 0.44s var(--ed-ease) 0.025s both !important;
+  animation: ed-fast-accent-sweep 0.52s var(--ed-ease) 0.025s both !important;
 }
 
 @keyframes ed-fast-black-sweep {
   0% {
     opacity: 1;
-    transform: translate3d(-72vw, 0, 0) skewX(-8deg);
+    transform: translate3d(-52vw, 0, 0) skewX(-8deg);
   }
   52% {
     opacity: 1;
-    transform: translate3d(-8vw, 0, 0) skewX(-8deg);
+    transform: translate3d(-4vw, 0, 0) skewX(-8deg);
   }
   100% {
     opacity: 0;
@@ -8059,7 +8065,7 @@ html.ed-page-leaving[data-ed-mode] .ed-page-transition::after {
 @keyframes ed-fast-accent-sweep {
   0% {
     opacity: 1;
-    transform: translate3d(-62vw, 0, 0) skewX(-8deg);
+    transform: translate3d(-44vw, 0, 0) skewX(-8deg);
   }
   60% {
     opacity: 1;

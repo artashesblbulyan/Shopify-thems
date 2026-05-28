@@ -403,6 +403,7 @@
     // Fast page transition for internal navigation.
     var pageNavTimer = null;
     var pageTransitionCleanupTimer = null;
+    var pageTransition = document.querySelector('[data-ed-page-transition]');
 
     function shouldAnimateLink(link) {
       if (reducedMotion || html.classList.contains('shopify-design-mode')) return false;
@@ -436,17 +437,31 @@
       html.classList.add('ed-page-leaving');
       window.clearTimeout(pageNavTimer);
       window.clearTimeout(pageTransitionCleanupTimer);
-      pageTransitionCleanupTimer = window.setTimeout(function () {
-        html.classList.remove('ed-page-leaving');
-      }, 540);
-      pageNavTimer = window.setTimeout(function () {
+
+      if (!pageTransition) {
         window.location.assign(link.href);
-      }, 190);
+        return;
+      }
+
+      pageTransition.classList.remove('is-active');
+      void pageTransition.offsetWidth;
+
+      requestAnimationFrame(function () {
+        pageTransition.classList.add('is-active');
+        pageTransitionCleanupTimer = window.setTimeout(function () {
+          pageTransition.classList.remove('is-active');
+          html.classList.remove('ed-page-leaving');
+        }, 640);
+        pageNavTimer = window.setTimeout(function () {
+          window.location.assign(link.href);
+        }, 260);
+      });
     });
 
     window.addEventListener('pageshow', function () {
       window.clearTimeout(pageNavTimer);
       window.clearTimeout(pageTransitionCleanupTimer);
+      if (pageTransition) pageTransition.classList.remove('is-active');
       html.classList.remove('ed-page-leaving');
       requestAnimationFrame(function () {
         html.classList.add('ed-page-ready');
@@ -456,6 +471,7 @@
     window.addEventListener('pagehide', function () {
       window.clearTimeout(pageNavTimer);
       window.clearTimeout(pageTransitionCleanupTimer);
+      if (pageTransition) pageTransition.classList.remove('is-active');
     });
   })();
 </script>
