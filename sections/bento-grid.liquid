@@ -3,569 +3,329 @@
   assign products = collection.products | slice: 0, 6
   assign intro_text = section.settings.description | default: collection.description
   assign shop_url = section.settings.view_all_link | default: collection.url | default: routes.all_products_collection_url
-  assign featured_product = products.first
-  assign featured_image = featured_product.featured_image | default: collection.image
+  assign visual_image = section.settings.image | default: collection.image
+  if visual_image == blank and products.first != blank
+    assign visual_image = products.first.featured_image
+  endif
+  assign meta_left = section.settings.meta_left
+  if meta_left == blank and collection != blank
+    assign meta_left = collection.products_count | append: ' pieces'
+  endif
+  assign meta_right = section.settings.meta_right | default: collection.title | default: 'Curated online'
 -%}
 
-<section class="sf-spotlight ed-section" id="sf-spotlight-{{ section.id }}">
-  <div class="sf-spotlight__frame">
-    <div class="sf-spotlight__panel">
+<section class="sf-collection-split ed-section{% if section.settings.reverse %} sf-collection-split--reverse{% endif %}" id="sf-collection-split-{{ section.id }}">
+  <div class="sf-collection-split__left ed-reveal ed-reveal--lr">
+    <div>
       <div class="ed-eyebrow">{{ section.settings.index_number }} / {{ section.settings.index_label }}</div>
-      <h2 class="ed-display sf-spotlight__title">{{ section.settings.heading }}</h2>
+      <h2 class="ed-display sf-collection-split__title">{{ section.settings.heading }}</h2>
+    </div>
 
-      {%- if intro_text != blank -%}
-        <p class="sf-spotlight__desc">{{ intro_text | strip_html | truncatewords: 30 }}</p>
-      {%- endif -%}
+    {%- if intro_text != blank -%}
+      <p class="sf-collection-split__quote">{{ intro_text | strip_html }}</p>
+    {%- endif -%}
 
-      <div class="sf-spotlight__meta">
-        {%- if collection != blank -%}
-          <span>{{ collection.products_count }} {{ collection.products_count | pluralize: 'piece', 'pieces' }}</span>
-          <span>{{ collection.title }}</span>
-        {%- else -%}
-          <span>Curated edit</span>
-          <span>Lighting</span>
-        {%- endif -%}
-      </div>
-
-      {%- if section.settings.view_all_label != blank -%}
-        <a class="ed-btn ed-btn--ghost sf-spotlight__button" href="{{ shop_url }}">
+    {%- if section.settings.view_all_label != blank -%}
+      <div class="sf-collection-split__cta">
+        <a class="ed-btn ed-btn--solid" href="{{ shop_url }}">
           {{ section.settings.view_all_label }}
           <span class="ed-btn__arrow" aria-hidden="true">-&gt;</span>
         </a>
-      {%- endif -%}
-    </div>
-
-    {%- if products.size > 0 -%}
-      <div class="sf-spotlight__products">
-        <a class="sf-spotlight__hero-card" href="{{ featured_product.url }}" aria-label="{{ featured_product.title | escape }}">
-          <div class="sf-spotlight__hero-media">
-            {%- if featured_image != blank -%}
-              {{ featured_image | image_url: width: 1400 | image_tag:
-                loading: 'lazy',
-                widths: '600, 900, 1200, 1400',
-                sizes: '(max-width: 900px) 100vw, 38vw',
-                alt: featured_image.alt | default: featured_product.title,
-                class: 'sf-spotlight__hero-photo'
-              }}
-            {%- else -%}
-              <div class="sf-spotlight__fallback" aria-hidden="true">
-                <span class="sf-spotlight__wire"></span>
-                <span class="sf-spotlight__shade"></span>
-                <span class="sf-spotlight__glow"></span>
-              </div>
-            {%- endif -%}
-          </div>
-
-          <div class="sf-spotlight__hero-copy">
-            <span class="sf-spotlight__label">Featured</span>
-            <h3>{{ featured_product.title }}</h3>
-            <div>
-              <span class="sf-spotlight__price">{{ featured_product.price | money }}</span>
-              {%- if featured_product.compare_at_price > featured_product.price -%}
-                <span class="sf-spotlight__compare">{{ featured_product.compare_at_price | money }}</span>
-              {%- endif -%}
-            </div>
-          </div>
-        </a>
-
-        <div class="sf-spotlight__rail">
-          {%- for product in products offset: 1 limit: 5 -%}
-            {%- liquid
-              assign card_image = product.featured_image | default: collection.image
-              assign card_number = forloop.index | plus: 1 | prepend: '0' | slice: -2, 2
-              assign badge_text = blank
-              if product.compare_at_price > product.price
-                assign badge_text = 'Sale'
-              elsif product.available == false
-                assign badge_text = 'Sold out'
-              endif
-            -%}
-            <a class="sf-spotlight__item" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
-              <div class="sf-spotlight__thumb">
-                {%- if card_image != blank -%}
-                  {{ card_image | image_url: width: 700 | image_tag:
-                    loading: 'lazy',
-                    widths: '240, 420, 700',
-                    sizes: '(max-width: 720px) 34vw, 180px',
-                    alt: card_image.alt | default: product.title,
-                    class: 'sf-spotlight__thumb-photo'
-                  }}
-                {%- else -%}
-                  <div class="sf-spotlight__fallback sf-spotlight__fallback--small" aria-hidden="true">
-                    <span class="sf-spotlight__wire"></span>
-                    <span class="sf-spotlight__shade"></span>
-                    <span class="sf-spotlight__glow"></span>
-                  </div>
-                {%- endif -%}
-                <span class="sf-spotlight__number">{{ card_number }}</span>
-                {%- if badge_text != blank -%}
-                  <span class="sf-spotlight__badge">{{ badge_text }}</span>
-                {%- endif -%}
-              </div>
-
-              <div class="sf-spotlight__item-copy">
-                <h3>{{ product.title }}</h3>
-                <div class="sf-spotlight__item-row">
-                  <span class="sf-spotlight__price">{{ product.price | money }}</span>
-                  <span class="sf-spotlight__arrow" aria-hidden="true">-&gt;</span>
-                </div>
-              </div>
-            </a>
-          {%- endfor -%}
-
-          <a class="sf-spotlight__collection-link" href="{{ shop_url }}">
-            <span>View the full edit</span>
-            <strong>{{ section.settings.view_all_label | default: 'Shop collection' }}</strong>
-          </a>
-        </div>
-      </div>
-    {%- else -%}
-      <div class="sf-spotlight__empty">
-        <span>{{ section.settings.index_label }}</span>
-        <p>Select a collection with products to populate this section.</p>
       </div>
     {%- endif -%}
+
+    <div class="sf-collection-split__meta">
+      <span>{{ meta_left | default: 'Warm room edits' }}</span>
+      <span>{{ meta_right }}</span>
+    </div>
   </div>
+
+  <a class="sf-collection-split__right ed-reveal" href="{{ shop_url }}" aria-label="{{ section.settings.view_all_label | default: collection.title | escape }}">
+    {%- if visual_image != blank -%}
+      {{ visual_image | image_url: width: 1600 | image_tag:
+        loading: 'lazy',
+        widths: '600, 900, 1200, 1600',
+        sizes: '(max-width: 900px) 100vw, 60vw',
+        alt: visual_image.alt | default: collection.title,
+        class: 'sf-collection-split__img'
+      }}
+    {%- else -%}
+      <div class="sf-collection-split__fallback" aria-hidden="true">
+        <span class="sf-collection-split__wire"></span>
+        <span class="sf-collection-split__shade"></span>
+        <span class="sf-collection-split__glow"></span>
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.badge != blank -%}
+      <span class="sf-collection-split__badge">
+        <span class="sf-collection-split__badge-dot"></span>{{ section.settings.badge }}
+      </span>
+    {%- endif -%}
+    <div class="sf-collection-split__index" aria-hidden="true">{{ section.settings.index_number }}</div>
+  </a>
 </section>
 
 {% stylesheet %}
-  .sf-spotlight {
-    padding: clamp(48px, 6vw, 78px) 32px;
-  }
-
-  .sf-spotlight__frame {
+  .sf-collection-split {
     display: grid;
-    width: min(100%, 1588px);
-    margin: 0 auto;
-    grid-template-columns: minmax(300px, 0.36fr) minmax(0, 0.64fr);
-    gap: 18px;
+    grid-template-columns: 5fr 7fr;
     align-items: stretch;
+    min-height: 88vh;
+    border-block: 1px solid var(--ed-line);
   }
 
-  .sf-spotlight__panel {
+  .sf-collection-split--reverse {
+    grid-template-columns: 7fr 5fr;
+  }
+
+  .sf-collection-split--reverse .sf-collection-split__left {
+    order: 2;
+    border-right: none;
+    border-left: 1px solid var(--ed-line);
+  }
+
+  .sf-collection-split--reverse .sf-collection-split__right {
+    order: 1;
+  }
+
+  .sf-collection-split__left {
     display: flex;
-    min-height: 540px;
     flex-direction: column;
     justify-content: space-between;
-    padding: clamp(24px, 3vw, 42px);
-    border: 1px solid var(--ed-line);
-    border-radius: var(--ed-radius-card);
-    background:
-      linear-gradient(145deg, color-mix(in srgb, var(--ed-card) 94%, transparent), color-mix(in srgb, var(--ed-card-hover) 54%, transparent)),
-      var(--ed-card);
+    gap: 40px;
+    padding: 96px 56px;
+    border-right: 1px solid var(--ed-line);
+    background: var(--ed-bg);
   }
 
-  .sf-spotlight__title {
+  .sf-collection-split__title {
     margin-top: 18px;
-    font-size: clamp(46px, 6vw, 88px);
-    line-height: 0.9;
+    font-size: clamp(48px, 7.5vw, 112px);
+    line-height: 0.92;
     text-wrap: balance;
   }
 
-  .sf-spotlight__desc {
-    max-width: 34em;
-    margin: 22px 0 0;
-    color: var(--ed-muted);
-    font-family: var(--ed-font-body);
-    font-size: 14px;
-    line-height: 1.55;
-  }
-
-  .sf-spotlight__meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: auto;
-    padding-top: 28px;
-    color: var(--ed-muted);
-    font-family: var(--ed-font-body);
-    font-size: 10px;
-    font-weight: 780;
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
-  }
-
-  .sf-spotlight__meta span {
-    padding: 7px 10px;
-    border: 1px solid var(--ed-line);
-    border-radius: var(--ed-pill);
-    background: color-mix(in srgb, var(--ed-bg) 42%, transparent);
-  }
-
-  .sf-spotlight__button {
-    width: max-content;
-    margin-top: 18px;
-  }
-
-  .sf-spotlight__products {
-    display: grid;
-    min-width: 0;
-    grid-template-columns: minmax(280px, 0.95fr) minmax(280px, 1.05fr);
-    gap: 14px;
-  }
-
-  .sf-spotlight__hero-card,
-  .sf-spotlight__item,
-  .sf-spotlight__collection-link {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .sf-spotlight__hero-card {
+  .sf-collection-split__quote {
     position: relative;
-    min-height: 540px;
-    overflow: hidden;
-    border: 1px solid color-mix(in srgb, var(--ed-line) 70%, transparent);
-    border-radius: var(--ed-radius-card);
-    background: #15120e;
-    color: #fffaf0;
-    isolation: isolate;
+    max-width: 24em;
+    margin: 0;
+    padding-left: 22px;
+    color: var(--ed-muted);
+    font-family: var(--ed-font-display);
+    font-size: 22px;
+    font-style: italic;
+    line-height: 1.4;
   }
 
-  .sf-spotlight__hero-card::after {
+  .sf-collection-split__quote::before {
     position: absolute;
-    inset: 0;
-    z-index: 1;
+    top: -12px;
+    left: -10px;
+    color: var(--ed-accent);
     content: "";
-    background:
-      linear-gradient(180deg, rgba(8, 7, 5, 0.04) 0%, rgba(8, 7, 5, 0.12) 48%, rgba(8, 7, 5, 0.78) 100%),
-      linear-gradient(90deg, rgba(8, 7, 5, 0.32), transparent 48%);
-    pointer-events: none;
+    font-size: 60px;
+    font-style: italic;
+    line-height: 1;
   }
 
-  .sf-spotlight__hero-media,
-  .sf-spotlight__hero-photo {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .sf-spotlight__hero-photo,
-  .sf-spotlight__thumb-photo {
-    display: block;
-    max-width: none;
-    object-fit: cover;
-    transition: transform 0.65s var(--ed-ease), filter 0.35s var(--ed-ease);
-  }
-
-  .sf-spotlight__hero-photo {
-    filter: saturate(0.92) contrast(0.98);
-  }
-
-  .sf-spotlight__hero-card:hover .sf-spotlight__hero-photo,
-  .sf-spotlight__item:hover .sf-spotlight__thumb-photo {
-    transform: scale(1.055);
-    filter: saturate(1.04) contrast(1.02);
-  }
-
-  .sf-spotlight__hero-copy {
-    position: absolute;
-    right: 22px;
-    bottom: 22px;
-    left: 22px;
-    z-index: 2;
-    display: grid;
-    gap: 10px;
-  }
-
-  .sf-spotlight__label {
-    color: rgba(255, 250, 240, 0.68);
-    font-family: var(--ed-font-body);
-    font-size: 10px;
-    font-weight: 850;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-  }
-
-  .sf-spotlight__hero-copy h3 {
-    max-width: 12ch;
+  .sf-collection-split__cta {
     margin: 0;
-    font-family: var(--ed-font-display);
-    font-size: clamp(34px, 4vw, 58px);
-    font-weight: 400;
-    line-height: 0.95;
-    letter-spacing: 0;
   }
 
-  .sf-spotlight__price {
-    font-family: var(--ed-font-body);
-    font-size: 15px;
-    font-weight: 850;
-    white-space: nowrap;
-  }
-
-  .sf-spotlight__compare {
-    margin-left: 8px;
-    color: color-mix(in srgb, currentColor 55%, transparent);
-    font-family: var(--ed-font-body);
-    font-size: 12px;
-    text-decoration: line-through;
-  }
-
-  .sf-spotlight__rail {
-    display: grid;
-    min-width: 0;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-  }
-
-  .sf-spotlight__item {
-    display: grid;
-    min-width: 0;
-    min-height: 166px;
-    grid-template-columns: 112px minmax(0, 1fr);
-    gap: 12px;
-    padding: 10px;
-    border: 1px solid var(--ed-line);
-    border-radius: var(--ed-radius-card);
-    background: color-mix(in srgb, var(--ed-card) 92%, transparent);
-    transition: transform 0.32s var(--ed-ease), border-color 0.24s var(--ed-ease), background 0.24s var(--ed-ease);
-  }
-
-  .sf-spotlight__item:first-child {
-    grid-column: span 2;
-    grid-template-columns: minmax(180px, 0.42fr) minmax(0, 1fr);
-    min-height: 202px;
-  }
-
-  .sf-spotlight__item:hover {
-    transform: translateY(-3px);
-    border-color: var(--ed-line-strong);
-    background: color-mix(in srgb, var(--ed-card-hover) 64%, var(--ed-card));
-  }
-
-  .sf-spotlight__thumb {
-    position: relative;
-    min-height: 146px;
-    overflow: hidden;
-    border-radius: 6px;
-    background:
-      radial-gradient(circle at 52% 42%, rgba(255, 219, 138, 0.5), transparent 32%),
-      color-mix(in srgb, var(--ed-card-hover) 82%, var(--ed-bg));
-  }
-
-  .sf-spotlight__item:first-child .sf-spotlight__thumb {
-    min-height: 182px;
-  }
-
-  .sf-spotlight__thumb-photo {
-    width: 100%;
-    height: 100%;
-    filter: saturate(0.95);
-  }
-
-  .sf-spotlight__number,
-  .sf-spotlight__badge {
-    position: absolute;
-    z-index: 2;
-    border-radius: var(--ed-pill);
-    font-family: var(--ed-font-body);
-    font-size: 10px;
-    font-weight: 850;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  .sf-spotlight__number {
-    top: 10px;
-    left: 10px;
-    padding: 5px 9px;
-    border: 1px solid var(--ed-line);
-    background: color-mix(in srgb, var(--ed-bg) 84%, transparent);
-    color: var(--ed-fg);
-    backdrop-filter: blur(10px);
-  }
-
-  .sf-spotlight__badge {
-    right: 10px;
-    bottom: 10px;
-    padding: 6px 9px;
-    background: var(--ed-accent);
-    color: #15120c;
-  }
-
-  .sf-spotlight__item-copy {
-    display: flex;
-    min-width: 0;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 4px 0;
-  }
-
-  .sf-spotlight__item-copy h3 {
-    max-width: 22ch;
-    margin: 0;
-    font-family: var(--ed-font-body);
-    font-size: 14px;
-    font-weight: 820;
-    line-height: 1.22;
-    text-wrap: balance;
-  }
-
-  .sf-spotlight__item:first-child .sf-spotlight__item-copy h3 {
-    font-family: var(--ed-font-display);
-    font-size: clamp(28px, 3vw, 42px);
-    font-weight: 400;
-    line-height: 0.98;
-  }
-
-  .sf-spotlight__item-row {
+  .sf-collection-split__meta {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
-  }
-
-  .sf-spotlight__arrow {
-    display: inline-grid;
-    width: 28px;
-    height: 28px;
-    flex: 0 0 auto;
-    place-items: center;
-    border-radius: 999px;
-    background: var(--ed-accent);
-    color: #15120c;
-    font-family: var(--ed-font-body);
-    font-size: 13px;
-    font-weight: 850;
-  }
-
-  .sf-spotlight__collection-link {
-    display: flex;
-    min-height: 112px;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 18px;
-    border: 1px solid var(--ed-line);
-    border-radius: var(--ed-radius-card);
-    background:
-      linear-gradient(135deg, color-mix(in srgb, var(--ed-accent) 16%, var(--ed-card)), color-mix(in srgb, var(--ed-card-hover) 58%, var(--ed-card)));
-  }
-
-  .sf-spotlight__collection-link span {
+    gap: 16px;
+    padding-top: 24px;
+    border-top: 1px solid var(--ed-line);
     color: var(--ed-muted);
     font-family: var(--ed-font-body);
-    font-size: 10px;
-    font-weight: 850;
+    font-size: 11px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
   }
 
-  .sf-spotlight__collection-link strong {
-    font-family: var(--ed-font-display);
-    font-size: 32px;
-    font-weight: 400;
-    line-height: 0.98;
+  .sf-collection-split__right {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    background: linear-gradient(135deg, #2a2520 0%, #0c0a08 60%);
+    color: #fff;
+    text-decoration: none;
   }
 
-  .sf-spotlight__fallback {
+  .sf-collection-split__right::after {
+    position: absolute;
+    top: 20%;
+    left: 25%;
+    z-index: 1;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(ellipse at center, rgba(253, 198, 86, 0.45), transparent 60%);
+    content: "";
+    filter: blur(40px);
+    animation: sf-collection-split-pulse 6s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes sf-collection-split-pulse {
+    0%, 100% {
+      opacity: 0.8;
+      transform: scale(1);
+    }
+
+    50% {
+      opacity: 1;
+      transform: scale(1.08);
+    }
+  }
+
+  html[data-ed-mode="day"] .sf-collection-split__right {
+    background: linear-gradient(135deg, #ddd6c8, #b8b1a3);
+  }
+
+  .sf-collection-split__img {
     position: absolute;
     inset: 0;
+    z-index: 2;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    transition: transform 1.2s var(--ed-ease);
+  }
+
+  .sf-collection-split__right:hover .sf-collection-split__img {
+    transform: scale(1.04);
+  }
+
+  .sf-collection-split__fallback {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
     display: grid;
     place-items: center;
     overflow: hidden;
     background:
       radial-gradient(circle at 52% 48%, rgba(255, 225, 147, 0.82), transparent 24%),
-      linear-gradient(140deg, color-mix(in srgb, var(--ed-card-hover) 54%, #8d8a78), color-mix(in srgb, var(--ed-bg) 78%, #f2c15f));
+      linear-gradient(135deg, #2a2520, #0c0a08 68%);
   }
 
-  .sf-spotlight__wire {
+  .sf-collection-split__wire {
     position: absolute;
     top: 0;
     left: 50%;
     width: 1px;
     height: 46%;
     transform: translateX(-50%);
-    background: color-mix(in srgb, var(--ed-fg) 45%, transparent);
+    background: rgba(255, 250, 240, 0.42);
   }
 
-  .sf-spotlight__shade {
+  .sf-collection-split__shade {
     position: absolute;
     top: 40%;
     left: 50%;
-    width: 34%;
-    min-width: 72px;
-    max-width: 150px;
+    width: min(34%, 180px);
+    min-width: 96px;
     aspect-ratio: 1.85;
     transform: translateX(-50%);
-    border: 1px solid color-mix(in srgb, var(--ed-fg) 20%, transparent);
-    border-radius: 999px 999px 22px 22px;
-    background: color-mix(in srgb, var(--ed-card) 55%, transparent);
+    border: 1px solid rgba(255, 250, 240, 0.2);
+    border-radius: 999px 999px 24px 24px;
+    background: rgba(255, 250, 240, 0.12);
   }
 
-  .sf-spotlight__glow {
-    width: 42%;
-    max-width: 230px;
+  .sf-collection-split__glow {
+    width: min(42%, 260px);
     aspect-ratio: 1;
     border-radius: 999px;
     background: radial-gradient(circle, rgba(255, 225, 147, 0.92), rgba(255, 225, 147, 0.1) 60%, transparent 72%);
     filter: blur(2px);
   }
 
-  .sf-spotlight__empty {
-    display: grid;
-    min-height: 380px;
-    place-items: center;
-    border: 1px dashed var(--ed-line);
-    border-radius: var(--ed-radius-card);
-    color: var(--ed-muted);
+  .sf-collection-split__badge {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--ed-pill);
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
     font-family: var(--ed-font-body);
-    text-align: center;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    backdrop-filter: blur(10px);
   }
 
-  @media (max-width: 1180px) {
-    .sf-spotlight__frame,
-    .sf-spotlight__products {
+  .sf-collection-split__badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ed-accent);
+    box-shadow: 0 0 8px var(--ed-accent);
+  }
+
+  .sf-collection-split__index {
+    position: absolute;
+    right: 40px;
+    bottom: 32px;
+    z-index: 3;
+    color: rgba(255, 255, 255, 0.1);
+    font-family: var(--ed-font-display);
+    font-size: clamp(80px, 12vw, 180px);
+    font-feature-settings: "tnum";
+    font-style: italic;
+    line-height: 0.8;
+    pointer-events: none;
+  }
+
+  @media (max-width: 1100px) {
+    .sf-collection-split,
+    .sf-collection-split--reverse {
       grid-template-columns: 1fr;
     }
 
-    .sf-spotlight__panel,
-    .sf-spotlight__hero-card {
-      min-height: 420px;
+    .sf-collection-split__left,
+    .sf-collection-split--reverse .sf-collection-split__left {
+      order: 1;
+      padding: 64px 24px;
+      border-right: none;
+      border-bottom: 1px solid var(--ed-line);
+      border-left: none;
+    }
+
+    .sf-collection-split__right,
+    .sf-collection-split--reverse .sf-collection-split__right {
+      order: 2;
+      min-height: 60vh;
     }
   }
 
-  @media (max-width: 720px) {
-    .sf-spotlight {
-      padding: 48px 20px;
+  @media (max-width: 640px) {
+    .sf-collection-split__left {
+      gap: 30px;
+      padding: 56px 20px;
     }
 
-    .sf-spotlight__panel {
-      min-height: 0;
+    .sf-collection-split__title {
+      font-size: clamp(44px, 15vw, 72px);
     }
 
-    .sf-spotlight__title {
-      font-size: clamp(42px, 15vw, 68px);
+    .sf-collection-split__quote {
+      font-size: 19px;
     }
 
-    .sf-spotlight__hero-card {
-      min-height: 380px;
-    }
-
-    .sf-spotlight__rail {
-      grid-template-columns: 1fr;
-    }
-
-    .sf-spotlight__item,
-    .sf-spotlight__item:first-child {
-      grid-column: span 1;
-      grid-template-columns: 102px minmax(0, 1fr);
-      min-height: 128px;
-    }
-
-    .sf-spotlight__item:first-child .sf-spotlight__thumb,
-    .sf-spotlight__thumb {
-      min-height: 112px;
-    }
-
-    .sf-spotlight__item:first-child .sf-spotlight__item-copy h3,
-    .sf-spotlight__item-copy h3 {
-      font-family: var(--ed-font-body);
-      font-size: 14px;
-      font-weight: 820;
-      line-height: 1.22;
+    .sf-collection-split__meta {
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 {% endstylesheet %}
@@ -589,13 +349,17 @@
       "type": "textarea",
       "id": "description",
       "label": "Description",
-      "default": "A tight edit of standout pieces selected for easy scanning and confident shopping."
+      "default": "A good lamp should feel useful in the day and calm at night."
     },
-    { "type": "header", "content": "View all" },
-    { "type": "text", "id": "view_all_label", "label": "Label", "default": "View all" },
-    { "type": "url", "id": "view_all_link", "label": "Link" },
-    { "type": "header", "content": "Source" },
-    { "type": "collection", "id": "collection", "label": "Collection" }
+    { "type": "text", "id": "view_all_label", "label": "CTA label", "default": "Shop now" },
+    { "type": "url", "id": "view_all_link", "label": "CTA link" },
+    { "type": "text", "id": "meta_left", "label": "Meta left", "default": "Warm room edits" },
+    { "type": "text", "id": "meta_right", "label": "Meta right", "default": "Curated online" },
+    { "type": "header", "content": "Visual" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "badge", "label": "Image badge", "default": "Featured" },
+    { "type": "checkbox", "id": "reverse", "label": "Reverse (image on left)", "default": false }
   ],
   "presets": [
     { "name": "Bento - Featured" }
