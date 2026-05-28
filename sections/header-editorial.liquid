@@ -110,25 +110,25 @@
 {% stylesheet %}
   .ed-header {
     position: sticky;
-    top: 10px;
+    top: 0;
     z-index: 50;
-    width: min(calc(100% - 20px), 1700px);
-    margin-inline: auto;
-    background: color-mix(in srgb, var(--ed-card) 82%, transparent);
-    backdrop-filter: blur(24px) saturate(150%);
-    -webkit-backdrop-filter: blur(24px) saturate(150%);
-    border: 1px solid color-mix(in srgb, var(--ed-line-strong) 74%, transparent);
-    border-radius: 18px;
+    width: 100%;
+    margin: 0;
+    background: color-mix(in srgb, var(--ed-bg) 96%, transparent);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border: 0;
+    border-bottom: 1px solid var(--ed-line);
+    border-radius: 0;
     color: var(--ed-fg);
     font-family: var(--ed-font-body);
     overflow: hidden;
-    box-shadow: 0 22px 60px color-mix(in srgb, var(--ed-fg) 12%, transparent);
+    box-shadow: 0 10px 28px color-mix(in srgb, var(--ed-fg) 8%, transparent);
   }
   .ed-header__announce {
-    padding: 8px 14px;
+    padding: 8px 18px;
     color: var(--ed-bg);
-    background:
-      linear-gradient(90deg, var(--ed-fg), color-mix(in srgb, var(--ed-fg) 82%, var(--ed-blue)));
+    background: var(--ed-fg);
     border-bottom: 1px solid color-mix(in srgb, var(--ed-bg) 14%, transparent);
     overflow: hidden;
   }
@@ -136,18 +136,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 18px;
     min-width: 0;
   }
   .ed-header__announce-item {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    min-height: 26px;
-    padding: 0 10px;
-    border: 1px solid color-mix(in srgb, var(--ed-bg) 16%, transparent);
-    border-radius: var(--ed-pill);
-    background: color-mix(in srgb, var(--ed-bg) 8%, transparent);
+    min-height: 20px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
     font-size: 11px;
     font-weight: 800;
     line-height: 1;
@@ -167,8 +167,8 @@
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    min-height: 66px;
-    padding: 10px 14px;
+    min-height: 72px;
+    padding: 0 clamp(18px, 4vw, 72px);
     gap: 18px;
   }
   .ed-header__left { display: flex; align-items: center; gap: 14px; min-width: 0; }
@@ -178,11 +178,11 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    min-height: 46px;
-    padding: 4px;
-    border: 1px solid var(--ed-line);
-    border-radius: 14px;
-    background: color-mix(in srgb, var(--ed-bg) 44%, transparent);
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
   }
   .ed-header__nav-link {
     position: relative;
@@ -203,8 +203,8 @@
   }
   .ed-header__nav-link:hover,
   .ed-header__nav-link.is-active {
-    background: var(--ed-fg);
-    color: var(--ed-bg);
+    background: color-mix(in srgb, var(--ed-fg) 8%, transparent);
+    color: var(--ed-fg);
     transform: translateY(-1px);
   }
 
@@ -233,7 +233,7 @@
     color: var(--ed-fg);
     text-decoration: none;
     border: 1px solid var(--ed-line);
-    background: color-mix(in srgb, var(--ed-bg) 34%, transparent);
+    background: color-mix(in srgb, var(--ed-card) 70%, transparent);
     transition:
       background 0.24s var(--ed-ease),
       border-color 0.24s var(--ed-ease),
@@ -253,7 +253,7 @@
     padding: 0 8px 0 14px;
     border: 1px solid var(--ed-line);
     border-radius: 12px;
-    background: color-mix(in srgb, var(--ed-bg) 34%, transparent);
+    background: color-mix(in srgb, var(--ed-card) 70%, transparent);
     color: var(--ed-fg);
     text-decoration: none;
     font-size: 12px;
@@ -296,7 +296,7 @@
     height: 44px;
     border-radius: 12px;
     border: 1px solid var(--ed-line);
-    background: color-mix(in srgb, var(--ed-bg) 34%, transparent);
+    background: color-mix(in srgb, var(--ed-card) 70%, transparent);
     cursor: pointer;
     padding: 0;
     align-items: center;
@@ -426,9 +426,9 @@
 
   @media (max-width: 900px) {
     .ed-header {
-      top: 8px;
-      width: calc(100% - 16px);
-      border-radius: 16px;
+      top: 0;
+      width: 100%;
+      border-radius: 0;
     }
     .ed-header__announce {
       padding: 7px;
@@ -451,8 +451,8 @@
     .ed-header__nav { display: none; }
     .ed-header__menu-btn { display: inline-flex; }
     .ed-header__bar {
-      min-height: 58px;
-      padding: 7px;
+      min-height: 60px;
+      padding: 8px 12px;
       grid-template-columns: 48px minmax(0, 1fr) auto;
       gap: 8px;
     }

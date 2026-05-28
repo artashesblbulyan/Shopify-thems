@@ -13,16 +13,16 @@
       "type": "hero-editorial",
       "settings": {
         "index_number": "01",
-        "index_label": "Lighting studio",
-        "eyebrow": "New arrivals",
+        "index_label": "",
+        "eyebrow": "",
         "headline": "<p>Modern lighting<br/><em>for softer rooms.</em></p>",
         "description": "Warm, sculptural lamps selected for desks, shelves, bedside tables, and quiet corners.",
         "primary_cta_label": "Shop lighting",
         "primary_cta_link": "shopify://collections/all",
         "secondary_cta_label": "View collections",
         "secondary_cta_link": "/collections",
-        "corner_value": "New drops",
-        "corner_label": "Online now",
+        "corner_value": "",
+        "corner_label": "",
         "image": "shopify://shop_images/888.png",
         "overlay_opacity": 0
       }

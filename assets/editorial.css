@@ -7568,3 +7568,217 @@ html[data-ed-mode] .ed-header__mode {
     max-width: 48vw !important;
   }
 }
+
+/* ============================================================
+   Header and hero correction
+   Removes the floating header/card look and the extra labels/blur
+   blocks that were sitting over the home hero image.
+   ============================================================ */
+
+html[data-ed-mode] .ed-header {
+  top: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--ed-line) !important;
+  border-radius: 0 !important;
+  background: color-mix(in srgb, var(--ed-bg) 96%, transparent) !important;
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--ed-fg) 8%, transparent) !important;
+  overflow: hidden !important;
+}
+
+html[data-ed-mode] .ed-header__announce {
+  min-height: 34px !important;
+  padding: 8px 18px !important;
+  background: var(--ed-fg) !important;
+  color: var(--ed-bg) !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--ed-bg) 14%, transparent) !important;
+}
+
+html[data-ed-mode] .ed-header__announce-track {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 18px !important;
+}
+
+html[data-ed-mode] .ed-header__announce-item {
+  min-height: 20px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: inherit !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.08em !important;
+}
+
+html[data-ed-mode] .ed-header__bar {
+  min-height: 72px !important;
+  padding: 0 clamp(18px, 4vw, 72px) !important;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
+}
+
+html[data-ed-mode] .ed-header__nav {
+  border: 0 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  gap: 4px !important;
+}
+
+html[data-ed-mode] .ed-header__nav-link {
+  min-height: 38px !important;
+  padding: 0 13px !important;
+  border-radius: 10px !important;
+  color: var(--ed-fg) !important;
+  background: transparent !important;
+}
+
+html[data-ed-mode] .ed-header__nav-link:hover,
+html[data-ed-mode] .ed-header__nav-link.is-active {
+  background: color-mix(in srgb, var(--ed-fg) 8%, transparent) !important;
+  color: var(--ed-fg) !important;
+}
+
+html[data-ed-mode] .ed-header__logo {
+  color: var(--ed-fg) !important;
+  background: transparent !important;
+}
+
+html[data-ed-mode] :where(.ed-header__icon, .ed-header__menu-btn, .ed-header__cart, .ed-header__mode) {
+  border-radius: 12px !important;
+  background: color-mix(in srgb, var(--ed-card) 70%, transparent) !important;
+}
+
+html[data-ed-mode] .ed-hero {
+  width: 100% !important;
+  max-width: none !important;
+  min-height: min(82svh, 820px) !important;
+  margin: 0 !important;
+  padding: clamp(74px, 8vw, 128px) clamp(20px, 5vw, 92px) clamp(46px, 6vw, 84px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+  align-items: flex-start !important;
+  gap: 22px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: #141210 !important;
+}
+
+html[data-ed-mode] .ed-hero__visual {
+  inset: 0 !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+html[data-ed-mode] .ed-hero__img {
+  opacity: 1 !important;
+  filter: saturate(1.04) contrast(1.02) brightness(0.86) !important;
+  transform: scale(1.01) !important;
+  animation: none !important;
+}
+
+html[data-ed-mode] .ed-hero__overlay {
+  background:
+    linear-gradient(90deg, rgba(10, 9, 8, 0.72) 0%, rgba(10, 9, 8, 0.42) 38%, rgba(10, 9, 8, 0.1) 72%),
+    linear-gradient(0deg, rgba(10, 9, 8, 0.72) 0%, rgba(10, 9, 8, 0.14) 52%, transparent 100%) !important;
+  animation: none !important;
+}
+
+html[data-ed-mode] :where(.ed-hero__lamp, .ed-hero__glow, .ed-hero__index, .ed-hero__corner, .ed-hero__scroll, .ed-hero__eyebrow) {
+  display: none !important;
+}
+
+html[data-ed-mode] .ed-hero__heading {
+  width: min(760px, 92vw) !important;
+  max-width: min(760px, 92vw) !important;
+  position: relative !important;
+  z-index: 2 !important;
+  align-self: flex-start !important;
+  animation: none !important;
+}
+
+html[data-ed-mode] .ed-hero__heading h1,
+html[data-ed-mode] .ed-hero__heading .ed-display {
+  max-width: 10.5ch !important;
+  margin: 0 !important;
+  color: #fff !important;
+  font-size: clamp(54px, 7.6vw, 124px) !important;
+  line-height: 0.92 !important;
+  text-shadow: 0 18px 58px rgba(0, 0, 0, 0.34) !important;
+  clip-path: none !important;
+  animation: none !important;
+}
+
+html[data-ed-mode] .ed-hero__heading h1 p {
+  margin: 0 !important;
+}
+
+html[data-ed-mode] .ed-hero__heading em {
+  color: #fff !important;
+  text-shadow: none !important;
+}
+
+html[data-ed-mode] .ed-hero__meta {
+  width: min(520px, 92vw) !important;
+  max-width: min(520px, 92vw) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  animation: none !important;
+}
+
+html[data-ed-mode] .ed-hero__meta::before {
+  display: none !important;
+}
+
+html[data-ed-mode] .ed-hero__desc {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+
+@media (max-width: 900px) {
+  html[data-ed-mode] .ed-header {
+    top: 0 !important;
+    width: 100% !important;
+    border-radius: 0 !important;
+  }
+
+  html[data-ed-mode] .ed-header__announce {
+    padding: 7px 12px !important;
+  }
+
+  html[data-ed-mode] .ed-header__announce-track {
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  html[data-ed-mode] .ed-header__announce-item {
+    font-size: 9px !important;
+  }
+
+  html[data-ed-mode] .ed-header__bar {
+    min-height: 60px !important;
+    padding: 8px 12px !important;
+    grid-template-columns: 48px minmax(0, 1fr) auto !important;
+  }
+
+  html[data-ed-mode] .ed-hero {
+    min-height: 76svh !important;
+    padding: 84px 18px 36px !important;
+  }
+
+  html[data-ed-mode] .ed-hero__heading h1,
+  html[data-ed-mode] .ed-hero__heading .ed-display {
+    font-size: clamp(44px, 14vw, 72px) !important;
+  }
+}
