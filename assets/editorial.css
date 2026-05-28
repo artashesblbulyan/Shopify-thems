@@ -8389,3 +8389,81 @@ html[data-ed-mode] .ed-header__cart-count {
   background: var(--ed-accent) !important;
   color: #0a0a0a !important;
 }
+
+/* ============================================================
+   Mobile fixes (authoritative — overrides earlier conflicts)
+   1. Mobile menu must sit above all sections (was trapped below hero)
+   2. Hero must flow cleanly in a single column without left overflow
+   ============================================================ */
+
+/* 1. Lift the whole header group so the fixed menu stacks above content */
+#header-group {
+  position: relative;
+  z-index: 100;
+}
+html[data-ed-mode] .ed-mobile-menu {
+  z-index: 100000 !important;
+}
+
+@media (max-width: 749px) {
+  /* 2. Hero: replace grid + absolute positioning with a simple column */
+  html[data-ed-mode] .ed-hero {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0 !important;
+    min-height: auto !important;
+    padding: 80px 18px 28px !important;
+    overflow: hidden !important;
+  }
+  html[data-ed-mode] .ed-hero__heading {
+    order: 1 !important;
+    position: static !important;
+    align-self: stretch !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 0 14px !important;
+  }
+  html[data-ed-mode] .ed-hero__heading h1 {
+    max-width: 100% !important;
+    font-size: clamp(40px, 12.5vw, 72px) !important;
+    line-height: 0.92 !important;
+    overflow-wrap: break-word !important;
+  }
+  html[data-ed-mode] .ed-hero__meta {
+    order: 2 !important;
+    position: static !important;
+    inset: auto !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 0 22px !important;
+    padding: 0 !important;
+  }
+  html[data-ed-mode] .ed-hero__desc {
+    max-width: 100% !important;
+  }
+  html[data-ed-mode] .ed-hero__cta {
+    width: 100% !important;
+  }
+  html[data-ed-mode] .ed-hero__cta .ed-btn {
+    flex: 1 1 auto !important;
+    justify-content: center !important;
+  }
+  html[data-ed-mode] .ed-hero__visual {
+    order: 3 !important;
+    grid-column: auto !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    min-height: 54vh !important;
+    margin: 0 !important;
+  }
+  html[data-ed-mode] .ed-hero__index,
+  html[data-ed-mode] .ed-hero__corner {
+    display: none !important;
+  }
+}
