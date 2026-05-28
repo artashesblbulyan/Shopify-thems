@@ -1,0 +1,153 @@
+(function () {
+  if (window.__edCartEditorialBound) return;
+  window.__edCartEditorialBound = true;
+
+  function closest(target, selector) {
+    return target instanceof Element ? target.closest(selector) : null;
+  }
+
+  function endpoint(rawUrl) {
+    var url = rawUrl || '/cart/change';
+    return url.indexOf('.js') === -1 ? url.replace(/\/$/, '') + '.js' : url;
+  }
+
+  function showCartToast(message) {
+    var toast = document.querySelector('[data-ed-cart-toast]');
+    if (!toast) return;
+    var text = toast.querySelector('[data-ed-cart-toast-message]');
+    if (text) text.textContent = message || 'Bag updated.';
+    window.clearTimeout(window.__edCartToastTimer);
+    toast.classList.add('is-visible');
+    window.__edCartToastTimer = window.setTimeout(function () {
+      toast.classList.remove('is-visible');
+    }, 2600);
+  }
+
+  function updateCartCount(count) {
+    document.querySelectorAll('[data-ed-cart-count]').forEach(function (el) {
+      el.textContent = count;
+    });
+  }
+
+  function setBusy(section, busy) {
+    if (!section) return;
+    section.classList.toggle('is-updating', busy);
+    section.dataset.edCartBusy = busy ? 'true' : 'false';
+    section.querySelectorAll('[data-ed-cart-qty-button], [data-ed-cart-qty-input]').forEach(function (el) {
+      el.disabled = busy;
+    });
+  }
+
+  function refreshCartSection(section) {
+    var note = section.querySelector('.ed-cart__note');
+    var hasNote = Boolean(note);
+    var noteValue = hasNote ? note.value : '';
+    var sectionId = section.dataset.sectionId || 'main';
+    var cartUrl = section.dataset.cartUrl || '/cart';
+    var separator = cartUrl.indexOf('?') === -1 ? '?' : '&';
+    var url = cartUrl + separator + 'section_id=' + encodeURIComponent(sectionId);
+
+    return fetch(url, {
+      credentials: 'same-origin',
+      headers: { Accept: 'text/html' },
+    })
+      .then(function (response) {
+        if (!response.ok) throw new Error('Cart section refresh failed.');
+        return response.text();
+      })
+      .then(function (html) {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var nextSection = doc.querySelector('[data-ed-cart-section]');
+        if (!nextSection) throw new Error('Cart section not found.');
+
+        var nextNote = nextSection.querySelector('.ed-cart__note');
+        if (nextNote && hasNote) nextNote.value = noteValue;
+
+        nextSection.classList.add('ed-section-in-view');
+        nextSection.querySelectorAll('.ed-reveal, .ed-reveal-stagger').forEach(function (el) {
+          el.classList.add('is-in');
+        });
+
+        section.replaceWith(nextSection);
+      });
+  }
+
+  function payloadFor(itemKey, line, quantity) {
+    var payload = { quantity: quantity };
+    if (itemKey) {
+      payload.id = itemKey;
+    } else {
+      payload.line = Number(line);
+    }
+    return payload;
+  }
+
+  function updateItem(section, itemKey, line, quantity, input) {
+    if (!section || section.dataset.edCartBusy === 'true') return;
+
+    var previousQuantity = input ? input.value : '';
+    var nextQuantity = Math.max(0, parseInt(quantity, 10) || 0);
+    if (input) input.value = nextQuantity;
+
+    setBusy(section, true);
+
+    fetch(endpoint(section.dataset.cartChangeUrl), {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payloadFor(itemKey, line, nextQuantity)),
+    })
+      .then(function (response) {
+        if (response.ok) return response.json();
+        return response.json().then(function (data) {
+          throw new Error(data.description || data.message || 'Could not update cart.');
+        });
+      })
+      .then(function (cart) {
+        updateCartCount(cart.item_count || 0);
+        return refreshCartSection(section);
+      })
+      .then(function () {
+        showCartToast('Bag updated.');
+      })
+      .catch(function (error) {
+        if (input) input.value = previousQuantity;
+        setBusy(section, false);
+        showCartToast(error.message || 'Could not update cart.');
+      });
+  }
+
+  document.addEventListener('click', function (event) {
+    var remove = closest(event.target, '[data-ed-cart-remove]');
+    if (remove) {
+      var removeSection = remove.closest('[data-ed-cart-section]');
+      event.preventDefault();
+      updateItem(removeSection, remove.dataset.key, remove.dataset.line, 0);
+      return;
+    }
+
+    var button = closest(event.target, '[data-ed-cart-qty-button]');
+    if (!button) return;
+
+    var section = button.closest('[data-ed-cart-section]');
+    var qty = button.closest('.ed-cart__qty');
+    var input = qty && qty.querySelector('[data-ed-cart-qty-input]');
+    if (!section || !input) return;
+
+    event.preventDefault();
+    var current = parseInt(input.value, 10) || 0;
+    var step = parseInt(button.dataset.edCartStep, 10) || 0;
+    updateItem(section, button.dataset.key, button.dataset.line, current + step, input);
+  });
+
+  document.addEventListener('change', function (event) {
+    var input = closest(event.target, '[data-ed-cart-qty-input]');
+    if (!input) return;
+
+    var section = input.closest('[data-ed-cart-section]');
+    updateItem(section, input.dataset.key, input.dataset.line, input.value, input);
+  });
+})();
