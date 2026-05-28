@@ -7985,7 +7985,7 @@ html[data-ed-mode] .ed-page-transition {
   overflow: hidden !important;
   background: transparent !important;
   transform: none !important;
-  transition: visibility 0s linear 0.42s !important;
+  transition: visibility 0s linear 0.54s !important;
   will-change: auto;
 }
 
@@ -8003,9 +8003,9 @@ html[data-ed-mode] .ed-page-transition::after {
 
 html[data-ed-mode] .ed-page-transition::before {
   inset: -12vh auto -12vh 0 !important;
-  width: 74vw !important;
+  width: 86vw !important;
   background: #0d0f14 !important;
-  transform: translate3d(-112%, 0, 0) skewX(-8deg) !important;
+  transform: translate3d(-72vw, 0, 0) skewX(-8deg) !important;
   transform-origin: right center !important;
 }
 
@@ -8034,40 +8034,34 @@ html.ed-page-leaving[data-ed-mode] .ed-page-transition::after {
 }
 
 html.ed-page-leaving[data-ed-mode] .ed-page-transition::before {
-  animation: ed-fast-black-sweep 0.36s var(--ed-ease) both !important;
+  animation: ed-fast-black-sweep 0.44s var(--ed-ease) both !important;
 }
 
 html.ed-page-leaving[data-ed-mode] .ed-page-transition::after {
-  animation: ed-fast-accent-sweep 0.36s var(--ed-ease) 0.025s both !important;
+  animation: ed-fast-accent-sweep 0.44s var(--ed-ease) 0.025s both !important;
 }
 
 @keyframes ed-fast-black-sweep {
   0% {
-    opacity: 0;
-    transform: translate3d(-112%, 0, 0) skewX(-8deg);
-  }
-  18% {
     opacity: 1;
+    transform: translate3d(-72vw, 0, 0) skewX(-8deg);
   }
-  58% {
+  52% {
     opacity: 1;
-    transform: translate3d(-10vw, 0, 0) skewX(-8deg);
+    transform: translate3d(-8vw, 0, 0) skewX(-8deg);
   }
   100% {
     opacity: 0;
-    transform: translate3d(112vw, 0, 0) skewX(-8deg);
+    transform: translate3d(116vw, 0, 0) skewX(-8deg);
   }
 }
 
 @keyframes ed-fast-accent-sweep {
   0% {
-    opacity: 0;
-    transform: translate3d(-120vw, 0, 0) skewX(-8deg);
-  }
-  16% {
     opacity: 1;
+    transform: translate3d(-62vw, 0, 0) skewX(-8deg);
   }
-  64% {
+  60% {
     opacity: 1;
     transform: translate3d(0, 0, 0) skewX(-8deg);
   }
