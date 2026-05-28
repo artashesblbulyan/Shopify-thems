@@ -2154,9 +2154,13 @@ html.ed-page-ready .ed-hero__visual {
    states, steadier cards, and smoother interactions across pages.
    ============================================================ */
 
-html[data-ed-mode],
+/* overflow-x: clip prevents horizontal overflow WITHOUT turning overflow-y
+   into auto (which made both html and body scroll = double scrollbar). */
+html[data-ed-mode] {
+  overflow-x: clip;
+}
 html[data-ed-mode] body {
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 html[data-ed-mode] *,
