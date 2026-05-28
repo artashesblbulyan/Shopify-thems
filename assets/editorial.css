@@ -8739,3 +8739,43 @@ html {
     justify-content: center;
   }
 }
+
+/* ============================================================
+   Product page — prevent mobile horizontal overflow
+   The grid second column used a fixed minimum (minmax(360px,...)),
+   and grid/flex children default to min-width:auto, so wide content
+   pushed the whole page past the viewport. Force a single column and
+   let every child shrink.
+   ============================================================ */
+@media (max-width: 1100px) {
+  html[data-ed-mode] .ed-product {
+    grid-template-columns: 1fr !important;
+  }
+  html[data-ed-mode] .ed-product,
+  html[data-ed-mode] .ed-product > *,
+  html[data-ed-mode] .ed-product__gallery,
+  html[data-ed-mode] .ed-product__gallery-main,
+  html[data-ed-mode] .ed-product__details,
+  html[data-ed-mode] .ed-product__form,
+  html[data-ed-mode] .ed-product__variants,
+  html[data-ed-mode] .ed-product__variant-group,
+  html[data-ed-mode] .ed-product__variant-options,
+  html[data-ed-mode] .ed-product__values,
+  html[data-ed-mode] .ed-product__price-row,
+  html[data-ed-mode] .ed-product__rte,
+  html[data-ed-mode] .ed-product__accordion,
+  html[data-ed-mode] .ed-product__accordion-content {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+  html[data-ed-mode] .ed-product__variant-options {
+    flex-wrap: wrap !important;
+  }
+  html[data-ed-mode] .ed-product__rte * {
+    max-width: 100% !important;
+    overflow-wrap: anywhere !important;
+  }
+  html[data-ed-mode] .ed-product__title {
+    overflow-wrap: anywhere !important;
+  }
+}
