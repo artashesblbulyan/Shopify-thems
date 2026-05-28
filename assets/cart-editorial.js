@@ -159,6 +159,13 @@
       });
   }
 
+  function maxFor(el) {
+    if (!el) return Infinity;
+    if (el.dataset.edUnlimited === 'true') return Infinity;
+    var max = parseInt(el.dataset.edMax, 10);
+    return isNaN(max) ? Infinity : max;
+  }
+
   document.addEventListener('click', function (event) {
     var remove = closest(event.target, '[data-ed-cart-remove]');
     if (remove) {
@@ -170,6 +177,10 @@
 
     var button = closest(event.target, '[data-ed-cart-qty-button]');
     if (!button) return;
+    if (button.disabled || button.getAttribute('aria-disabled') === 'true') {
+      event.preventDefault();
+      return;
+    }
 
     var section = button.closest('[data-ed-cart-section]');
     var qty = button.closest('.ed-cart__qty');
@@ -179,7 +190,15 @@
     event.preventDefault();
     var current = parseInt(input.value, 10) || 0;
     var step = parseInt(button.dataset.edCartStep, 10) || 0;
-    updateItem(section, button.dataset.key, button.dataset.line, current + step, input);
+    var next = current + step;
+    var max = maxFor(button);
+
+    if (step > 0 && next > max) {
+      showCartToast(max <= 0 ? 'This item is sold out.' : 'Only ' + max + ' available in stock.');
+      return;
+    }
+
+    updateItem(section, button.dataset.key, button.dataset.line, next, input);
   });
 
   document.addEventListener('change', function (event) {
@@ -187,6 +206,15 @@
     if (!input) return;
 
     var section = input.closest('[data-ed-cart-section]');
-    updateItem(section, input.dataset.key, input.dataset.line, input.value, input);
+    var requested = parseInt(input.value, 10) || 0;
+    var max = maxFor(input);
+
+    if (requested > max) {
+      showCartToast(max <= 0 ? 'This item is sold out.' : 'Only ' + max + ' available in stock.');
+      input.value = max;
+      requested = max;
+    }
+
+    updateItem(section, input.dataset.key, input.dataset.line, requested, input);
   });
 })();

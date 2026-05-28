@@ -5,6 +5,11 @@
   data-cart-url="{{ routes.cart_url }}"
   data-cart-change-url="{{ routes.cart_change_url | escape }}"
 >
+  <div class="ed-cart__toast" data-ed-cart-toast role="status" aria-live="polite">
+    <span class="ed-cart__toast-dot"></span>
+    <span data-ed-cart-toast-message></span>
+  </div>
+
   <header class="ed-cart__head ed-reveal-stagger">
     <div class="ed-cart__index">
       <span>01</span>
@@ -25,7 +30,33 @@
     <form action="{{ routes.cart_url }}" method="post" novalidate class="ed-cart__form" id="cart-form">
       <div class="ed-cart__items ed-reveal-stagger">
         {%- for item in cart.items -%}
-          <article class="ed-cart__item" data-ed-cart-line="{{ forloop.index }}">
+          {%- liquid
+            assign v = item.variant
+            assign tracked = false
+            if v.inventory_management != blank
+              assign tracked = true
+            endif
+            assign unlimited = false
+            if tracked == false or v.inventory_policy == 'continue'
+              assign unlimited = true
+            endif
+            assign max_qty = v.inventory_quantity
+            if max_qty < 0
+              assign max_qty = 0
+            endif
+            assign at_max = false
+            unless unlimited
+              if item.quantity >= max_qty
+                assign at_max = true
+              endif
+            endunless
+          -%}
+          <article
+            class="ed-cart__item{% unless unlimited %}{% if max_qty <= 0 %} is-soldout{% elsif at_max %} is-atmax{% endif %}{% endunless %}"
+            data-ed-cart-line="{{ forloop.index }}"
+            data-ed-unlimited="{% if unlimited %}true{% else %}false{% endif %}"
+            data-ed-max="{{ max_qty }}"
+          >
             <a class="ed-cart__item-img" href="{{ item.url }}">
               {%- if item.image -%}
                 {{ item.image | image_url: width: 320 | image_tag:
@@ -53,16 +84,40 @@
                     name="updates[{{ item.key }}]"
                     value="{{ item.quantity }}"
                     min="0"
+                    {% unless unlimited %}max="{{ max_qty }}"{% endunless %}
                     inputmode="numeric"
                     data-ed-cart-qty-input
                     data-line="{{ forloop.index }}"
                     data-key="{{ item.key | escape }}"
+                    data-ed-unlimited="{% if unlimited %}true{% else %}false{% endif %}"
+                    data-ed-max="{{ max_qty }}"
                     aria-label="Quantity for {{ item.product.title | escape }}"
                   >
-                  <button type="button" data-ed-cart-qty-button data-ed-cart-step="1" data-line="{{ forloop.index }}" data-key="{{ item.key | escape }}" aria-label="Increase quantity for {{ item.product.title | escape }}">+</button>
+                  <button
+                    type="button"
+                    data-ed-cart-qty-button
+                    data-ed-cart-step="1"
+                    data-line="{{ forloop.index }}"
+                    data-key="{{ item.key | escape }}"
+                    data-ed-unlimited="{% if unlimited %}true{% else %}false{% endif %}"
+                    data-ed-max="{{ max_qty }}"
+                    {% unless unlimited %}{% if at_max %}disabled aria-disabled="true"{% endif %}{% endunless %}
+                    aria-label="Increase quantity for {{ item.product.title | escape }}"
+                  >+</button>
                 </div>
                 <a href="{{ item.url_to_remove }}" class="ed-cart__item-remove" data-ed-cart-remove data-line="{{ forloop.index }}" data-key="{{ item.key | escape }}" aria-label="Remove {{ item.product.title | escape }}">Remove</a>
               </div>
+              {%- unless unlimited -%}
+                <p class="ed-cart__stock" data-ed-cart-stock>
+                  {%- if max_qty <= 0 -%}
+                    <span class="ed-cart__stock-dot ed-cart__stock-dot--out"></span>Sold out — remove to checkout
+                  {%- elsif at_max -%}
+                    <span class="ed-cart__stock-dot ed-cart__stock-dot--max"></span>Max available: only {{ max_qty }} in stock
+                  {%- elsif max_qty <= 5 -%}
+                    <span class="ed-cart__stock-dot ed-cart__stock-dot--low"></span>Only {{ max_qty }} left in stock
+                  {%- endif -%}
+                </p>
+              {%- endunless -%}
             </div>
           </article>
         {%- endfor -%}
@@ -266,6 +321,67 @@
   }
   .ed-cart__qty input::-webkit-outer-spin-button,
   .ed-cart__qty input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .ed-cart__qty button[disabled],
+  .ed-cart__qty button[aria-disabled="true"] {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+  .ed-cart__stock {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0 0;
+    font-family: var(--ed-font-body);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ed-muted);
+  }
+  .ed-cart__stock:empty { display: none; }
+  .ed-cart__toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    transform: translate(-50%, 12px);
+    z-index: 60;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    border-radius: var(--ed-pill);
+    background: var(--ed-fg);
+    color: var(--ed-bg);
+    font-family: var(--ed-font-body);
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    box-shadow: var(--ed-shadow-card);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s var(--ed-ease), transform 0.3s var(--ed-ease);
+  }
+  .ed-cart__toast.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  .ed-cart__toast-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ed-accent);
+    flex-shrink: 0;
+  }
+  .ed-cart__stock-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--ed-muted);
+  }
+  .ed-cart__stock-dot--low { background: var(--ed-accent); }
+  .ed-cart__stock-dot--max { background: var(--ed-accent); }
+  .ed-cart__stock-dot--out { background: #e0564f; }
+  .ed-cart__item.is-soldout .ed-cart__stock { color: #e0564f; }
+  .ed-cart__item.is-soldout .ed-cart__item-price { color: var(--ed-muted); }
   .ed-cart__item-remove {
     font-family: var(--ed-font-body);
     font-size: 12px;
