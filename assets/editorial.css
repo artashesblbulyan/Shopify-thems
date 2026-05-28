@@ -7997,14 +7997,32 @@ html[data-ed-mode] .ed-collection__grid {
 .ed-page-transition::after {
   content: "" !important;
   position: absolute !important;
-  inset: 0 !important;
   display: block !important;
   visibility: visible !important;
+  pointer-events: none !important;
+}
+
+.ed-page-transition::before {
+  inset: 0 !important;
   opacity: 0.72 !important;
   background:
     linear-gradient(110deg, transparent 0 42%, rgba(255, 255, 255, 0.11) 50%, transparent 58% 100%) !important;
   transform: translate3d(-72%, 0, 0) !important;
   animation: ed-transition-sheen 0.82s var(--ed-ease) both !important;
+}
+
+.ed-page-transition::after {
+  top: -18vh !important;
+  left: 61vw !important;
+  width: clamp(22px, 2.6vw, 48px) !important;
+  height: 136vh !important;
+  opacity: 1 !important;
+  background: var(--ed-accent) !important;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--ed-accent) 42%, transparent),
+    0 0 34px color-mix(in srgb, var(--ed-accent) 42%, transparent) !important;
+  transform: skewX(-10deg) !important;
+  animation: none !important;
 }
 
 html.ed-page-ready .ed-page-transition {
@@ -8016,8 +8034,7 @@ html.ed-page-leaving .ed-page-transition {
   transition-duration: 0.32s !important;
 }
 
-html.ed-page-leaving .ed-page-transition::before,
-html.ed-page-leaving .ed-page-transition::after {
+html.ed-page-leaving .ed-page-transition::before {
   animation-duration: 0.34s !important;
 }
 
