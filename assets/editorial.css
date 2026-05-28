@@ -8467,3 +8467,24 @@ html[data-ed-mode] .ed-mobile-menu {
     display: none !important;
   }
 }
+
+/* ============================================================
+   Collection filter chips — keep each chip on one line
+   (was wrapping text mid-chip and squishing on mobile)
+   ============================================================ */
+html[data-ed-mode] .ed-collection__tag {
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+@media (max-width: 749px) {
+  /* Hint that the chip row scrolls horizontally */
+  html[data-ed-mode] .ed-collection__tags {
+    scroll-snap-type: x proximity !important;
+    -webkit-overflow-scrolling: touch !important;
+    margin-inline: -2px !important;
+    padding-inline: 2px !important;
+  }
+  html[data-ed-mode] .ed-collection__tag {
+    scroll-snap-align: start !important;
+  }
+}
