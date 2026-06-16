@@ -8779,3 +8779,85 @@ html {
     overflow-wrap: anywhere !important;
   }
 }
+
+/* ============================================================
+   Product gallery — keep media switching visible at every size
+   ============================================================ */
+html[data-ed-mode] .ed-product__gallery {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: clamp(10px, 1.2vw, 14px) !important;
+  min-width: 0 !important;
+  align-self: start !important;
+}
+
+html[data-ed-mode] .ed-product__gallery-main {
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  position: relative !important;
+}
+
+html[data-ed-mode] .ed-product__media-main {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+}
+
+html[data-ed-mode] .ed-product__thumbs {
+  --ed-product-thumb-size: clamp(54px, 5.2vw, 82px);
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: clamp(8px, 1vw, 12px) !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: calc(var(--ed-product-thumb-size) + 12px) !important;
+  padding: 4px 2px 8px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scroll-snap-type: x proximity !important;
+  -webkit-overflow-scrolling: touch !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+html[data-ed-mode] .ed-product__thumb {
+  flex: 0 0 var(--ed-product-thumb-size) !important;
+  width: var(--ed-product-thumb-size) !important;
+  min-width: var(--ed-product-thumb-size) !important;
+  height: var(--ed-product-thumb-size) !important;
+  min-height: var(--ed-product-thumb-size) !important;
+  display: block !important;
+  aspect-ratio: 1 / 1 !important;
+  padding: 0 !important;
+  scroll-snap-align: start !important;
+  cursor: pointer !important;
+}
+
+html[data-ed-mode] .ed-product__thumb-img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+html[data-ed-mode] .ed-product__thumb.is-active,
+html[data-ed-mode] .ed-product__thumb[aria-current="true"] {
+  border-color: var(--ed-fg) !important;
+  box-shadow: 0 0 0 2px var(--ed-accent) !important;
+}
+
+@media (max-width: 1100px) {
+  html[data-ed-mode] .ed-product__gallery {
+    position: relative !important;
+    top: 0 !important;
+  }
+
+  html[data-ed-mode] .ed-product__thumbs {
+    --ed-product-thumb-size: clamp(56px, 16vw, 78px);
+    margin-bottom: 12px !important;
+  }
+}
