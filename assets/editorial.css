@@ -8807,11 +8807,14 @@ html[data-ed-mode] .ed-product__gallery-main {
 
 html[data-ed-mode] .ed-product__media-main {
   display: block !important;
-  width: auto !important;
-  height: auto !important;
+  width: 100% !important;
+  height: 100% !important;
   max-width: 100% !important;
   max-height: 100% !important;
   object-fit: contain !important;
+  object-position: center center !important;
+  box-sizing: border-box !important;
+  padding: clamp(10px, 1.4vw, 22px) !important;
 }
 
 html[data-ed-mode] .ed-product__thumbs {
