@@ -17,9 +17,7 @@
   <div class="ed-product__gallery ed-reveal">
     {%- if p.media.size > 0 -%}
       <div class="ed-product__gallery-main">
-        {%- if featured_media.media_type == 'video' or featured_media.media_type == 'external_video' -%}
-          {{ featured_media | media_tag: class: 'ed-product__media-main', autoplay: true, loop: true, muted: true, controls: false }}
-        {%- else -%}
+        {%- if featured_media.media_type == 'image' -%}
           {{ featured_media | image_url: width: 1600 | image_tag:
             class: 'ed-product__media-main',
             loading: 'eager',
@@ -27,19 +25,37 @@
             sizes: '(max-width: 900px) 100vw, 60vw',
             alt: featured_media.alt | default: p.title
           }}
+        {%- else -%}
+          {{ featured_media | media_tag: class: 'ed-product__media-main', autoplay: true, loop: true, muted: true, controls: true }}
         {%- endif -%}
       </div>
+      <div class="ed-product__media-templates" hidden>
+        {%- for m in p.media -%}
+          <template data-ed-media-template="{{ m.id }}">
+            {%- if m.media_type == 'image' -%}
+              {{ m | image_url: width: 1600 | image_tag:
+                class: 'ed-product__media-main',
+                loading: 'eager',
+                widths: '600, 900, 1200, 1600',
+                sizes: '(max-width: 900px) 100vw, 60vw',
+                alt: m.alt | default: p.title
+              }}
+            {%- else -%}
+              {{ m | media_tag: class: 'ed-product__media-main', autoplay: true, loop: true, muted: true, controls: true }}
+            {%- endif -%}
+          </template>
+        {%- endfor -%}
+      </div>
       {%- if p.media.size > 1 -%}
-        <div class="ed-product__thumbs">
-          {%- for m in p.media limit: 6 -%}
+        <div class="ed-product__thumbs" aria-label="Product media">
+          {%- for m in p.media -%}
             <button
               type="button"
               class="ed-product__thumb {% if m.id == featured_media.id %}is-active{% endif %}"
               data-ed-thumb
               data-ed-media-id="{{ m.id }}"
-              data-ed-main-src="{{ m.preview_image | image_url: width: 1600 }}"
-              data-ed-main-alt="{{ m.alt | default: p.title | escape }}"
-              aria-label="View image {{ forloop.index }}"
+              aria-label="View media {{ forloop.index }}"
+              {% if m.id == featured_media.id %}aria-current="true"{% endif %}
             >
               {{ m.preview_image | image_url: width: 240 | image_tag:
                 loading: 'lazy',
@@ -50,6 +66,16 @@
           {%- endfor -%}
         </div>
       {%- endif -%}
+    {%- elsif p.featured_image -%}
+      <div class="ed-product__gallery-main">
+        {{ p.featured_image | image_url: width: 1600 | image_tag:
+            class: 'ed-product__media-main',
+            loading: 'eager',
+            widths: '600, 900, 1200, 1600',
+            sizes: '(max-width: 900px) 100vw, 60vw',
+            alt: p.featured_image.alt | default: p.title
+          }}
+      </div>
     {%- else -%}
       <div class="ed-product__placeholder">No image</div>
     {%- endif -%}
@@ -552,30 +578,34 @@
       }
     }
 
-    function setMainMedia(section, thumb) {
-      var wrap = section.querySelector('.ed-product__gallery-main');
-      if (!wrap || !thumb) return;
-      var src = thumb.dataset.edMainSrc;
-      if (!src) return;
-      var main = wrap.querySelector('.ed-product__media-main');
-      if (!main || main.tagName !== 'IMG') {
-        wrap.innerHTML = '';
-        main = document.createElement('img');
-        main.className = 'ed-product__media-main';
-        main.loading = 'eager';
-        wrap.appendChild(main);
+    function mediaTemplate(section, mediaId) {
+      if (!section || !mediaId) return null;
+      var templates = section.querySelectorAll('[data-ed-media-template]');
+      for (var i = 0; i < templates.length; i++) {
+        if (templates[i].dataset.edMediaTemplate === String(mediaId)) return templates[i];
       }
-      main.src = src;
-      main.srcset = '';
-      main.alt = thumb.dataset.edMainAlt || '';
+      return null;
+    }
+
+    function setMainMedia(section, mediaId) {
+      var wrap = section.querySelector('.ed-product__gallery-main');
+      var template = mediaTemplate(section, mediaId);
+      if (!wrap || !template) return false;
+      wrap.innerHTML = template.innerHTML;
+      return true;
     }
 
     function setActiveMedia(section, mediaId) {
       var thumb = section.querySelector('[data-ed-media-id="' + mediaId + '"]');
-      if (!thumb) return;
-      setMainMedia(section, thumb);
+      if (!thumb || !setMainMedia(section, mediaId)) return;
       section.querySelectorAll('[data-ed-thumb]').forEach(function (b) {
-        b.classList.toggle('is-active', b === thumb);
+        var isActive = b === thumb;
+        b.classList.toggle('is-active', isActive);
+        if (isActive) {
+          b.setAttribute('aria-current', 'true');
+        } else {
+          b.removeAttribute('aria-current');
+        }
       });
     }
 
@@ -597,10 +627,8 @@
       if (!btn) return;
       var section = btn.closest('.ed-product');
       if (!section) return;
-      setMainMedia(section, btn);
-      section.querySelectorAll('[data-ed-thumb]').forEach(function (b) {
-        b.classList.toggle('is-active', b === btn);
-      });
+      e.preventDefault();
+      setActiveMedia(section, btn.dataset.edMediaId);
     });
 
     document.addEventListener('toggle', function (e) {
