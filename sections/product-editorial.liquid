@@ -5,6 +5,7 @@
   endif
   assign current_variant = p.selected_or_first_available_variant
   assign featured_media = current_variant.featured_media | default: p.featured_media
+  assign media_fit_style = 'position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center center!important;box-sizing:border-box!important;padding:clamp(10px,1.4vw,22px)!important;'
 -%}
 
 <section class="ed-product ed-section">
@@ -23,7 +24,8 @@
             loading: 'eager',
             widths: '600, 900, 1200, 1600',
             sizes: '(max-width: 900px) 100vw, 60vw',
-            alt: featured_media.alt | default: p.title
+            alt: featured_media.alt | default: p.title,
+            style: media_fit_style
           }}
         {%- else -%}
           {{ featured_media | media_tag: class: 'ed-product__media-main', autoplay: true, loop: true, muted: true, controls: true }}
@@ -38,7 +40,8 @@
                 loading: 'eager',
                 widths: '600, 900, 1200, 1600',
                 sizes: '(max-width: 900px) 100vw, 60vw',
-                alt: m.alt | default: p.title
+                alt: m.alt | default: p.title,
+                style: media_fit_style
               }}
             {%- else -%}
               {{ m | media_tag: class: 'ed-product__media-main', autoplay: true, loop: true, muted: true, controls: true }}
@@ -75,7 +78,8 @@
             loading: 'eager',
             widths: '600, 900, 1200, 1600',
             sizes: '(max-width: 900px) 100vw, 60vw',
-            alt: p.featured_image.alt | default: p.title
+            alt: p.featured_image.alt | default: p.title,
+            style: media_fit_style
           }}
       </div>
     {%- else -%}
@@ -630,6 +634,7 @@
       img.loading = 'eager';
       img.src = src;
       img.alt = thumb.dataset.edMainAlt || '';
+      img.style.cssText = 'position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center center!important;box-sizing:border-box!important;padding:clamp(10px,1.4vw,22px)!important;';
       wrap.appendChild(img);
       return true;
     }
