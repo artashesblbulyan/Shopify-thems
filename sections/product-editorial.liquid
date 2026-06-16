@@ -17,18 +17,28 @@
 
   <div class="ed-product__gallery ed-reveal">
     {%- if p.media.size > 0 -%}
-      <div class="ed-product__gallery-main">
-        {%- if featured_media.media_type == 'image' -%}
-          {{ featured_media | image_url: width: 1600 | image_tag:
-            class: 'ed-product__media-main',
-            loading: 'eager',
-            widths: '600, 900, 1200, 1600',
-            sizes: '(max-width: 900px) 100vw, 60vw',
-            alt: featured_media.alt | default: p.title,
-            style: media_fit_style
-          }}
-        {%- else -%}
-          {{ featured_media | media_tag: class: 'ed-product__media-main', autoplay: true, loop: true, muted: true, controls: true }}
+      <div class="ed-product__gallery-window">
+        <div class="ed-product__gallery-main">
+          {%- if featured_media.media_type == 'image' -%}
+            {{ featured_media | image_url: width: 1600 | image_tag:
+              class: 'ed-product__media-main',
+              loading: 'eager',
+              widths: '600, 900, 1200, 1600',
+              sizes: '(max-width: 900px) 100vw, 60vw',
+              alt: featured_media.alt | default: p.title,
+              style: media_fit_style
+            }}
+          {%- else -%}
+            {{ featured_media | media_tag: class: 'ed-product__media-main', autoplay: true, loop: true, muted: true, controls: true }}
+          {%- endif -%}
+        </div>
+        {%- if p.media.size > 1 -%}
+          <button type="button" class="ed-product__gallery-nav ed-product__gallery-nav--prev" data-ed-media-nav="-1" aria-label="Previous product image">
+            <span aria-hidden="true">&lsaquo;</span>
+          </button>
+          <button type="button" class="ed-product__gallery-nav ed-product__gallery-nav--next" data-ed-media-nav="1" aria-label="Next product image">
+            <span aria-hidden="true">&rsaquo;</span>
+          </button>
         {%- endif -%}
       </div>
       <div class="ed-product__media-templates" hidden>
@@ -72,15 +82,17 @@
         </div>
       {%- endif -%}
     {%- elsif p.featured_image -%}
-      <div class="ed-product__gallery-main">
-        {{ p.featured_image | image_url: width: 1600 | image_tag:
-            class: 'ed-product__media-main',
-            loading: 'eager',
-            widths: '600, 900, 1200, 1600',
-            sizes: '(max-width: 900px) 100vw, 60vw',
-            alt: p.featured_image.alt | default: p.title,
-            style: media_fit_style
-          }}
+      <div class="ed-product__gallery-window">
+        <div class="ed-product__gallery-main">
+          {{ p.featured_image | image_url: width: 1600 | image_tag:
+              class: 'ed-product__media-main',
+              loading: 'eager',
+              widths: '600, 900, 1200, 1600',
+              sizes: '(max-width: 900px) 100vw, 60vw',
+              alt: p.featured_image.alt | default: p.title,
+              style: media_fit_style
+            }}
+        </div>
       </div>
     {%- else -%}
       <div class="ed-product__placeholder">No image</div>
@@ -230,6 +242,9 @@
     flex-direction: column;
     gap: 12px;
   }
+  .ed-product__gallery-window {
+    position: relative;
+  }
   .ed-product__gallery-main {
     border-radius: var(--ed-radius-card);
     overflow: hidden;
@@ -253,6 +268,40 @@
     object-position: center center;
     box-sizing: border-box;
     padding: clamp(10px, 1.4vw, 22px);
+  }
+  .ed-product__gallery-nav {
+    position: absolute;
+    top: 50%;
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border: 1px solid var(--ed-line);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--ed-card) 86%, transparent);
+    color: var(--ed-fg);
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: background 0.25s var(--ed-ease), color 0.25s var(--ed-ease), border-color 0.25s var(--ed-ease), transform 0.25s var(--ed-ease);
+    backdrop-filter: blur(14px);
+  }
+  .ed-product__gallery-nav--prev { left: clamp(10px, 1.2vw, 18px); }
+  .ed-product__gallery-nav--next { right: clamp(10px, 1.2vw, 18px); }
+  .ed-product__gallery-nav span {
+    display: block;
+    font-size: 32px;
+    line-height: 1;
+    transform: translateY(-2px);
+  }
+  .ed-product__gallery-nav:hover {
+    background: var(--ed-fg);
+    border-color: var(--ed-fg);
+    color: var(--ed-bg);
+  }
+  .ed-product__gallery-nav:focus-visible {
+    outline: 2px solid var(--ed-accent);
+    outline-offset: 3px;
   }
   .ed-product__thumbs {
     display: grid;
@@ -545,6 +594,10 @@
     .ed-product__title { font-size: clamp(32px, 8vw, 48px); }
   }
   @media (max-width: 720px) {
+    .ed-product__gallery-nav {
+      width: 42px;
+      height: 42px;
+    }
     .ed-product__gallery-main {
       aspect-ratio: 1 / 1;
       height: auto;
@@ -666,6 +719,36 @@
       });
     }
 
+    function getMediaThumbs(section) {
+      return Array.prototype.slice.call(section.querySelectorAll('[data-ed-thumb]'));
+    }
+
+    function activeMediaIndex(thumbs) {
+      for (var i = 0; i < thumbs.length; i++) {
+        if (thumbs[i].getAttribute('aria-current') === 'true' || thumbs[i].classList.contains('is-active')) return i;
+      }
+      return 0;
+    }
+
+    function scrollThumbIntoView(thumb) {
+      if (!thumb || !thumb.scrollIntoView) return;
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      thumb.scrollIntoView({
+        block: 'nearest',
+        inline: 'center',
+        behavior: reduceMotion ? 'auto' : 'smooth'
+      });
+    }
+
+    function stepActiveMedia(section, step) {
+      var thumbs = getMediaThumbs(section);
+      if (!thumbs.length) return;
+      var nextIndex = (activeMediaIndex(thumbs) + step + thumbs.length) % thumbs.length;
+      var nextThumb = thumbs[nextIndex];
+      setActiveMedia(section, nextThumb.dataset.edMediaId);
+      scrollThumbIntoView(nextThumb);
+    }
+
     document.addEventListener('change', function (e) {
       var input = e.target.closest('.ed-product__variant input[type="radio"]');
       if (!input) return;
@@ -680,6 +763,15 @@
 
     // Thumb click -> swap main image
     document.addEventListener('click', function (e) {
+      var nav = e.target.closest('[data-ed-media-nav]');
+      if (nav) {
+        var navSection = nav.closest('.ed-product');
+        if (!navSection) return;
+        e.preventDefault();
+        stepActiveMedia(navSection, parseInt(nav.dataset.edMediaNav, 10) || 1);
+        return;
+      }
+
       var btn = e.target.closest('[data-ed-thumb]');
       if (!btn) return;
       var section = btn.closest('.ed-product');

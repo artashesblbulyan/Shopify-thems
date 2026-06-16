@@ -8754,6 +8754,7 @@ html {
   html[data-ed-mode] .ed-product,
   html[data-ed-mode] .ed-product > *,
   html[data-ed-mode] .ed-product__gallery,
+  html[data-ed-mode] .ed-product__gallery-window,
   html[data-ed-mode] .ed-product__gallery-main,
   html[data-ed-mode] .ed-product__details,
   html[data-ed-mode] .ed-product__form,
@@ -8793,6 +8794,12 @@ html[data-ed-mode] .ed-product__gallery {
   align-self: start !important;
 }
 
+html[data-ed-mode] .ed-product__gallery-window {
+  position: relative !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
 html[data-ed-mode] .ed-product__gallery-main {
   width: 100% !important;
   min-width: 0 !important;
@@ -8817,6 +8824,50 @@ html[data-ed-mode] .ed-product__media-main {
   object-position: center center !important;
   box-sizing: border-box !important;
   padding: clamp(10px, 1.4vw, 22px) !important;
+}
+
+html[data-ed-mode] .ed-product__gallery-nav {
+  position: absolute !important;
+  top: 50% !important;
+  z-index: 3 !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 46px !important;
+  height: 46px !important;
+  border: 1px solid var(--ed-line) !important;
+  border-radius: 50% !important;
+  background: color-mix(in srgb, var(--ed-card) 86%, transparent) !important;
+  color: var(--ed-fg) !important;
+  cursor: pointer !important;
+  transform: translateY(-50%) !important;
+  transition: background 0.25s var(--ed-ease), color 0.25s var(--ed-ease), border-color 0.25s var(--ed-ease), transform 0.25s var(--ed-ease) !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+html[data-ed-mode] .ed-product__gallery-nav--prev {
+  left: clamp(10px, 1.2vw, 18px) !important;
+}
+
+html[data-ed-mode] .ed-product__gallery-nav--next {
+  right: clamp(10px, 1.2vw, 18px) !important;
+}
+
+html[data-ed-mode] .ed-product__gallery-nav span {
+  display: block !important;
+  font-size: 32px !important;
+  line-height: 1 !important;
+  transform: translateY(-2px) !important;
+}
+
+html[data-ed-mode] .ed-product__gallery-nav:hover {
+  background: var(--ed-fg) !important;
+  border-color: var(--ed-fg) !important;
+  color: var(--ed-bg) !important;
+}
+
+html[data-ed-mode] .ed-product__gallery-nav:focus-visible {
+  outline: 2px solid var(--ed-accent) !important;
+  outline-offset: 3px !important;
 }
 
 @media (min-width: 1101px) {
@@ -8891,6 +8942,11 @@ html[data-ed-mode] .ed-product__thumb[aria-current="true"] {
 }
 
 @media (max-width: 720px) {
+  html[data-ed-mode] .ed-product__gallery-nav {
+    width: 42px !important;
+    height: 42px !important;
+  }
+
   html[data-ed-mode] .ed-product__gallery-main {
     height: auto !important;
     aspect-ratio: 1 / 1 !important;
