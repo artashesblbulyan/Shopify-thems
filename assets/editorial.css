@@ -8784,6 +8784,8 @@ html {
    Product gallery — keep media switching visible at every size
    ============================================================ */
 html[data-ed-mode] .ed-product__gallery {
+  position: relative !important;
+  top: auto !important;
   display: flex !important;
   flex-direction: column !important;
   gap: clamp(10px, 1.2vw, 14px) !important;
