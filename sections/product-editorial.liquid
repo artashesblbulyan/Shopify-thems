@@ -231,7 +231,6 @@
     gap: 12px;
   }
   .ed-product__gallery-main {
-    --ed-product-media-zoom: 1.35;
     border-radius: var(--ed-radius-card);
     overflow: hidden;
     aspect-ratio: 1 / 1;
@@ -254,8 +253,6 @@
     object-position: center center;
     box-sizing: border-box;
     padding: clamp(10px, 1.4vw, 22px);
-    transform: scale(var(--ed-product-media-zoom));
-    transform-origin: center 54%;
   }
   .ed-product__thumbs {
     display: grid;
@@ -529,9 +526,9 @@
 
   @media (min-width: 1101px) {
     .ed-product {
-      grid-template-columns: minmax(0, 600px) minmax(420px, 520px);
+      grid-template-columns: minmax(0, 760px) minmax(420px, 520px);
       justify-content: center;
-      gap: clamp(32px, 4vw, 64px);
+      gap: clamp(32px, 3vw, 56px);
     }
   }
 
