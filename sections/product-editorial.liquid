@@ -231,6 +231,7 @@
     gap: 12px;
   }
   .ed-product__gallery-main {
+    --ed-product-media-zoom: 1.35;
     border-radius: var(--ed-radius-card);
     overflow: hidden;
     aspect-ratio: 1 / 1;
@@ -253,6 +254,8 @@
     object-position: center center;
     box-sizing: border-box;
     padding: clamp(10px, 1.4vw, 22px);
+    transform: scale(var(--ed-product-media-zoom));
+    transform-origin: center 54%;
   }
   .ed-product__thumbs {
     display: grid;
