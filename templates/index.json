@@ -99,13 +99,13 @@
       "settings": {
         "index_number": "06",
         "index_label": "Details",
-        "heading": "<p>Easy to choose,<br><em>easy to live with.</em></p>",
+        "heading": "<p>Easy to choose,<br/><em>easy to live with.</em></p>",
         "quote": "A tighter catalog keeps the decision simple: clear categories, useful details, and pieces that feel calm once they are home.",
         "cta_label": "Shop favorites",
         "cta_link": "shopify://collections/all",
         "meta_left": "Simple checkout",
         "meta_right": "Support included",
-        "image": "shopify://shop_images/10-1.jpg",
+        "image": "shopify://shop_images/ChatGPTImage17_.2026_._22_38_10_1.png",
         "badge": "Easy pick",
         "reverse": true
       }
