@@ -22,7 +22,24 @@
         "words": "New arrivals, Table lamps, Pendant lighting, Night lights",
         "speed": 42
       }
+    },
+    "bestsellers_editorial_dQWQmR": {
+      "type": "bestsellers-editorial",
+      "name": "Bestsellers - Editorial",
+      "settings": {
+        "eyebrow": "Bestsellers",
+        "heading": "<p>Shop our<br><em>best sellers.</em></p>",
+        "description": "A focused edit of the pieces shoppers reach for first.",
+        "view_all_label": "View all products",
+        "view_all_link": "",
+        "collection": "",
+        "product_limit": 8
+      }
     }
   },
-  "order": ["main", "marquee"]
+  "order": [
+    "main",
+    "marquee",
+    "bestsellers_editorial_dQWQmR"
+  ]
 }
