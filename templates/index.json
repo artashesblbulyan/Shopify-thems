@@ -67,13 +67,13 @@
       "settings": {
         "index_number": "04",
         "index_label": "Room mood",
-        "heading": "<p>Make the room<br><em>feel finished.</em></p>",
+        "heading": "<p>Make the room<br/><em>feel finished.</em></p>",
         "quote": "Start with the feeling you want: focused, calm, warm, or sculptural. Then choose the shape and scale that lets the room breathe.",
         "cta_label": "Explore lighting",
         "cta_link": "shopify://collections/all",
         "meta_left": "Warm room edits",
         "meta_right": "Curated online",
-        "image": "shopify://shop_images/9.2.jpg",
+        "image": "shopify://shop_images/ChatGPTImage29_2026_._00_47_32_2.png",
         "badge": "Mood maker",
         "reverse": false
       }
