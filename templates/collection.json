@@ -9,6 +9,22 @@
  */
 {
   "sections": {
+    "editorial_split_rDfix7": {
+      "type": "editorial-split",
+      "name": "Editorial split",
+      "settings": {
+        "index_number": "03",
+        "index_label": "The story",
+        "heading": "<p>Your unique <em>decor.</em></p>",
+        "quote": "A good lamp should feel useful in the day and calm at night.",
+        "cta_label": "Shop now",
+        "cta_link": "",
+        "meta_left": "Studio edit",
+        "meta_right": "Estd. 2024",
+        "badge": "Featured",
+        "reverse": false
+      }
+    },
     "main": {
       "type": "collection-editorial",
       "settings": {
@@ -22,24 +38,11 @@
         "words": "New arrivals, Table lamps, Pendant lighting, Night lights",
         "speed": 42
       }
-    },
-    "bestsellers_editorial_dQWQmR": {
-      "type": "bestsellers-editorial",
-      "name": "Bestsellers - Editorial",
-      "settings": {
-        "eyebrow": "Bestsellers",
-        "heading": "<p>Shop our<br><em>best sellers.</em></p>",
-        "description": "A focused edit of the pieces shoppers reach for first.",
-        "view_all_label": "View all products",
-        "view_all_link": "",
-        "collection": "",
-        "product_limit": 8
-      }
     }
   },
   "order": [
+    "editorial_split_rDfix7",
     "main",
-    "marquee",
-    "bestsellers_editorial_dQWQmR"
+    "marquee"
   ]
 }
