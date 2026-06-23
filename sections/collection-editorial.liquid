@@ -87,14 +87,14 @@
       {%- elsif fallback_category_items_string != blank -%}
         <span class="ed-eyebrow">Categories</span>
         <div class="ed-collection__tags">
-          <a href="{{ coll.url }}" class="ed-collection__tag ed-collection__tag--all is-active">
+          <a href="{{ coll.url }}" class="ed-collection__tag ed-collection__tag--all is-active" data-ed-category-filter-value="all">
             <span>All</span>
           </a>
           {%- assign fallback_category_items = fallback_category_items_string | split: '||' -%}
           {%- for fallback_category_item in fallback_category_items limit: 6 -%}
             {%- if fallback_category_item != blank -%}
               {%- assign fallback_category_parts = fallback_category_item | split: '::' -%}
-              <a href="{{ coll.url }}?filter.p.t.category={{ fallback_category_parts[0] | url_param_escape }}" class="ed-collection__tag">
+              <a href="{{ coll.url }}?filter.p.t.category={{ fallback_category_parts[0] | url_param_escape }}" class="ed-collection__tag" data-ed-category-filter-value="{{ fallback_category_parts[0] | escape }}">
                 <span>{{ fallback_category_parts[1] }}</span>
               </a>
             {%- endif -%}
@@ -182,16 +182,17 @@
           <div class="ed-mfilter-group ed-mfilter-group--filter">
             <div class="ed-mfilter-group__label">Categories</div>
             <div class="ed-mfilter-options">
-              <a href="{{ coll.url }}" class="ed-mfilter-opt is-active">
+              <a href="{{ coll.url }}" class="ed-mfilter-opt is-active" data-ed-category-filter-value="all">
                 <span>All products</span>
-                <span class="ed-mfilter-opt__check" aria-hidden="true">&check;</span>
+                <span class="ed-mfilter-opt__check" data-ed-category-filter-check aria-hidden="true">&check;</span>
               </a>
               {%- assign fallback_category_items = fallback_category_items_string | split: '||' -%}
               {%- for fallback_category_item in fallback_category_items limit: 16 -%}
                 {%- if fallback_category_item != blank -%}
                   {%- assign fallback_category_parts = fallback_category_item | split: '::' -%}
-                  <a href="{{ coll.url }}?filter.p.t.category={{ fallback_category_parts[0] | url_param_escape }}" class="ed-mfilter-opt">
+                  <a href="{{ coll.url }}?filter.p.t.category={{ fallback_category_parts[0] | url_param_escape }}" class="ed-mfilter-opt" data-ed-category-filter-value="{{ fallback_category_parts[0] | escape }}">
                     <span>{{ fallback_category_parts[1] }}</span>
+                    <span class="ed-mfilter-opt__check" data-ed-category-filter-check aria-hidden="true" hidden>&check;</span>
                   </a>
                 {%- endif -%}
               {%- endfor -%}
@@ -224,7 +225,8 @@
       {%- for product in coll.products -%}
         {%- assign idx = forloop.index | prepend: '0' | slice: -2, 2 -%}
         {%- assign hover_image = product.images[1] -%}
-        <a class="ed-collection__card{% if hover_image != blank %} ed-has-hover-image{% endif %}" href="{{ product.url }}">
+        {%- assign product_category_id = product.category.id | default: product.category.gid -%}
+        <a class="ed-collection__card{% if hover_image != blank %} ed-has-hover-image{% endif %}" href="{{ product.url }}"{% if product_category_id != blank %} data-ed-category-id="{{ product_category_id | escape }}"{% endif %}>
           <div class="ed-collection__card-img">
             {%- if product.featured_image -%}
               {{ product.featured_image | image_url: width: 900 | image_tag:
@@ -260,6 +262,8 @@
       {%- endfor -%}
     </div>
 
+    <p class="ed-collection__empty" data-ed-category-filter-empty hidden>No products found in this category.</p>
+
     {%- if paginate.pages > 1 -%}
       <nav class="ed-collection__pagination" aria-label="Pagination">
         {%- if paginate.previous -%}
@@ -279,6 +283,49 @@
 </section>
 
 {%- endpaginate -%}
+
+{% javascript %}
+  function applyFallbackCategoryFilter() {
+    var cards = document.querySelectorAll('.ed-collection__card[data-ed-category-id]');
+    var controls = document.querySelectorAll('[data-ed-category-filter-value]');
+    if (!cards.length || !controls.length) return;
+
+    var params = new URLSearchParams(window.location.search);
+    var selected = params
+      .getAll('filter.p.t.category')
+      .flatMap(function (value) {
+        return value.split('__');
+      })
+      .filter(Boolean);
+    var selectedSet = new Set(selected);
+    var hasSelection = selectedSet.size > 0;
+    var visibleCount = 0;
+
+    cards.forEach(function (card) {
+      var isVisible = !hasSelection || selectedSet.has(card.dataset.edCategoryId);
+      card.hidden = !isVisible;
+      if (isVisible) visibleCount += 1;
+    });
+
+    controls.forEach(function (control) {
+      var value = control.dataset.edCategoryFilterValue;
+      var isActive = value === 'all' ? !hasSelection : selectedSet.has(value);
+      control.classList.toggle('is-active', isActive);
+
+      var check = control.querySelector('[data-ed-category-filter-check]');
+      if (check) check.hidden = !isActive;
+    });
+
+    var empty = document.querySelector('[data-ed-category-filter-empty]');
+    if (empty) empty.hidden = !hasSelection || visibleCount > 0;
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyFallbackCategoryFilter);
+  } else {
+    applyFallbackCategoryFilter();
+  }
+{% endjavascript %}
 
 {% stylesheet %}
   .ed-collection {
