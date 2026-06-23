@@ -21,19 +21,17 @@
   {%- liquid
     assign fallback_category_ids = ''
     assign fallback_category_items_string = ''
-    if category_filter == blank
-      for product in coll.products
-        assign product_category = product.category
-        if product_category != blank and product_category.name != blank
-          assign product_category_id = product_category.id | default: product_category.gid
-          assign product_category_token = '|' | append: product_category_id | append: '|'
-          unless fallback_category_ids contains product_category_token
-            assign fallback_category_ids = fallback_category_ids | append: product_category_token
-            assign fallback_category_items_string = fallback_category_items_string | append: product_category_id | append: '::' | append: product_category.name | append: '||'
-          endunless
-        endif
-      endfor
-    endif
+    for product in coll.products
+      assign product_category = product.category
+      if product_category != blank and product_category.name != blank
+        assign product_category_id = product_category.id | default: product_category.gid
+        assign product_category_token = '|' | append: product_category_id | append: '|'
+        unless fallback_category_ids contains product_category_token
+          assign fallback_category_ids = fallback_category_ids | append: product_category_token
+          assign fallback_category_items_string = fallback_category_items_string | append: product_category_id | append: '::' | append: product_category.name | append: '||'
+        endunless
+      endif
+    endfor
   -%}
 
   {%- capture active_filter_params -%}
@@ -65,26 +63,7 @@
 
   <div class="ed-collection__toolbar">
     <div class="ed-collection__filter-summary">
-      {%- if category_filter != blank and category_filter.values.size > 0 -%}
-        <span class="ed-eyebrow">Filter</span>
-        <div class="ed-collection__tags">
-          <a href="{{ category_filter.url_to_remove }}" class="ed-collection__tag ed-collection__tag--all{% unless category_filter.active_values.size > 0 %} is-active{% endunless %}" data-ed-category-filter-value="all">
-            <span>All</span>
-          </a>
-          {%- for value in category_filter.values limit: 6 -%}
-            {%- if value.active -%}
-              <a href="{{ value.url_to_remove }}" class="ed-collection__tag is-active" data-ed-category-filter-value="{{ value.value | escape }}">
-                <span>{{ value.label }}</span>
-                <span class="ed-collection__tag-close" aria-hidden="true">&times;</span>
-              </a>
-            {%- else -%}
-              <a href="{{ value.url_to_add }}" class="ed-collection__tag" data-ed-category-filter-value="{{ value.value | escape }}">
-                <span>{{ value.label }}</span>
-              </a>
-            {%- endif -%}
-          {%- endfor -%}
-        </div>
-      {%- elsif fallback_category_items_string != blank -%}
+      {%- if fallback_category_items_string != blank -%}
         <span class="ed-eyebrow">Categories</span>
         <div class="ed-collection__tags">
           <a href="{{ coll.url }}" class="ed-collection__tag ed-collection__tag--all is-active" data-ed-category-filter-value="all">
@@ -94,7 +73,7 @@
           {%- for fallback_category_item in fallback_category_items limit: 6 -%}
             {%- if fallback_category_item != blank -%}
               {%- assign fallback_category_parts = fallback_category_item | split: '::' -%}
-              <a href="{{ coll.url }}?filter.p.t.category={{ fallback_category_parts[0] | url_param_escape }}" class="ed-collection__tag" data-ed-category-filter-value="{{ fallback_category_parts[0] | escape }}">
+              <a href="{{ coll.url }}?ed_category={{ fallback_category_parts[0] | url_param_escape }}" class="ed-collection__tag" data-ed-category-filter-value="{{ fallback_category_parts[0] | escape }}">
                 <span>{{ fallback_category_parts[1] }}</span>
               </a>
             {%- endif -%}
@@ -156,30 +135,7 @@
       </div>
 
       <div class="ed-mfilter-sheet__body">
-        {%- if category_filter != blank and category_filter.values.size > 0 -%}
-          <div class="ed-mfilter-group ed-mfilter-group--filter">
-            <div class="ed-mfilter-group__label">Category</div>
-            <div class="ed-mfilter-options">
-              <a href="{{ category_filter.url_to_remove }}" class="ed-mfilter-opt{% unless category_filter.active_values.size > 0 %} is-active{% endunless %}" data-ed-category-filter-value="all">
-                <span>All products</span>
-                <span class="ed-mfilter-opt__check" data-ed-category-filter-check aria-hidden="true"{% if category_filter.active_values.size > 0 %} hidden{% endif %}>&check;</span>
-              </a>
-              {%- for value in category_filter.values limit: 16 -%}
-                {%- if value.active -%}
-                  <a href="{{ value.url_to_remove }}" class="ed-mfilter-opt is-active" data-ed-category-filter-value="{{ value.value | escape }}">
-                    <span>{{ value.label }}</span>
-                    <span class="ed-mfilter-opt__check" data-ed-category-filter-check aria-hidden="true">&check;</span>
-                  </a>
-                {%- else -%}
-                  <a href="{{ value.url_to_add }}" class="ed-mfilter-opt" data-ed-category-filter-value="{{ value.value | escape }}">
-                    <span>{{ value.label }}</span>
-                    <span class="ed-mfilter-opt__check" data-ed-category-filter-check aria-hidden="true" hidden>&check;</span>
-                  </a>
-                {%- endif -%}
-              {%- endfor -%}
-            </div>
-          </div>
-        {%- elsif fallback_category_items_string != blank -%}
+        {%- if fallback_category_items_string != blank -%}
           <div class="ed-mfilter-group ed-mfilter-group--filter">
             <div class="ed-mfilter-group__label">Categories</div>
             <div class="ed-mfilter-options">
@@ -191,7 +147,7 @@
               {%- for fallback_category_item in fallback_category_items limit: 16 -%}
                 {%- if fallback_category_item != blank -%}
                   {%- assign fallback_category_parts = fallback_category_item | split: '::' -%}
-                  <a href="{{ coll.url }}?filter.p.t.category={{ fallback_category_parts[0] | url_param_escape }}" class="ed-mfilter-opt" data-ed-category-filter-value="{{ fallback_category_parts[0] | escape }}">
+                  <a href="{{ coll.url }}?ed_category={{ fallback_category_parts[0] | url_param_escape }}" class="ed-mfilter-opt" data-ed-category-filter-value="{{ fallback_category_parts[0] | escape }}">
                     <span>{{ fallback_category_parts[1] }}</span>
                     <span class="ed-mfilter-opt__check" data-ed-category-filter-check aria-hidden="true" hidden>&check;</span>
                   </a>
@@ -287,19 +243,11 @@
 {%- endpaginate -%}
 
 {% javascript %}
-  function applyFallbackCategoryFilter() {
+  function filterCollectionByCategory(selected) {
     var cards = document.querySelectorAll('.ed-collection__card[data-ed-category-id], .ed-collection__card[data-ed-category-gid]');
     var controls = document.querySelectorAll('[data-ed-category-filter-value]');
     if (!cards.length || !controls.length) return;
 
-    var params = new URLSearchParams(window.location.search);
-    var selected = []
-      .concat(params.getAll('filter.p.t.category'))
-      .concat(params.getAll('filter.p.category'))
-      .flatMap(function (value) {
-        return value.split('__');
-      })
-      .filter(Boolean);
     var selectedSet = new Set(selected);
     var hasSelection = selectedSet.size > 0;
     var visibleCount = 0;
@@ -326,10 +274,70 @@
     if (empty) empty.hidden = !hasSelection || visibleCount > 0;
   }
 
+  function getSelectedCategoriesFromUrl() {
+    var params = new URLSearchParams(window.location.search);
+    var values = [];
+
+    ['ed_category', 'filter.p.t.category', 'filter.p.category'].forEach(function (name) {
+      params.getAll(name).forEach(function (value) {
+        value.split('__').forEach(function (part) {
+          if (part) values.push(part);
+        });
+      });
+    });
+
+    return values;
+  }
+
+  function writeSelectedCategoryToUrl(selected) {
+    if (!window.history || !window.history.pushState) return;
+
+    var url = new URL(window.location.href);
+    url.searchParams.delete('ed_category');
+    url.searchParams.delete('filter.p.t.category');
+    url.searchParams.delete('filter.p.category');
+
+    if (selected.length > 0) {
+      url.searchParams.set('ed_category', selected[0]);
+    }
+
+    window.history.pushState({ edCategory: selected }, '', url);
+  }
+
+  function bindCollectionCategoryFilters() {
+    var controls = document.querySelectorAll('[data-ed-category-filter-value]');
+    if (!controls.length) return;
+
+    controls.forEach(function (control) {
+      control.addEventListener('click', function (event) {
+        event.preventDefault();
+
+        var value = control.dataset.edCategoryFilterValue;
+        var selected = value && value !== 'all' ? [value] : [];
+
+        filterCollectionByCategory(selected);
+        writeSelectedCategoryToUrl(selected);
+
+        var sheet = document.querySelector('[data-ed-mfilter-sheet]');
+        if (sheet) {
+          sheet.removeAttribute('data-ed-open');
+          sheet.setAttribute('aria-hidden', 'true');
+          document.documentElement.style.overflow = '';
+        }
+      });
+    });
+
+    filterCollectionByCategory(getSelectedCategoriesFromUrl());
+
+    window.addEventListener('popstate', function () {
+      filterCollectionByCategory(getSelectedCategoriesFromUrl());
+    });
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', applyFallbackCategoryFilter);
+    document.addEventListener('DOMContentLoaded', bindCollectionCategoryFilters);
   } else {
-    applyFallbackCategoryFilter();
+    bindCollectionCategoryFilters();
   }
 {% endjavascript %}
 
