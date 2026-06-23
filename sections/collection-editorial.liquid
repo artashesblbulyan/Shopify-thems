@@ -71,7 +71,12 @@
             <span>All</span>
           </a>
           {%- for value in category_filter.values -%}
-            <a href="{% if value.active %}{{ value.url_to_remove }}{% else %}{{ value.url_to_add }}{% endif %}" class="ed-collection__tag{% if value.active %} is-active{% endif %}">
+            {%- if value.active -%}
+              {%- assign chip_href = value.url_to_remove -%}
+            {%- else -%}
+              {%- capture chip_href -%}{{ coll.url }}?{{ value.param_name }}={{ value.value | url_param_escape }}{%- if sort_by != blank and sort_by != coll.default_sort_by %}&sort_by={{ sort_by }}{% endif -%}{%- endcapture -%}
+            {%- endif -%}
+            <a href="{{ chip_href }}" class="ed-collection__tag{% if value.active %} is-active{% endif %}">
               <span>{{ value.label }}</span>
             </a>
           {%- endfor -%}
@@ -159,7 +164,12 @@
                 {%- if category_filter_active_count == 0 -%}<span class="ed-mfilter-opt__check" aria-hidden="true">&check;</span>{%- endif -%}
               </a>
               {%- for value in category_filter.values -%}
-                <a href="{% if value.active %}{{ value.url_to_remove }}{% else %}{{ value.url_to_add }}{% endif %}" class="ed-mfilter-opt{% if value.active %} is-active{% endif %}">
+                {%- if value.active -%}
+                  {%- assign chip_href = value.url_to_remove -%}
+                {%- else -%}
+                  {%- capture chip_href -%}{{ coll.url }}?{{ value.param_name }}={{ value.value | url_param_escape }}{%- if sort_by != blank and sort_by != coll.default_sort_by %}&sort_by={{ sort_by }}{% endif -%}{%- endcapture -%}
+                {%- endif -%}
+                <a href="{{ chip_href }}" class="ed-mfilter-opt{% if value.active %} is-active{% endif %}">
                   <span>{{ value.label }}</span>
                   {%- if value.active -%}<span class="ed-mfilter-opt__check" aria-hidden="true">&check;</span>{%- endif -%}
                 </a>
