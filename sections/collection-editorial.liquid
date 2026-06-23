@@ -4,9 +4,46 @@
     assign coll = collections | first
   endif
   assign sort_by = coll.sort_by | default: coll.default_sort_by
+  assign category_filter = null
+  for filter in coll.filters
+    if filter.param_name == 'filter.p.t.category'
+      assign category_filter = filter
+      break
+    endif
+  endfor
+  assign category_filter_active_count = 0
+  if category_filter != blank
+    assign category_filter_active_count = category_filter.active_values.size
+  endif
 -%}
 
 {%- paginate coll.products by 24 -%}
+  {%- liquid
+    assign fallback_category_ids = ''
+    assign fallback_category_items_string = ''
+    if category_filter == blank
+      for product in coll.products
+        assign product_category = product.category
+        if product_category != blank and product_category.name != blank
+          assign product_category_id = product_category.id | default: product_category.gid
+          assign product_category_token = '|' | append: product_category_id | append: '|'
+          unless fallback_category_ids contains product_category_token
+            assign fallback_category_ids = fallback_category_ids | append: product_category_token
+            assign fallback_category_items_string = fallback_category_items_string | append: product_category_id | append: '::' | append: product_category.name | append: '||'
+          endunless
+        endif
+      endfor
+    endif
+  -%}
+
+  {%- capture active_filter_params -%}
+    {%- if category_filter != blank -%}
+      {%- for value in category_filter.active_values -%}
+        {{ value.param_name }}={{ value.value | url_param_escape }}{%- unless forloop.last -%}&{%- endunless -%}
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endcapture -%}
+  {%- assign active_filter_params = active_filter_params | strip | strip_newlines -%}
 
 <section class="ed-collection ed-section">
   <header class="ed-collection__head ed-reveal-stagger">
@@ -28,22 +65,35 @@
 
   <div class="ed-collection__toolbar">
     <div class="ed-collection__filter-summary">
-      {%- if coll.all_tags.size > 0 -%}
+      {%- if category_filter != blank and category_filter.values.size > 0 -%}
         <span class="ed-eyebrow">Filter</span>
         <div class="ed-collection__tags">
-          <a href="{{ coll.url }}" class="ed-collection__tag ed-collection__tag--all{% unless current_tags.size > 0 %} is-active{% endunless %}">
+          <a href="{{ category_filter.url_to_remove }}" class="ed-collection__tag ed-collection__tag--all{% unless category_filter.active_values.size > 0 %} is-active{% endunless %}">
             <span>All</span>
           </a>
-          {%- for tag in coll.all_tags limit: 6 -%}
-            {%- if current_tags contains tag -%}
-              <a href="{{ coll.url }}" class="ed-collection__tag is-active">
-                <span>{{ tag }}</span>
+          {%- for value in category_filter.values limit: 6 -%}
+            {%- if value.active -%}
+              <a href="{{ value.url_to_remove }}" class="ed-collection__tag is-active">
+                <span>{{ value.label }}</span>
                 <span class="ed-collection__tag-close" aria-hidden="true">&times;</span>
               </a>
             {%- else -%}
-              <a href="{{ coll.url }}/{{ tag | handle }}" class="ed-collection__tag">
-                <span>{{ tag }}</span>
+              <a href="{{ value.url_to_add }}" class="ed-collection__tag">
+                <span>{{ value.label }}</span>
               </a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- elsif fallback_category_items_string != blank -%}
+        <span class="ed-eyebrow">Categories</span>
+        <div class="ed-collection__tags">
+          {%- assign fallback_category_items = fallback_category_items_string | split: '||' -%}
+          {%- for fallback_category_item in fallback_category_items limit: 6 -%}
+            {%- if fallback_category_item != blank -%}
+              {%- assign fallback_category_parts = fallback_category_item | split: '::' -%}
+              <span class="ed-collection__tag">
+                <span>{{ fallback_category_parts[1] }}</span>
+              </span>
             {%- endif -%}
           {%- endfor -%}
         </div>
@@ -51,6 +101,11 @@
     </div>
 
     <form class="ed-collection__sort" method="get">
+      {%- if category_filter != blank -%}
+        {%- for value in category_filter.active_values -%}
+          <input type="hidden" name="{{ value.param_name }}" value="{{ value.value | escape }}">
+        {%- endfor -%}
+      {%- endif -%}
       <label for="ed-sort-{{ section.id }}" class="ed-eyebrow">Sort</label>
       <div class="ed-collection__sort-control">
         <select id="ed-sort-{{ section.id }}" name="sort_by" onchange="this.form.submit()">
@@ -76,8 +131,8 @@
         <path d="M2 4h14M4.5 9h9M7 14h4" stroke-linecap="round"/>
       </svg>
       <span>Filter</span>
-      {%- if current_tags.size > 0 -%}
-        <span class="ed-mfilter-trigger__count">{{ current_tags.size }}</span>
+      {%- if category_filter_active_count > 0 -%}
+        <span class="ed-mfilter-trigger__count">{{ category_filter_active_count }}</span>
       {%- endif -%}
     </button>
     <button type="button" class="ed-mfilter-trigger" data-ed-mfilter-open="sort" aria-haspopup="dialog">
@@ -98,24 +153,39 @@
       </div>
 
       <div class="ed-mfilter-sheet__body">
-        {%- if coll.all_tags.size > 0 -%}
+        {%- if category_filter != blank and category_filter.values.size > 0 -%}
           <div class="ed-mfilter-group ed-mfilter-group--filter">
-            <div class="ed-mfilter-group__label">Filter</div>
+            <div class="ed-mfilter-group__label">Category</div>
             <div class="ed-mfilter-options">
-              <a href="{{ coll.url }}" class="ed-mfilter-opt{% unless current_tags.size > 0 %} is-active{% endunless %}">
+              <a href="{{ category_filter.url_to_remove }}" class="ed-mfilter-opt{% unless category_filter.active_values.size > 0 %} is-active{% endunless %}">
                 <span>All products</span>
-                {%- unless current_tags.size > 0 -%}<span class="ed-mfilter-opt__check" aria-hidden="true">&check;</span>{%- endunless -%}
+                {%- unless category_filter.active_values.size > 0 -%}<span class="ed-mfilter-opt__check" aria-hidden="true">&check;</span>{%- endunless -%}
               </a>
-              {%- for tag in coll.all_tags limit: 16 -%}
-                {%- if current_tags contains tag -%}
-                  <a href="{{ coll.url }}" class="ed-mfilter-opt is-active">
-                    <span>{{ tag }}</span>
+              {%- for value in category_filter.values limit: 16 -%}
+                {%- if value.active -%}
+                  <a href="{{ value.url_to_remove }}" class="ed-mfilter-opt is-active">
+                    <span>{{ value.label }}</span>
                     <span class="ed-mfilter-opt__check" aria-hidden="true">&check;</span>
                   </a>
                 {%- else -%}
-                  <a href="{{ coll.url }}/{{ tag | handle }}" class="ed-mfilter-opt">
-                    <span>{{ tag }}</span>
+                  <a href="{{ value.url_to_add }}" class="ed-mfilter-opt">
+                    <span>{{ value.label }}</span>
                   </a>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- elsif fallback_category_items_string != blank -%}
+          <div class="ed-mfilter-group ed-mfilter-group--filter">
+            <div class="ed-mfilter-group__label">Categories</div>
+            <div class="ed-mfilter-options">
+              {%- assign fallback_category_items = fallback_category_items_string | split: '||' -%}
+              {%- for fallback_category_item in fallback_category_items limit: 16 -%}
+                {%- if fallback_category_item != blank -%}
+                  {%- assign fallback_category_parts = fallback_category_item | split: '::' -%}
+                  <span class="ed-mfilter-opt">
+                    <span>{{ fallback_category_parts[1] }}</span>
+                  </span>
                 {%- endif -%}
               {%- endfor -%}
             </div>
@@ -127,7 +197,7 @@
           <div class="ed-mfilter-options">
             {%- for value in sort_values -%}
               {%- assign label = sort_labels[forloop.index0] -%}
-              <a href="{{ request.path }}?sort_by={{ value }}" class="ed-mfilter-opt{% if sort_by == value %} is-active{% endif %}">
+              <a href="{{ request.path }}{% if active_filter_params != blank %}?{{ active_filter_params }}&sort_by={{ value }}{% else %}?sort_by={{ value }}{% endif %}" class="ed-mfilter-opt{% if sort_by == value %} is-active{% endif %}">
                 <span>{{ label }}</span>
                 {%- if sort_by == value -%}<span class="ed-mfilter-opt__check" aria-hidden="true">&check;</span>{%- endif -%}
               </a>
