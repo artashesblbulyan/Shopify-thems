@@ -6,7 +6,7 @@
   assign sort_by = coll.sort_by | default: coll.default_sort_by
   assign category_filter = null
   for filter in coll.filters
-    if filter.param_name == 'filter.p.t.category'
+    if filter.param_name contains 'category'
       assign category_filter = filter
       break
     endif
@@ -63,7 +63,21 @@
 
   <div class="ed-collection__toolbar">
     <div class="ed-collection__filter-summary">
-      {%- if fallback_category_items_string != blank -%}
+      {%- if category_filter != blank and category_filter.values.size > 0 -%}
+        {%- comment -%} Native Shopify category facet — server-side, auto-updates with new categories, works across pagination {%- endcomment -%}
+        <span class="ed-eyebrow">Categories</span>
+        <div class="ed-collection__tags">
+          <a href="{{ category_filter.url_to_remove }}" class="ed-collection__tag ed-collection__tag--all{% if category_filter_active_count == 0 %} is-active{% endif %}">
+            <span>All</span>
+          </a>
+          {%- for value in category_filter.values -%}
+            <a href="{% if value.active %}{{ value.url_to_remove }}{% else %}{{ value.url_to_add }}{% endif %}" class="ed-collection__tag{% if value.active %} is-active{% endif %}">
+              <span>{{ value.label }}</span>
+            </a>
+          {%- endfor -%}
+        </div>
+      {%- elsif fallback_category_items_string != blank -%}
+        {%- comment -%} Fallback — client-side filtering of the current page's products {%- endcomment -%}
         <span class="ed-eyebrow">Categories</span>
         <div class="ed-collection__tags">
           <a href="{{ coll.url }}" class="ed-collection__tag ed-collection__tag--all is-active" data-ed-category-filter-value="all">
@@ -135,7 +149,25 @@
       </div>
 
       <div class="ed-mfilter-sheet__body">
-        {%- if fallback_category_items_string != blank -%}
+        {%- if category_filter != blank and category_filter.values.size > 0 -%}
+          {%- comment -%} Native Shopify category facet — server-side, auto-updates with new categories, works across pagination {%- endcomment -%}
+          <div class="ed-mfilter-group ed-mfilter-group--filter">
+            <div class="ed-mfilter-group__label">Categories</div>
+            <div class="ed-mfilter-options">
+              <a href="{{ category_filter.url_to_remove }}" class="ed-mfilter-opt{% if category_filter_active_count == 0 %} is-active{% endif %}">
+                <span>All products</span>
+                {%- if category_filter_active_count == 0 -%}<span class="ed-mfilter-opt__check" aria-hidden="true">&check;</span>{%- endif -%}
+              </a>
+              {%- for value in category_filter.values -%}
+                <a href="{% if value.active %}{{ value.url_to_remove }}{% else %}{{ value.url_to_add }}{% endif %}" class="ed-mfilter-opt{% if value.active %} is-active{% endif %}">
+                  <span>{{ value.label }}</span>
+                  {%- if value.active -%}<span class="ed-mfilter-opt__check" aria-hidden="true">&check;</span>{%- endif -%}
+                </a>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- elsif fallback_category_items_string != blank -%}
+          {%- comment -%} Fallback — client-side filtering of the current page's products {%- endcomment -%}
           <div class="ed-mfilter-group ed-mfilter-group--filter">
             <div class="ed-mfilter-group__label">Categories</div>
             <div class="ed-mfilter-options">
