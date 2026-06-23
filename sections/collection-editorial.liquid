@@ -68,17 +68,17 @@
       {%- if category_filter != blank and category_filter.values.size > 0 -%}
         <span class="ed-eyebrow">Filter</span>
         <div class="ed-collection__tags">
-          <a href="{{ category_filter.url_to_remove }}" class="ed-collection__tag ed-collection__tag--all{% unless category_filter.active_values.size > 0 %} is-active{% endunless %}">
+          <a href="{{ category_filter.url_to_remove }}" class="ed-collection__tag ed-collection__tag--all{% unless category_filter.active_values.size > 0 %} is-active{% endunless %}" data-ed-category-filter-value="all">
             <span>All</span>
           </a>
           {%- for value in category_filter.values limit: 6 -%}
             {%- if value.active -%}
-              <a href="{{ value.url_to_remove }}" class="ed-collection__tag is-active">
+              <a href="{{ value.url_to_remove }}" class="ed-collection__tag is-active" data-ed-category-filter-value="{{ value.value | escape }}">
                 <span>{{ value.label }}</span>
                 <span class="ed-collection__tag-close" aria-hidden="true">&times;</span>
               </a>
             {%- else -%}
-              <a href="{{ value.url_to_add }}" class="ed-collection__tag">
+              <a href="{{ value.url_to_add }}" class="ed-collection__tag" data-ed-category-filter-value="{{ value.value | escape }}">
                 <span>{{ value.label }}</span>
               </a>
             {%- endif -%}
@@ -160,19 +160,20 @@
           <div class="ed-mfilter-group ed-mfilter-group--filter">
             <div class="ed-mfilter-group__label">Category</div>
             <div class="ed-mfilter-options">
-              <a href="{{ category_filter.url_to_remove }}" class="ed-mfilter-opt{% unless category_filter.active_values.size > 0 %} is-active{% endunless %}">
+              <a href="{{ category_filter.url_to_remove }}" class="ed-mfilter-opt{% unless category_filter.active_values.size > 0 %} is-active{% endunless %}" data-ed-category-filter-value="all">
                 <span>All products</span>
-                {%- unless category_filter.active_values.size > 0 -%}<span class="ed-mfilter-opt__check" aria-hidden="true">&check;</span>{%- endunless -%}
+                <span class="ed-mfilter-opt__check" data-ed-category-filter-check aria-hidden="true"{% if category_filter.active_values.size > 0 %} hidden{% endif %}>&check;</span>
               </a>
               {%- for value in category_filter.values limit: 16 -%}
                 {%- if value.active -%}
-                  <a href="{{ value.url_to_remove }}" class="ed-mfilter-opt is-active">
+                  <a href="{{ value.url_to_remove }}" class="ed-mfilter-opt is-active" data-ed-category-filter-value="{{ value.value | escape }}">
                     <span>{{ value.label }}</span>
-                    <span class="ed-mfilter-opt__check" aria-hidden="true">&check;</span>
+                    <span class="ed-mfilter-opt__check" data-ed-category-filter-check aria-hidden="true">&check;</span>
                   </a>
                 {%- else -%}
-                  <a href="{{ value.url_to_add }}" class="ed-mfilter-opt">
+                  <a href="{{ value.url_to_add }}" class="ed-mfilter-opt" data-ed-category-filter-value="{{ value.value | escape }}">
                     <span>{{ value.label }}</span>
+                    <span class="ed-mfilter-opt__check" data-ed-category-filter-check aria-hidden="true" hidden>&check;</span>
                   </a>
                 {%- endif -%}
               {%- endfor -%}
@@ -225,8 +226,9 @@
       {%- for product in coll.products -%}
         {%- assign idx = forloop.index | prepend: '0' | slice: -2, 2 -%}
         {%- assign hover_image = product.images[1] -%}
-        {%- assign product_category_id = product.category.id | default: product.category.gid -%}
-        <a class="ed-collection__card{% if hover_image != blank %} ed-has-hover-image{% endif %}" href="{{ product.url }}"{% if product_category_id != blank %} data-ed-category-id="{{ product_category_id | escape }}"{% endif %}>
+        {%- assign product_category_id = product.category.id -%}
+        {%- assign product_category_gid = product.category.gid -%}
+        <a class="ed-collection__card{% if hover_image != blank %} ed-has-hover-image{% endif %}" href="{{ product.url }}"{% if product_category_id != blank %} data-ed-category-id="{{ product_category_id | escape }}"{% endif %}{% if product_category_gid != blank %} data-ed-category-gid="{{ product_category_gid | escape }}"{% endif %}>
           <div class="ed-collection__card-img">
             {%- if product.featured_image -%}
               {{ product.featured_image | image_url: width: 900 | image_tag:
@@ -286,13 +288,14 @@
 
 {% javascript %}
   function applyFallbackCategoryFilter() {
-    var cards = document.querySelectorAll('.ed-collection__card[data-ed-category-id]');
+    var cards = document.querySelectorAll('.ed-collection__card[data-ed-category-id], .ed-collection__card[data-ed-category-gid]');
     var controls = document.querySelectorAll('[data-ed-category-filter-value]');
     if (!cards.length || !controls.length) return;
 
     var params = new URLSearchParams(window.location.search);
-    var selected = params
-      .getAll('filter.p.t.category')
+    var selected = []
+      .concat(params.getAll('filter.p.t.category'))
+      .concat(params.getAll('filter.p.category'))
       .flatMap(function (value) {
         return value.split('__');
       })
@@ -302,7 +305,10 @@
     var visibleCount = 0;
 
     cards.forEach(function (card) {
-      var isVisible = !hasSelection || selectedSet.has(card.dataset.edCategoryId);
+      var isVisible =
+        !hasSelection ||
+        selectedSet.has(card.dataset.edCategoryId || '') ||
+        selectedSet.has(card.dataset.edCategoryGid || '');
       card.hidden = !isVisible;
       if (isVisible) visibleCount += 1;
     });
