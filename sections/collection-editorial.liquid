@@ -87,13 +87,16 @@
       {%- elsif fallback_category_items_string != blank -%}
         <span class="ed-eyebrow">Categories</span>
         <div class="ed-collection__tags">
+          <a href="{{ coll.url }}" class="ed-collection__tag ed-collection__tag--all is-active">
+            <span>All</span>
+          </a>
           {%- assign fallback_category_items = fallback_category_items_string | split: '||' -%}
           {%- for fallback_category_item in fallback_category_items limit: 6 -%}
             {%- if fallback_category_item != blank -%}
               {%- assign fallback_category_parts = fallback_category_item | split: '::' -%}
-              <span class="ed-collection__tag">
+              <a href="{{ coll.url }}?filter.p.t.category={{ fallback_category_parts[0] | url_param_escape }}" class="ed-collection__tag">
                 <span>{{ fallback_category_parts[1] }}</span>
-              </span>
+              </a>
             {%- endif -%}
           {%- endfor -%}
         </div>
@@ -179,13 +182,17 @@
           <div class="ed-mfilter-group ed-mfilter-group--filter">
             <div class="ed-mfilter-group__label">Categories</div>
             <div class="ed-mfilter-options">
+              <a href="{{ coll.url }}" class="ed-mfilter-opt is-active">
+                <span>All products</span>
+                <span class="ed-mfilter-opt__check" aria-hidden="true">&check;</span>
+              </a>
               {%- assign fallback_category_items = fallback_category_items_string | split: '||' -%}
               {%- for fallback_category_item in fallback_category_items limit: 16 -%}
                 {%- if fallback_category_item != blank -%}
                   {%- assign fallback_category_parts = fallback_category_item | split: '::' -%}
-                  <span class="ed-mfilter-opt">
+                  <a href="{{ coll.url }}?filter.p.t.category={{ fallback_category_parts[0] | url_param_escape }}" class="ed-mfilter-opt">
                     <span>{{ fallback_category_parts[1] }}</span>
-                  </span>
+                  </a>
                 {%- endif -%}
               {%- endfor -%}
             </div>
